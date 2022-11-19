@@ -1,5 +1,3 @@
 # Sven Co-op: Zombie Edition
-<picture>
-<img src="/decoration/banner.png" alt="Sven Co-op: Zombie Edition">
-</picture>
+![](decoration/banner.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
