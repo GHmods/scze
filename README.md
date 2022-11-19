@@ -12,6 +12,10 @@
 - Tasks Part 2: ![](https://geps.dev/progress/0)
   - ~~Work-In-Progress...~~
 ---
+## Tools I've used:
+* <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
+* <a href="https://baso88.github.io/SC_AngelScript/docs/">Sven Co-op AngelScript Documentation</a>
+
 ### Original Half-Life Mod <a href="https://www.moddb.com/mods/half-life-zombie-edition">Here</a>
 * Q: Can you add multiplayer?
 * A: Na-ah.
