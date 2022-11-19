@@ -8,7 +8,6 @@
 #### Tasks Part 1: ![](https://geps.dev/progress/0)
   - Upload all my private code here.
   - Do my first release.
-  - Write a good documentation.
 #### Tasks Part 2: ![](https://geps.dev/progress/0)
   - ~~Work-In-Progress...~~
 ## Tools I've used:
