@@ -1,3 +1,3 @@
-# Sven Co-op: Zombie Edition
-![](https://i.imgur.com/M8k4ipr.png)
+# Insurgency Weapons Project
+![](https://i.imgur.com/u0h7FjO.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
