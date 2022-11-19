@@ -6,3 +6,6 @@
 - I will try to update this mod more frequently.
 
 ### Original Half-Life Mod <a href="https://www.moddb.com/mods/half-life-zombie-edition">Here</a>
+* Q: Can you add multiplayer?
+* A: Na-ah.
+* Me: I'm trying!
