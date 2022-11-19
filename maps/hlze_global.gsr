@@ -1,0 +1,17 @@
+//Generic
+"gman/gman_otherwise.wav" "hlze/gman/gman_otherwise.wav"
+"gman/gman_potential.wav" "hlze/gman/gman_potential.wav"
+"gman/gman_suit.wav" "hlze/gman/gman_suit.wav"
+"gman/gman1.wav" "hlze/gman/gman1.wav"
+"gman/gman2.wav" "hlze/gman/gman2.wav"
+"gman/gman3.wav" "hlze/gman/gman3.wav"
+
+"zombie/zo_alert10.wav" "vox/zombie_alert1.wav"
+"zombie/zo_alert20.wav" "vox/zombie_alert2.wav"
+"zombie/zo_alert30.wav" "vox/zombie_alert3.wav"
+"zombie/zo_idle1.wav" "vox/zombie_pain2.wav"
+"zombie/zo_idle2.wav" "vox/zombie_pain3.wav"
+"zombie/zo_idle3.wav" "vox/zombie_pain4.wav"
+"zombie/zo_idle4.wav" "vox/zombie_pain5.wav"
+"zombie/zo_pain1.wav" "vox/zombie_pain1.wav"
+"zombie/zo_pain2.wav" "vox/zombie_pain7.wav"

@@ -1,0 +1,5 @@
+4
+weapon				640		weapon_zclaws_01	0	0	170	45
+weapon_s			640		weapon_zclaws_02	0	0	170	45
+crosshair			640		weapon_hclaws_hud	0	48	24	24
+autoaim				640		weapon_hclaws_hud	24	72	0	48
