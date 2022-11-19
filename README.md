@@ -10,7 +10,7 @@
   - Do my first release.
   - Write a good documentation.
 - Tasks Part 2: ![](https://geps.dev/progress/0)
-  - Work-In-Progress...
+  - ~~Work-In-Progress...~~
 ---
 ### Original Half-Life Mod <a href="https://www.moddb.com/mods/half-life-zombie-edition">Here</a>
 * Q: Can you add multiplayer?
