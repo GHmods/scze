@@ -7,8 +7,9 @@
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 
-#### Tasks Part 1: ![](https://geps.dev/progress/0)
-  - Upload all my private code here.
+#### Tasks Part 1: ![](https://geps.dev/progress/33)
+  - ~~Upload all resources.~~
+  - Upload my private code.
   - Do my first release.
 #### Tasks Part 2: ![](https://geps.dev/progress/0)
   - ~~Work-In-Progress...~~
