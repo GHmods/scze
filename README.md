@@ -1,5 +1,5 @@
 # Sven Co-op: Zombie Edition
-![](https://imgur.com/ee9K4AJ)
+![](https://i.imgur.com/ee9K4AJ.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
 
 - This mod is in early stages, don't expect proficiency in code since im not a profesional coder.
