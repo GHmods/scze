@@ -7,12 +7,20 @@
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 
-#### Tasks Part 1: ![](https://geps.dev/progress/33)
+#### Tasks Part 1: ![](https://geps.dev/progress/100)
   - ~~Upload all resources.~~
-  - Upload my private code.
-  - Do my first release.
-#### Tasks Part 2: ![](https://geps.dev/progress/0)
-  - ~~Work-In-Progress...~~
+  - ~~Upload my private code.~~
+  - ~~Do my first release.~~
+#### Tasks Part 2: ![](https://geps.dev/progress/16)
+  - Do a fixes for some maps.
+  - Fix/Improve uploaded code.
+  - Fix Crusher class.
+  - ~~PvPvM Feature will wait for a while.~~
+  - Add Breeder class.
+  - Add usable headcrabs.
+#### Tasks Part 3: ![](https://geps.dev/progress/1)
+  - ~~Work In Progress.~~
+
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
 * <a href="https://baso88.github.io/SC_AngelScript/docs/">Sven Co-op AngelScript Documentation</a>
