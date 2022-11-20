@@ -11,7 +11,7 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![](https://geps.dev/progress/28)
+#### Tasks Part 2: ![](https://geps.dev/progress/22)
   - Do a fixes for some maps.
   - Fix/Improve uploaded code.
   - Fix Crusher class.
@@ -19,6 +19,8 @@
   - ~~PvPvM Feature will wait for a while.~~
   - Add Breeder class.
   - Add usable headcrabs.
+  - Add Steam ID/Name Save Option.
+  - Do a Second Release.
 #### Tasks Part 3: ![](https://geps.dev/progress/1)
   - ~~Work In Progress.~~
 
