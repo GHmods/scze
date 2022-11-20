@@ -4,6 +4,8 @@
 
 - This mod is in early stages, don't expect proficiency in code since im not a profesional coder.
 - I will try to update this mod more frequently.
+# Want to support my work?
+- ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 
 #### Tasks Part 1: ![](https://geps.dev/progress/0)
   - Upload all my private code here.
