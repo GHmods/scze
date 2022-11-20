@@ -519,7 +519,7 @@ namespace ZClass_Menu {
 			string AB_Num = ""+i;
 			string Ability_String = AB_Name;
 			if(i==0) { //Primary Ability
-				Ability_String +=" - [+ATTACK3 to Toggle]";
+				Ability_String +=" - [+ATTACK3 to Use]";
 			}
 			if(!unlocked) {
 				if(AB_Cost>0) Ability_String +="[Cost:"+AB_Cost+"]";

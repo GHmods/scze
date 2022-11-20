@@ -795,9 +795,6 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 	}
 	
 	void TertiaryAttack() {
-		if(self.m_flNextTertiaryAttack > g_Engine.time)
-			return;
-		
 		ZClass_Ability(this,self,m_pPlayer,ZClass);
 	}
 	
@@ -1002,7 +999,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				if(zm_ability_state==1) {
 					self.SendWeaponAnim(ZM_DRAW,0,ZClass.VIEW_MODEL_BODY_ID);
 					self.m_flNextTertiaryAttack = g_Engine.time + 0.6;
-					self.m_flNextSecondaryAttack = g_Engine.time + 3.0;
+					self.m_flNextSecondaryAttack = g_Engine.time + 1.0;
 					self.m_flTimeWeaponIdle = g_Engine.time + 10.0;
 					zm_ability_state++;
 					return;
@@ -1040,6 +1037,18 @@ void ZClass_Ability(weapon_zclaws@ zclaw, CBasePlayerWeapon@ z_wpn,CBasePlayer@ 
 	if(!ZClass.Abilities[0].Unlocked[pId] || !ZClass.Abilities[0].Active[pId])
 		return;
 	
+	//Holding...
+	if(ZClass.Abilities[0].Name == "Acid Throw") {
+		float throw_amount = g_Engine.time - zclaw.zm_ability_timer;
+
+		if(zclaw.zm_ability_state==2 && throw_amount < 5.0) {
+			z_wpn.m_flNextSecondaryAttack = g_Engine.time + 0.1;
+		}
+	}
+
+	if(z_wpn.m_flNextTertiaryAttack > g_Engine.time)
+		return;
+
 	//All toggleable Primary Abilities
 	//Check ability state
 	if(zclaw.zm_ability_state==0) {
@@ -1048,9 +1057,6 @@ void ZClass_Ability(weapon_zclaws@ zclaw, CBasePlayerWeapon@ z_wpn,CBasePlayer@ 
 	} else {
 		if(ZClass.Abilities[0].Name == "Frenzy Mode") {
 			ZClass_Ability_OFF(zclaw,z_wpn,m_pPlayer,ZClass);
-		} else if(ZClass.Abilities[0].Name == "Acid Throw") {
-			if(zclaw.zm_ability_state==2)
-				ZClass_Ability_OFF(zclaw,z_wpn,m_pPlayer,ZClass);
 		}
 	}
 	//----------------------------------------------------------------------

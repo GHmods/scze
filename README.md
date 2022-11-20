@@ -11,10 +11,11 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![](https://geps.dev/progress/16)
+#### Tasks Part 2: ![](https://geps.dev/progress/14)
   - Do a fixes for some maps.
   - Fix/Improve uploaded code.
   - Fix Crusher class.
+  - Add Acid Projectile.
   - ~~PvPvM Feature will wait for a while.~~
   - Add Breeder class.
   - Add usable headcrabs.
