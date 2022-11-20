@@ -15,9 +15,6 @@
 //Gene Points
 #include "..\classes\gene_points"
 
-//Saves
-#include "..\save-load\zclass"
-
 array<string>Eatable = {
 	"monster_barney_dead",
 	"monster_hevsuit_dead",
@@ -1134,9 +1131,19 @@ void ZClass_Ability_OFF(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlaye
 		Math.MakeVectors(m_pPlayer.pev.v_angle);
 		Vector vecSrc	= m_pPlayer.GetGunPosition();
 		throw_amount *= 150.0;
+		/*
 		g_EntityFuncs.ShootContact(m_pPlayer.pev,
 								vecSrc + g_Engine.v_forward * 16 + g_Engine.v_right * 6,
 								g_Engine.v_forward * throw_amount);
+		*/
+		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("acid_throw");
+		AcidThrow@ acidProjectile = cast<AcidThrow@>(CastToScriptClass(entBase));
+		g_EntityFuncs.DispatchSpawn(acidProjectile.self.edict());
+		@acidProjectile.pev.owner = m_pPlayer.edict();
+		acidProjectile.pev.origin = vecSrc + g_Engine.v_forward * 16 + g_Engine.v_right * 6;
+		acidProjectile.pev.velocity = g_Engine.v_forward * throw_amount * 2.0;
+		acidProjectile.pev.angles = m_pPlayer.pev.v_angle;
+
 		//----
 		
 		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" - Throw! ["+throw_amount+"]\n");

@@ -35,6 +35,8 @@
 //Gene Points
 #include "gene_points"
 #include "../save-load/zclass" //Save/Load
+//Acid Throw
+#include "..\projectiles\acid_throw"
 
 const string ZCLASS_SYSTEM_TAG="[Zombie Class System]";
 
@@ -111,6 +113,7 @@ namespace ZClasses
 		); //End of this Zombie Class
 		//Register abilities to this class
 		crasher.Register_Ability("Acid Throw",80);	//+ATTACK3
+		acid_throw_Init();
 		//crasher.Register_Ability("Shield",80);	//Maybe if this zombie crouches
 		crasher.Register_Ability("Armor Upgrade (+50)",30); //+50 Armor
 		//crasher.Register_Ability("Fast Eating",45);
