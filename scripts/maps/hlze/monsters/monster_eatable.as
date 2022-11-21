@@ -64,6 +64,8 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 {
 	void Spawn()
 	{
+		self.pev.solid = SOLID_SLIDEBOX;
+		self.pev.movetype = MOVETYPE_STEP;
 		//Monster Stuff
 		self.MonsterInitDead();
 		
@@ -92,12 +94,12 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		self.pev.absmax = monster.pev.absmax;
 		self.pev.mins = monster.pev.mins;
 		self.pev.maxs = monster.pev.maxs;
-		self.pev.solid = monster.pev.solid;
+		//self.pev.solid = monster.pev.solid;
 		self.pev.skin = monster.pev.skin;
 		self.pev.body = monster.pev.body;
 		self.pev.effects = monster.pev.effects;
 		self.pev.gravity = monster.pev.gravity;
-		self.pev.friction = monster.pev.friction;
+		//self.pev.friction = monster.pev.friction;
 		self.pev.sequence = monster.pev.sequence;
 		self.pev.gaitsequence = monster.pev.gaitsequence;
 		self.pev.frame = monster.pev.frame;
@@ -123,23 +125,22 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	void Setup_Eatable(string model,Vector mins,Vector maxs,int skin,int body,Vector createOrigin,Vector velocity,Vector createAngles,int bc) {
 		g_EntityFuncs.SetModel(self,model);
 		//g_EntityFuncs.SetSize(self.pev,mins,maxs);
-		g_EntityFuncs.SetSize(self.pev,Vector(-18,-18,0),Vector(18,18,18));
+		g_EntityFuncs.SetSize(self.pev,Vector(-2,-2,0),Vector(2,2,18));
 		
 		self.pev.skin = skin;
 		self.pev.body = body;
 		
-		createOrigin.z += 18.0;
+		//createOrigin.z += 18.0;
 		self.pev.origin = createOrigin;
 		self.pev.velocity = velocity;
 		self.pev.angles = createAngles;
 		
 		self.m_bloodColor = bc;
 		
-		self.SetObjectCollisionBox();
+		//self.SetObjectCollisionBox();
 		
 		self.pev.health = 1.5;
 		self.pev.takedamage = DAMAGE_YES;
-		self.pev.movetype = MOVETYPE_STEP;
 		
 		if(string(self.m_FormattedName).IsEmpty())
 		{
@@ -155,7 +156,8 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	void Animate_Eatable(float frame, float framerate, float animtime, int sequence) {
 		self.pev.frame = frame;
 		self.pev.framerate = framerate;
-		self.pev.animtime = animtime;
+		//self.pev.animtime = animtime;
+		self.pev.animtime = g_Engine.time + 0.1;
 		self.pev.sequence = sequence;
 	}
 	
