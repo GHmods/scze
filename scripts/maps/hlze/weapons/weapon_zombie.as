@@ -412,7 +412,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			
 			if(pEntity.IsAlive()) {
 				Math.MakeVectors(m_pPlayer.pev.angles);
-				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2);
+				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2)  + g_Engine.v_up*(zm_Damage*2);
 			}
 
 			pEntity.TakeDamage(m_pPlayer.pev,m_pPlayer.pev,flDamage,DMG_NEVERGIB);
