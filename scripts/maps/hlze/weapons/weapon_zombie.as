@@ -599,12 +599,16 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT+1]);
 			} else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST+1]);
 		} else m_pPlayer.SetOverriddenPlayerModel(ZClass.PLAYER_MODEL);
-		
+
 		int flags = m_pPlayer.pev.flags;
 		int player_old_buttons = m_pPlayer.pev.oldbuttons;
 		int player_buttons = m_pPlayer.pev.button;
 		int pId = m_pPlayer.entindex();
 		
+		if((flags & FL_DUCKING) != 0) {
+			m_pPlayer.pev.view_ofs = ZClass.ZView_Offset / Vector(2,2,2);
+		} else m_pPlayer.pev.view_ofs = ZClass.ZView_Offset;
+
 		//Eating Process
 		if((player_buttons & IN_USE) != 0) {
 			TraceResult tr;

@@ -68,7 +68,7 @@ namespace ZClasses
 		//Rusher
 		Zombie_Class rusher(Zombie_Classes,					//Array that is used to register this class
 									"Rusher",				//Name
-									40,						//Cost
+									40,					//Cost
 									40.0,					//Health
 									350,					//Speed
 									300,					//Speed while crouching
@@ -78,10 +78,11 @@ namespace ZClasses
 									false,					//Can Break 'func_breakable' walls
 									3.5,					//Degen Rate
 									3.0,					//Degen Delay
-									Vector(255,0,0),		//Darkvision Color --> Vector(r,g,b)
-									"v_zclaws.mdl",			//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
-									6,						//View Model Body Number
-									"hlze_rusher",			//Player Model (Leave "null" to use default)
+									Vector(255,0,0),			//Darkvision Color --> Vector(r,g,b)
+									Vector(0,0,27),				//View Offset
+									"v_zclaws.mdl",				//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									6,					//View Model Body Number
+									"hlze_rusher",				//Player Model (Leave "null" to use default)
 									//Message that shows when player mutates to this class
 									"You are now 'Rusher' Zombie Class",
 									"Fast and Deadly!"
@@ -93,27 +94,28 @@ namespace ZClasses
 		//Crasher
 		Zombie_Class crasher(Zombie_Classes,				//Array that is used to register this class
 									"Crasher",				//Name
-									70,						//Cost
+									70,					//Cost
 									200.0,					//Health
 									100,					//Speed
-									80,						//Speed while crouching
-									80,						//Voice Pitch
+									80,					//Speed while crouching
+									80,					//Voice Pitch
 									300.0,					//Damage
 									false,					//Start with Fast Attacking?
 									true,					//Can Break 'func_breakable' walls?
 									11.0,					//Degen Rate
 									50.0,					//Degen Delay
-									Vector(255,255,0),		//Darkvision Color --> Vector(r,g,b)
-									"v_zclaws.mdl",			//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
-									9,						//View Model Body Number
-									"hlze_crasher",			//Player Model (Leave "null" to use default)
+									Vector(255,255,0),			//Darkvision Color --> Vector(r,g,b)
+									Vector(0,0,45),				//View Offset
+									"v_zclaws.mdl",				//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									9,					//View Model Body Number
+									"hlze_crasher",				//Player Model (Leave "null" to use default)
 									//Message that shows when player mutates to this class
 									"You are now 'Crasher' Zombie Class",
 									"Strong,Solid and Slow!"
 		); //End of this Zombie Class
 		//Register abilities to this class
 		crasher.Register_Ability("Acid Throw",80);	//+ATTACK3
-		acid_throw_Init();
+		acid_throw_Init(); //Register our Entity
 		//crasher.Register_Ability("Shield",80);	//Maybe if this zombie crouches
 		crasher.Register_Ability("Armor Upgrade (+50)",30); //+50 Armor
 		//crasher.Register_Ability("Fast Eating",45);
@@ -230,6 +232,8 @@ final class Zombie_Class {
 	float DegenDelay = 25.0; // [n] second(s) Delay before degen starts.
 		//Darkvision Color
 	Vector DV_Color(255,128,0); // +ATTACK2 to toggle Darkvision
+		//View Offset
+	Vector ZView_Offset(0,0,27);
 	//Models
 		//View Models
 	string VIEW_MODEL = "models/hlze/v_zclaws.mdl";
@@ -251,8 +255,8 @@ final class Zombie_Class {
 	Zombie_Class(array<Zombie_Class@>@zc_array,
 				string zName="Default",int cost=0,float hp=80.0,int spd=80,int spd_c=160,int vp=100,
 				float dmg=30.0,bool fast_attack=false, bool breakWalls=false,float dgRate=8.0,float dgDelay=25.0,
-				Vector dvClr = Vector(255,128,0),string v_mdl="v_zclaws.mdl",int vmd_bodyId=0,string player_mdl="null",
-				string mut_message="",string mut_desc=""
+				Vector dvClr = Vector(255,128,0),Vector viewOfs = Vector(0,0,27),string v_mdl="v_zclaws.mdl",
+				int vmd_bodyId=0,string player_mdl="null",string mut_message="",string mut_desc=""
 		) {
 		Name = zName;
 		ZClass_Cost = cost;
@@ -266,6 +270,7 @@ final class Zombie_Class {
 		DegenRate = dgRate;
 		DegenDelay = dgDelay;
 		DV_Color = dvClr;
+		ZView_Offset = viewOfs;
 		VIEW_MODEL = "models/hlze/" + v_mdl;
 		VIEW_MODEL_BODY_ID = vmd_bodyId;
 		PLAYER_MODEL = player_mdl;
