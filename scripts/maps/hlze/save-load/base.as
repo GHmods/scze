@@ -8,6 +8,7 @@
 #include "map_config" //Per Map Config
 
 #include "../pvpvm/pvpvm"//PVPVM
+#include "../unstuck" //Unstuck
 
 const string SYSTEM_TAG			=	"[Save/Load System]";
 const string SYSTEM_NAME		=	"Save/Load System";

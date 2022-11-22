@@ -1,6 +1,5 @@
 //Players VS Players VS Monsters Sven Co-op Zombie Edition
 #include "../save-load/base"
-#include "../unstuck"
 
 enum PVPVM_Teams_Enum {
 	PVPVM_OBSERVER = 0,
@@ -53,7 +52,7 @@ namespace pvpvm {
 	{
 		int index = pPlayer.entindex();
 		
-		Unstuck::UnstuckPlayer(pPlayer);
+		//Unstuck::UnstuckPlayer(pPlayer);
 		
 		return HOOK_CONTINUE;
 	}

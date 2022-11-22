@@ -26,6 +26,8 @@ void Events_MapInit()
 	
 	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, @PlayerJoin);
 	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, @PlayerQuit);
+	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink,@Event_PlayerThink);
+
 	//Headcrab PreThink
 	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink, HC_Think);
 	//ZClass PreThink
@@ -79,4 +81,13 @@ void PlayerReminder(const int& in index) {
 		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "          to Fix Ducking problem if you load non 'hlze_' maps.\n");
 		Reminder[index] = true;
 	}
+}
+
+HookReturnCode Event_PlayerThink(CBasePlayer@ pPlayer, uint& out dummy )
+{
+	int index = pPlayer.entindex();
+	
+	Unstuck::UnstuckPlayer(pPlayer);
+	
+	return HOOK_CONTINUE;
 }
