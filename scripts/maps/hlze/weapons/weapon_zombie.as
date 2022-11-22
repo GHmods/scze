@@ -406,15 +406,17 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				flDamage = self.m_flCustomDmg;
 			// AdamR: End
 			
-			Math.MakeVectors(m_pPlayer.pev.angles);
-			if(pEntity.IsAlive())
-				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2);
-			
 			g_WeaponFuncs.ClearMultiDamage();
-			pEntity.TraceAttack(m_pPlayer.pev,flDamage,g_Engine.v_forward,tr,DMG_NEVERGIB);
-			pEntity.TakeDamage(m_pPlayer.pev,m_pPlayer.pev,flDamage,DMG_NEVERGIB);
 			g_WeaponFuncs.ApplyMultiDamage(m_pPlayer.pev,m_pPlayer.pev);
+			pEntity.TraceAttack(m_pPlayer.pev,1.0,g_Engine.v_forward,tr,DMG_NEVERGIB);
 			
+			if(pEntity.IsAlive()) {
+				Math.MakeVectors(m_pPlayer.pev.angles);
+				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2);
+			}
+
+			pEntity.TakeDamage(m_pPlayer.pev,m_pPlayer.pev,flDamage,DMG_NEVERGIB);
+
 			//Try to break walls
 			if(ZClass.BreakWalls) {
 				for(uint w=0;w<BreakableZWalls.length();w++) {
@@ -524,15 +526,18 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				flDamage = self.m_flCustomDmg;
 			// AdamR: End
 			
-			Math.MakeVectors(m_pPlayer.pev.angles);
-			if(pEntity.IsAlive())
-				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2);
-			
 			g_WeaponFuncs.ClearMultiDamage();
-			pEntity.TraceAttack(m_pPlayer.pev,flDamage,g_Engine.v_forward,tr,DMG_NEVERGIB);
-			pEntity.TakeDamage(m_pPlayer.pev,m_pPlayer.pev,flDamage,DMG_NEVERGIB);
 			g_WeaponFuncs.ApplyMultiDamage(m_pPlayer.pev,m_pPlayer.pev);
+
+			pEntity.TraceAttack(m_pPlayer.pev,1.0,g_Engine.v_forward,tr,DMG_NEVERGIB);
 			
+			if(pEntity.IsAlive()) {
+				Math.MakeVectors(m_pPlayer.pev.angles);
+				pEntity.pev.velocity = pEntity.pev.velocity + g_Engine.v_forward*(zm_Damage*2);
+			}
+
+			pEntity.TakeDamage(m_pPlayer.pev,m_pPlayer.pev,flDamage,DMG_NEVERGIB);
+
 			//Try to break walls
 			if(ZClass.BreakWalls) {
 				for(uint w=0;w<BreakableZWalls.length();w++) {
