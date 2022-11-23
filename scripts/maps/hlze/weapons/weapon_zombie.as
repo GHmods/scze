@@ -926,7 +926,15 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//Check if any starting abilities are there
 		//Go through the array
 		for(uint a=0;a<ZClass.Abilities.length();a++) {
-			//"Armor Upgrade"
+			//"Armor Upgrade (+25)"
+			if(ZClass.Abilities[a].Name == "Armor Upgrade (+25)") {
+				//Check if unlocked and activated!
+				if(ZClass.Abilities[a].Unlocked[m_pPlayer.entindex()] && ZClass.Abilities[a].Active[m_pPlayer.entindex()])
+				{
+					m_pPlayer.pev.armorvalue += 25.0;
+				}
+			}
+			//"Armor Upgrade (+50)"
 			if(ZClass.Abilities[a].Name == "Armor Upgrade (+50)") {
 				//Check if unlocked and activated!
 				if(ZClass.Abilities[a].Unlocked[m_pPlayer.entindex()] && ZClass.Abilities[a].Active[m_pPlayer.entindex()])
