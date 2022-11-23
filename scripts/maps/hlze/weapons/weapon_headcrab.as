@@ -153,6 +153,9 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 	void HeadcrabProcess() {
 		self.pev.nextthink = g_Engine.time + 0.1;
 		
+		if(HClass is null)
+			return;
+
 		//Force Player Model
 		m_pPlayer.SetOverriddenPlayerModel(HClass.PLAYER_MODEL);
 		
@@ -363,7 +366,9 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 		if(m_pPlayer.pev.armorvalue >= zHealth)
 			m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - zHealth;
 		//m_pPlayer.pev.armorvalue = 0;
-		
+
+		bool mutated = false;
+
 		if(HClass_Holder[pId] != HClass_Mutation_Holder[pId]) {
 			//Do Blood
 			g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_STREAM,"squeek/sqk_blast1.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
@@ -441,17 +446,21 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 			
 			//Mutate to this
 			HClass_Holder[pId] = HClass_Mutation_Holder[pId];
-			//Next time you mutate to this zombie
+			//Next time you will mutate to this zombie
 			ZClass_Holder[pId] = HClass_Mutation_Holder[pId];
+
+			mutated = true;
 		}
 		
 		@HClass = HClasses::Headcrab_Classes[HClass_Holder[pId]];
-		
+
+		if(mutated) {
+			g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.MESSAGE+"\n");
+			g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.DESCRIPTION+"\n");
+		}
+
 		m_pPlayer.pev.max_health = HClass.Health;
 		m_pPlayer.pev.health = HClass.Health;
-		
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.MESSAGE);
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.DESCRIPTION);
 		
 		self.DefaultDeploy( self.GetV_Model(HClass.VIEW_MODEL),
 							self.GetP_Model(P_MODEL), HC_IDLE, "crowbar", 0, HClass.VIEW_MODEL_BODY_ID);
@@ -562,7 +571,7 @@ void HClass_Ability_ON(weapon_hclaws@ hclaw,CBasePlayer@ m_pPlayer,Headcrab_Clas
 	//----------------------------------------------------------------------
 	//This Ability must be primary
 	if(HClass.Abilities[0].Name == "Triggerable") {
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.Abilities[0].Name+" Activated!");
+		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.Abilities[0].Name+" Activated!\n");
 	}
 	//----------------------------------------------------------------------
 }
@@ -572,7 +581,7 @@ void HClass_Ability_OFF(weapon_hclaws@ hclaw,CBasePlayer@ m_pPlayer,Headcrab_Cla
 	//----------------------------------------------------------------------
 	//This Ability must be primary
 	if(HClass.Abilities[0].Name == "Triggerable") {
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.Abilities[0].Name+" Deactivated!");
+		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,HClass.Abilities[0].Name+" Deactivated!\n");
 	}
 	//----------------------------------------------------------------------
 }
@@ -584,6 +593,9 @@ void HClass_Process(CBasePlayer@ m_pPlayer, Headcrab_Class@ HClass) {
 	int button = m_pPlayer.pev.button;
 	int pId = m_pPlayer.entindex();
 	
+	if(HClass is null)
+		return;
+
 	//Make sure Player is not Mutating
 	if(HClass_Holder[pId]!=HClass_Mutation_Holder[pId])
 		return;

@@ -822,6 +822,11 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		zm_DegenTime = g_Engine.time + ZClass.DegenDelay;
 		zm_DegenFreq = g_Engine.time + ZClass.DegenRate;
+
+		zm_ability_state = 0;
+		zm_ability_timer = g_Engine.time;
+
+		b_FastAttack = ZClass.FastAttack;
 		
 		m_pPlayer.pev.armortype = 500;
 		
@@ -832,9 +837,6 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			g_PlayerFuncs.ScreenFade(m_pPlayer, ZClass.DV_Color, 0.1, 0.2, 155, FFADE::FFADE_IN);
 			m_pPlayer.pev.armorvalue = ZClass.Health;
 		}
-		
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.MUTATION_MESSAGE);
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.MUTATION_DESCRIPTION);
 		
 		self.DefaultDeploy( self.GetV_Model(ZClass.VIEW_MODEL),
 							self.GetP_Model(P_MODEL), ZM_DRAW, "python", 0, ZClass.VIEW_MODEL_BODY_ID);
@@ -912,6 +914,9 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				g_Utility.TraceLine(decal_start,decal_location,ignore_monsters,m_pPlayer.edict(),tr);
 				g_Utility.BloodDecalTrace(tr, BLOOD_COLOR_RED);
 			}
+
+			g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.MUTATION_MESSAGE+"\n");
+			g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.MUTATION_DESCRIPTION+"\n");
 		}
 		ZClass_MutationState[m_pPlayer.entindex()] = ZM_MUTATION_NONE;
 		//----------------------------------------------------------------------
@@ -1081,7 +1086,7 @@ void ZClass_Ability_ON(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer
 	
 	//"Frenzy Mode" is toggleable and must be primary
 	if(ZClass.Abilities[0].Name == "Frenzy Mode") {
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" Activated!");
+		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" Activated!\n");
 		
 		zclaw.b_FastAttack = true;
 		zclaw.zm_Damage = ZClass.Damage*3;
@@ -1094,7 +1099,7 @@ void ZClass_Ability_ON(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer
 		z_wpn.m_flNextTertiaryAttack = g_Engine.time + ZClass.Ability_ToggleDelay;
 		zclaw.zm_ability_state=1;
 	} else if(ZClass.Abilities[0].Name == "Acid Throw") {
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" - Draw!\n");
+		//g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" - Draw!\n");
 		z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
 							z_wpn.GetP_Model(P_MODEL), ZM_HOLSTER,"sniper",0,ZClass.VIEW_MODEL_BODY_ID);
 		m_pPlayer.SetAnimation(PLAYER_DEPLOY);
@@ -1121,7 +1126,7 @@ void ZClass_Ability_OFF(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlaye
 	
 	//"Frenzy Mode" is toggleable and must be primary
 	if(ZClass.Abilities[0].Name == "Frenzy Mode") {
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" Deactivated!");
+		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" Deactivated!\n");
 		
 		zclaw.b_FastAttack = false;
 		zclaw.zm_Damage = ZClass.Damage;
@@ -1155,7 +1160,7 @@ void ZClass_Ability_OFF(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlaye
 
 		//----
 		
-		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" - Throw! ["+throw_amount+"]\n");
+		g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[0].Name+" - Distance:["+throw_amount+"]\n");
 		
 		z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
 							z_wpn.GetP_Model(P_MODEL), ZM_ATTACK1_MISS, "sniper", 0, ZClass.VIEW_MODEL_BODY_ID);

@@ -417,10 +417,8 @@ namespace HClass_Menu {
 			string HC_Num = ""+i;
 			if(selection == HC_Num) {
 				if(unlocked) {
-					//HClass_Holder[pid] = i;
-					//g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, HCLASS_SYSTEM_TAG+" "+HC_Name+" Selected!\n");
 					HClass_Mutation_Holder[pid] = i;
-					g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, HCLASS_SYSTEM_TAG+" Leave body to mutate to "+HC_Name+"!\n");
+					g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, HCLASS_SYSTEM_TAG+" Leave body to mutate to '"+HC_Name+"'!\n");
 				} else {
 					HClasses::Headcrab_Classes[i].TryToUnlock(pid);
 					g_Scheduler.SetTimeout("HShow_Menu", 0.01, index);

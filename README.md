@@ -11,9 +11,9 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![](https://geps.dev/progress/33)
+#### Tasks Part 2: ![](https://geps.dev/progress/44)
   - Do a fixes for some maps.
-  - Fix/Improve uploaded code.
+  - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
   - ~~Add Acid Projectile.~~
   - ~~PvPvM Feature will wait for a while.~~

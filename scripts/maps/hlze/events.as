@@ -76,9 +76,9 @@ void PlayerReminder(const int& in index) {
 	CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
 	
 	if(!Reminder[index] && pPlayer !is null) {
-		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "This is Half-Life:Zombie Edition Ported to Sven Co-Op\n");
-		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "Reminder: If you quit, type:'-duck' in your console[~] and press Enter\n");
-		g_PlayerFuncs.ClientPrint( pPlayer, HUD_PRINTTALK, "          to Fix Ducking problem if you load non 'hlze_' maps.\n");
+		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"This is Half-Life:Zombie Edition Ported to Sven Co-Op by Game Hunter.\n");
+		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"Read Console[~] for possible bugs and fixes.\n");
+		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTCONSOLE,"[BUG 01] Type:'-duck' in your console[~] and press Enter to Fix Ducking problem.\n");
 		Reminder[index] = true;
 	}
 }
