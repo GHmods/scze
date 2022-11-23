@@ -121,14 +121,21 @@ namespace SaveLoad {
 		}
 		
 		//On Spawn For First Time
+		isSpawned[index]=true;
+		/*
 		if(!isSpawned[index] && EverythingIsReady4Player(index)) {
 			isSpawned[index]=true;
 		}
+		*/
 		
 		//If PVPVM is Enabled and Observer/Human Selected, don't used this, use function in pvpvm.as instead.
-		if(cvar_pvpvm!=0)
-			pvpvm::PlayerSpawn(pPlayer);
-		
+		if(cvar_pvpvm!=0) pvpvm::PlayerSpawn(pPlayer);
+		else {
+			//Fix for headcrabs
+			pvpvm::TeamChosen[index]=PVPVM_HEADCRAB;
+			pvpvm::TeamProcess(index);
+		}
+
 		if(pvpvm::TeamChosen[index]!=PVPVM_HUMAN)
 			g_Scheduler.SetTimeout("SpawnAs", 0.01, index);
 		

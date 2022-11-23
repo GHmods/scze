@@ -16,10 +16,10 @@
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
   - ~~Add Acid Projectile.~~
-  - ~~PvPvM Feature will wait for a while.~~
+  - ~~Fixes for PvPvM Feature.~~
   - Add Breeder class.
   - Add usable headcrabs.
-  - Add Steam ID/Name Save Option.
+  - Add Save by Steam ID or Name Option.
   - Do a Second Release.
 #### Tasks Part 3: ![](https://geps.dev/progress/1)
   - ~~Work In Progress.~~

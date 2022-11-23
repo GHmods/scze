@@ -42,6 +42,7 @@ namespace pvpvm {
 		
 		//Hooks
 		g_Hooks.RegisterHook(Hooks::Player::ClientSay,pvpvm_menu::ClientSay);
+		g_Hooks.RegisterHook(Hooks::Player::ClientSay,pvpvm_menu::ClientSayColor);
 		g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink,PlayerThink);
 		Log(PVPVM_SYSTEM_TAG+" Hooks...OK.\n");
 		
@@ -61,6 +62,7 @@ namespace pvpvm {
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(index);
 		
 		if(pPlayer !is null) {
+			
 			if(TeamChosen[index] == PVPVM_OBSERVER) {
 				if(pPlayer.m_flRespawnDelayTime <= g_Engine.time)
 					pPlayer.m_flRespawnDelayTime+=2.0;
@@ -339,7 +341,7 @@ namespace pvpvm_menu {
 			string text = pParams.GetCommand();
 			text.ToLowercase();
 			
-			if ( text == '/team' || text == '/choose_team' || text == '/t' || text == '/ct')
+			if(text == '/team' || text == '/choose_team' || text == '/t' || text == '/ct')
 			{
 				ChooseTeam_Menu(pPlayer.entindex());
 				pParams.ShouldHide = true;
@@ -349,7 +351,39 @@ namespace pvpvm_menu {
 		
 		return HOOK_CONTINUE;
 	}
+
+	HookReturnCode ClientSayColor( SayParameters@ pParams )
+	{
+		CBasePlayer@ pPlayer = pParams.GetPlayer();
+		int index = pPlayer.entindex();
+		const CCommand@ args = pParams.GetArguments();
+
+		int oldClassify = pPlayer.Classify();
+		
+		int ChatColor = -1;
+		if(pvpvm::TeamChosen[index] == PVPVM_HUMAN) ChatColor = 16;
+		else if(pvpvm::TeamChosen[index] == PVPVM_HEADCRAB) ChatColor = 17;
+
+		pPlayer.SetClassification(ChatColor);
+		pPlayer.SendScoreInfo();
+		array<int>cPlrData = {index,oldClassify};
+		g_Scheduler.SetTimeout("ResetColor",0.1f,cPlrData);
+
+		pParams.ShouldHide = false;
+		return HOOK_CONTINUE;
+	}
 	
+	//void ResetColor(const int& in index) {
+	void ResetColor(array<int>cPlrData) {
+		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(cPlrData[0]);
+
+		if(pPlayer !is null) {
+			int oldClassify = cPlrData[1];
+			pPlayer.SetClassification(oldClassify);
+			pPlayer.SendScoreInfo();
+		}
+	}
+
 	MenuHandler@ MenuGetPlayer( CBasePlayer@ pPlayer )
 	{
 		string steamid = g_EngineFuncs.GetPlayerAuthId( pPlayer.edict() );
