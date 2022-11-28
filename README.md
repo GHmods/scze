@@ -4,6 +4,9 @@
 
 - This mod is in early stages, don't expect proficiency in code since im not a profesional coder.
 - I will try to update this mod more frequently.
+
+### Training map is: hlze_betamap.bsp
+### First Map is: hlze_zem1.bsp
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 

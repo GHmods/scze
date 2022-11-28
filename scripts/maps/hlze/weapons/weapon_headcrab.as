@@ -363,9 +363,8 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 		int pId = m_pPlayer.entindex();
 		
 		float zHealth = ZClasses::Zombie_Classes[hclass_id].Health;
-		if(m_pPlayer.pev.armorvalue >= zHealth)
-			m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - zHealth;
-		//m_pPlayer.pev.armorvalue = 0;
+		if(m_pPlayer.pev.armorvalue >= zHealth) m_pPlayer.pev.armorvalue -= zHealth;
+		else m_pPlayer.pev.armorvalue = 0.0;
 
 		bool mutated = false;
 
