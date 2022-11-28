@@ -90,7 +90,7 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= 0;
+		info.iSlot		= 0;
 		info.iPosition		= 5;
 		info.iWeight		= 0;
 		return true;
