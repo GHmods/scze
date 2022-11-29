@@ -124,4 +124,17 @@ namespace Unstuck {
 		
 		return false;
 	}
+
+	bool is_wall_between_points(Vector start, Vector end,CBaseEntity@ IgnoreEntity)
+	{
+		TraceResult tr;
+		g_Utility.TraceLine(start,end,ignore_monsters,IgnoreEntity.edict(),tr);
+
+		Vector EndPos = tr.vecEndPos;
+		
+		bool result = false;
+		if(int((end-EndPos).Length())>0)
+			result = true;
+		return result;
+	}
 }

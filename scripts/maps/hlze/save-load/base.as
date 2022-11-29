@@ -12,10 +12,10 @@
 
 const string SYSTEM_TAG			=	"[Save/Load System]";
 const string SYSTEM_NAME		=	"Save/Load System";
-const string SYSTEM_BUILD_DATE	=	"11/5/2022";
-const string SYSTEM_VERSION		=	"0.2";
+const string SYSTEM_BUILD_DATE		=	"11/28/2022";
+const string SYSTEM_VERSION		=	"0.3";
 
-string SYSTEM_PATH				=	"scripts/maps/store/hlze/";
+string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 
 //Save Time
 const float SAVE_TIME			=	2.0; // Save players stuff every X.X time
@@ -40,10 +40,11 @@ namespace SaveLoad {
 	
 	bool EverythingIsReady() {
 		return (
+			SaveLoad_GlobalCfg::Ready &&
 			SaveLoad_GenePoints::Ready &&
 			SaveLoad_ZClasses::Ready &&
 			SaveLoad_HClasses::Ready &&
-			SaveLoad_GlobalCfg::Ready &&
+			SaveLoad_KeyValues::Ready &&
 			SaveLoad_MapCfg::Ready
 		);
 	}
@@ -52,6 +53,8 @@ namespace SaveLoad {
 		bool ready=false;
 		
 		ready = (
+				SaveLoad_GlobalCfg::Ready &&
+				SaveLoad_MapCfg::Ready &&
 				SaveLoad_GenePoints::loaddata[index] &&
 				SaveLoad_ZClasses::loaddata[index] &&
 				SaveLoad_HClasses::loaddata[index] &&
@@ -121,12 +124,12 @@ namespace SaveLoad {
 		}
 		
 		//On Spawn For First Time
-		isSpawned[index]=true;
-		/*
 		if(!isSpawned[index] && EverythingIsReady4Player(index)) {
 			isSpawned[index]=true;
+		} else if(!EverythingIsReady4Player(index)){
+			g_Scheduler.SetTimeout("SpawnAsDelay", 0.2, index);
+			return HOOK_CONTINUE;
 		}
-		*/
 		
 		//If PVPVM is Enabled and Observer/Human Selected, don't used this, use function in pvpvm.as instead.
 		if(cvar_pvpvm!=0) pvpvm::PlayerSpawn(pPlayer);
@@ -136,18 +139,26 @@ namespace SaveLoad {
 			pvpvm::TeamProcess(index);
 		}
 
-		if(pvpvm::TeamChosen[index]!=PVPVM_HUMAN)
+		if(pvpvm::TeamChosen[index]!=PVPVM_HUMAN) {
 			g_Scheduler.SetTimeout("SpawnAs", 0.01, index);
+		}
 		
 		return HOOK_CONTINUE;
 	}
 	
+	void SpawnAsDelay(const int& in index)
+	{
+		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
+		if(pPlayer !is null)
+			PlayerSpawn(pPlayer);
+	}
+
 	void SpawnAs(const int& in index) {
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
 		
-		if(!EverythingIsReady4Player(index) && EverythingIsReady()) {
-			PlayerSpawn(pPlayer);
-			g_Scheduler.SetTimeout("SpawnAs", 0.1, index);
+		if(!EverythingIsReady4Player(index)) {
+			pPlayer.RemoveAllItems(false);
+			g_Scheduler.SetTimeout("SpawnAsDelay", 0.2, index);
 			return;
 		}
 		
@@ -207,17 +218,17 @@ namespace SaveLoad {
 		//Load
 		Log( "Loading Global Config...Requested!\n");
 		SaveLoad_GlobalCfg::Load();
-		Log( "Loading Per Map Config...Requested!\n");
-		SaveLoad_MapCfg::Load();
-		Log( "Loading KeyValues...Requested!\n");
-		SaveLoad_KeyValues::Load();
 		Log( "Loading Gene Points...Requested!\n");
 		SaveLoad_GenePoints::Load();
+		Log( "Loading KeyValues...Requested!\n");
+		SaveLoad_KeyValues::Load();
 		Log( "Loading Headcrab Classes...Requested!\n");
 		SaveLoad_HClasses::Load();
 		Log( "Loading Zombie Classes...Requested!\n");
 		SaveLoad_ZClasses::Load();
-		
+		Log( "Loading Per Map Config...Requested!\n");
+		SaveLoad_MapCfg::Load();
+
 		//Make Sure everything is Ready
 		g_Scheduler.SetTimeout("Initialize_Ready", 0.1);
 	}
@@ -227,6 +238,7 @@ namespace SaveLoad {
 			g_Scheduler.SetTimeout("Initialize_Ready", 0.1);
 			return;
 		}
+
 		//Initialize PvPvM
 		if(cvar_pvpvm!=0) {
 			pvpvm::Initialize();

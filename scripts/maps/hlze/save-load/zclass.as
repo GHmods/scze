@@ -187,8 +187,8 @@ namespace SaveLoad_ZClasses {
 					int offset = 0;
 					ZClass_Holder[index] = atoi(config[offset]);offset++;//Selected Class
 					ZClass_MutationState[index] = ZM_MUTATION_NONE;
-					HClass_Holder[index]=ZClass_Holder[index];
-					HClass_Mutation_Holder[index]=ZClass_Holder[index];
+					//HClass_Holder[index]=ZClass_Holder[index];
+					//HClass_Mutation_Holder[index]=ZClass_Holder[index];
 					
 					//Load Every Zombie Class
 					for(uint i=0;i<ZClasses::Zombie_Classes.length();i++) {

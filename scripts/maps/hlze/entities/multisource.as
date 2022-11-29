@@ -201,10 +201,11 @@ void multisource_Wall_Process() {
 							
 							CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
 							int key_value1 = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
+							int key_value2 = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
 							
 							if(ent.pev.classname == "func_breakable") {
 								if(dist <= ent.pev.size.Length()) {
-									if(key_value1==WallEntities_Settings[w][0]) {
+									if(key_value2!=WallEntities_Settings[w][0]) {
 										g_EntityFuncs.FireTargets(ent.pev.targetname, ent, ent, USE_TYPE(WallEntities_Settings[w][1]));
 									}
 								}
@@ -216,7 +217,8 @@ void multisource_Wall_Process() {
 										g_EntityFuncs.FireTargets(ent.pev.targetname, ent, ent, USE_TYPE(WallEntities_Settings[w][2]));
 										
 										float pVecLen = pPlayer.pev.velocity.Length();
-										Vector Vec = (player_origin - final_origin) * (dist/5);
+										//Vector Vec = (player_origin - final_origin) * (dist/5);
+										Vector Vec = player_origin - final_origin;
 										float VecLen = Vec.Length();
 										
 										if(Vec.x > multisource_velocity_limit) Vec.x = multisource_velocity_limit;

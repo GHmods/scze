@@ -66,7 +66,16 @@ namespace Gene_Points {
 	}
 	
 	void UpdatePoints(CBasePlayer@ pPlayer) {
-		ShowPoints(pPlayer);
+		CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+		int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+		int isHeadcrab = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
+		if(isZombie==1||isHeadcrab==1)
+		{
+			ShowPoints(pPlayer);
+			g_PlayerFuncs.HudToggleElement(pPlayer,0,true);
+		} else {
+			g_PlayerFuncs.HudToggleElement(pPlayer,0,false);
+		}
 	}
 	
 	void AddPoints(int index, int amount) {

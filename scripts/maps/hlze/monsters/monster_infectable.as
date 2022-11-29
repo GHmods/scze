@@ -2,6 +2,7 @@
 	Infectable Monsters
 */
 #include "monster_infected"
+#include "../unstuck"
 
 void Infectable_Process() {
 	//Find all monsters
@@ -67,8 +68,10 @@ void Infect_Process(CBaseMonster@ monster) {
 					float hc_size_max = hc_monster.pev.size.Length()/2.0;
 					float hc_size = (hc_monster.pev.size + Vector(hc_size_max,hc_size_max,hc_size_max)).Length();
 					
+					bool isWall = Unstuck::is_wall_between_points(hc_monster.pev.origin,monster.pev.origin,hc_monster);
+					
 					//if(target_dist <= 80.0) {
-					if(target_dist <= hc_size) {
+					if(target_dist <= hc_size && !isWall) {
 						for(uint i=0;i<attack_anims.length();i++) {
 							if(hc_monster.pev.sequence == attack_anims[i]) {
 								monster.KeyValue("$i_infected",true);
