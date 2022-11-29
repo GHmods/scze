@@ -15,7 +15,7 @@
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
 #### Tasks Part 2: ![](https://geps.dev/progress/44)
-  - Do a fixes for some maps.
+  - ~~Do a fixes for some maps.~~
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
   - ~~Add Acid Projectile.~~
