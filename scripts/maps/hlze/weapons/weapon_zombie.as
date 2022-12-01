@@ -1258,8 +1258,18 @@ void ZClass_Process_PlayerProcess(CBasePlayer@ m_pPlayer, Zombie_Class@ ZClass) 
 				if(ZClass.Ability_Timer[pId] < g_Engine.time) {
 					if((flags & FL_ONGROUND) != 0 &&(button & IN_DUCK) != 0 && (button & IN_JUMP) != 0
 						&& (old_buttons & IN_JUMP) == 0) {
-						g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_AUTO,"hlze/player/fz_scream1.wav",1,ATTN_NORM,0,ZClass.VoicePitch);
 						
+						int sRand = Math.RandomLong(0,1);
+						switch(sRand) {
+							case 0: {
+								g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_AUTO,"hlze/player/fz_scream1.wav",1,ATTN_NORM,0,ZClass.VoicePitch);
+								break;
+							}
+							case 1: {
+								g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_AUTO,"hlze/player/leap1.wav",1,ATTN_NORM,0,ZClass.VoicePitch);
+								break;
+							}
+						}
 						//g_PlayerFuncs.ScreenFade(m_pPlayer, ZClass.DV_Color, 1.0, 1.0, 100, FFADE::FFADE_IN);
 						g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
 						

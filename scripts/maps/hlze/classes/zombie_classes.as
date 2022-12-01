@@ -137,10 +137,11 @@ namespace ZClasses
 			Zombie_Classes[i].Precache();
 		
 		//Precache Rusher
-		g_SoundSystem.PrecacheSound( "hlze/player/fz_frenzy1.wav" );
-		g_SoundSystem.PrecacheSound( "hlze/player/fz_scream1.wav" );
-		g_Game.PrecacheGeneric( "sound/hlze/player/fz_frenzy1.wav" );
-		g_Game.PrecacheGeneric( "sound/hlze/player/fz_scream1.wav" );
+		PrecacheSounds({
+			"hlze/player/fz_frenzy1.wav",
+			"hlze/player/fz_scream1.wav",
+			"hlze/player/leap1.wav"
+		});
 	}
 	
 	void ResetPlayer(CBasePlayer@ pPlayer) {
