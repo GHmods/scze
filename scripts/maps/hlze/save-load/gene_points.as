@@ -81,7 +81,11 @@ namespace SaveLoad_GenePoints {
 				Log("63%..", false);
 			
 			//string szSteamID = g_EngineFuncs.GetPlayerAuthId( pPlayer.edict() );
-			string szName = pPlayer.pev.netname;
+			//string szName = pPlayer.pev.netname;
+			string szSaveBy = pPlayer.pev.netname;
+			if(SaveLoad::cvar_SaveLoad_by==1) { //Load by Steam ID
+				szSaveBy = g_EngineFuncs.GetPlayerAuthId(pPlayer.edict());
+			}
 			
 			if(log_now)
 				Log("86%..", false);
@@ -91,7 +95,7 @@ namespace SaveLoad_GenePoints {
 			// Main data for this player does not exist, add it
 			if ( !DataExists[ index ] ) {
 				string stuff;
-				stuff = szName + "\t";
+				stuff = szSaveBy + "\t";
 				
 				//Data is Here!
 				stuff += string(GenePts_Holder[index])+"#";
@@ -103,9 +107,9 @@ namespace SaveLoad_GenePoints {
 				// Go through the vault
 				for(uint uiVaultIndex = 0;uiVaultIndex < Data.length();uiVaultIndex++ ) {
 					// Update our data?
-					if (Data[uiVaultIndex].StartsWith(szName)) {
+					if (Data[uiVaultIndex].StartsWith(szSaveBy)) {
 						string stuff;
-						stuff = szName + "\t";
+						stuff = szSaveBy + "\t";
 						//Data is Here!
 						stuff += string(GenePts_Holder[index])+"#";
 						
@@ -137,7 +141,11 @@ namespace SaveLoad_GenePoints {
 		// Prepare to go through the vaults
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
 		if(pPlayer !is null && pPlayer.IsConnected()) {
-			string szName = pPlayer.pev.netname;
+			//string szName = pPlayer.pev.netname;
+			string szSaveBy = pPlayer.pev.netname;
+			if(SaveLoad::cvar_SaveLoad_by==1) { //Load by Steam ID
+				szSaveBy = g_EngineFuncs.GetPlayerAuthId(pPlayer.edict());
+			}
 			
 			// Main data
 			for(uint uiVaultIndex = 0;uiVaultIndex < Data.length();uiVaultIndex++ )
@@ -147,7 +155,7 @@ namespace SaveLoad_GenePoints {
 				string szCheck = key[ 0 ];
 				szCheck.Trim();
 				
-				if(szName == szCheck) {
+				if(szSaveBy == szCheck) {
 					// It is, retrieve data
 					string data = key[ 1 ];
 					data.Trim();
@@ -162,14 +170,14 @@ namespace SaveLoad_GenePoints {
 					
 					DataExists[index] = true;
 					loaddata[index] = true;
-					Log("Gene Points Found for Player "+szName+".\n");
+					Log("Gene Points Found for Player "+szSaveBy+".\n");
 					break;
 				}
 			}
 			
 			if(!DataExists[index])
 			{
-				Log("Gene Points not Found for Player "+szName+".\n");
+				Log("Gene Points not Found for Player "+szSaveBy+".\n");
 				// No data found, assume new player
 				LoadEmpty( index );
 				loaddata[index] = true;

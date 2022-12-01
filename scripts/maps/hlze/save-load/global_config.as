@@ -1,18 +1,26 @@
-//Map Config for Save/Load System
+//Config System for Save/Load System
 #include "base" //Base
 
-namespace SaveLoad_GlobalCfg {	
+namespace SaveLoad_Cfg {	
 	string CONFIG_PATH = "scripts/maps/";
-	const string CONFIG_FILE = "hlze_global.ini";
+	const string CONFIG_GLOBAL = "hlze_global.ini";
+	const string CONFIG_EXT = ".hlze.ini";
 	
 	//Data
 	bool Ready;
 	
-	void Load() {
-		Log("Loading '"+CONFIG_FILE+"'....");
+	void Load(bool isGlobal = false, bool isReady = true) {
 		Ready = false;
 		
-		string szDataPath = CONFIG_PATH+CONFIG_FILE;
+		string szDataPath = CONFIG_PATH+string(g_Engine.mapname)+CONFIG_EXT;
+		string PathShort = string(g_Engine.mapname)+CONFIG_EXT;
+		if(isGlobal) {
+			szDataPath = CONFIG_PATH+CONFIG_GLOBAL;
+			PathShort = CONFIG_GLOBAL;
+		}
+		
+		Log("Loading '"+PathShort+"'....");
+
 		File@ fData = g_FileSystem.OpenFile(szDataPath, OpenFile::READ );
 		
 		if (fData !is null && fData.IsOpen())
@@ -35,7 +43,10 @@ namespace SaveLoad_GlobalCfg {
 					
 					//Log(config+" = "+value+"\n");
 					
-					if(configData[0] == "load_keyvalues") {
+					if(configData[0] == "SaveLoad_by") {
+						SaveLoad::cvar_SaveLoad_by = atoi(configData[1]);
+						iArraySize++;
+					} else if(configData[0] == "load_keyvalues") {
 						SaveLoad::cvar_load_keyvalues = atoi(configData[1]);
 						iArraySize++;
 					} else if(configData[0] == "spawn_as") {
@@ -71,10 +82,10 @@ namespace SaveLoad_GlobalCfg {
 			
 			fData.Close();
 			
-			Log("Loaded "+iArraySize+" Config Values from Global Config File,'"+CONFIG_FILE+"'.\n");
+			Log("Loaded "+iArraySize+" Config Values from Global Config File,'"+PathShort+"'.\n");
 		} else {
 			Log("Failed!\n", false);
 		}
-		Ready = true;
+		Ready = isReady;
 	}
 };

@@ -5,15 +5,14 @@
 #include "keyvalues" //KeyValues
 
 #include "global_config" //Global Config
-#include "map_config" //Per Map Config
 
 #include "../pvpvm/pvpvm"//PVPVM
 #include "../unstuck" //Unstuck
 
 const string SYSTEM_TAG			=	"[Save/Load System]";
 const string SYSTEM_NAME		=	"Save/Load System";
-const string SYSTEM_BUILD_DATE		=	"11/28/2022";
-const string SYSTEM_VERSION		=	"0.3";
+const string SYSTEM_BUILD_DATE		=	"12/01/2022";
+const string SYSTEM_VERSION		=	"0.3b";
 
 string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 
@@ -21,7 +20,8 @@ string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 const float SAVE_TIME			=	2.0; // Save players stuff every X.X time
 
 namespace SaveLoad {
-	//Map Configuration
+	//Global/Map Configuration
+	int cvar_SaveLoad_by=0;
 	int cvar_load_keyvalues=1;
 	int cvar_spawn_as=0;
 	int cvar_zclass_onspawn=-1;
@@ -40,12 +40,11 @@ namespace SaveLoad {
 	
 	bool EverythingIsReady() {
 		return (
-			SaveLoad_GlobalCfg::Ready &&
+			SaveLoad_Cfg::Ready &&
 			SaveLoad_GenePoints::Ready &&
 			SaveLoad_ZClasses::Ready &&
 			SaveLoad_HClasses::Ready &&
-			SaveLoad_KeyValues::Ready &&
-			SaveLoad_MapCfg::Ready
+			SaveLoad_KeyValues::Ready
 		);
 	}
 	
@@ -53,8 +52,7 @@ namespace SaveLoad {
 		bool ready=false;
 		
 		ready = (
-				SaveLoad_GlobalCfg::Ready &&
-				SaveLoad_MapCfg::Ready &&
+				SaveLoad_Cfg::Ready &&
 				SaveLoad_GenePoints::loaddata[index] &&
 				SaveLoad_ZClasses::loaddata[index] &&
 				SaveLoad_HClasses::loaddata[index] &&
@@ -196,8 +194,7 @@ namespace SaveLoad {
 	
 	void Initialize_Plugin() {
 		SYSTEM_PATH = "scripts/plugins/store/hlze/";
-		SaveLoad_MapCfg::CONFIG_PATH = "scripts/plugins/";
-		SaveLoad_GlobalCfg::CONFIG_PATH = "scripts/plugins/";
+		SaveLoad_Cfg::CONFIG_PATH = "scripts/plugins/";
 		
 		Log("[Plugin Init] Initializing as Plugin!\n");
 	}
@@ -217,7 +214,7 @@ namespace SaveLoad {
 		
 		//Load
 		Log( "Loading Global Config...Requested!\n");
-		SaveLoad_GlobalCfg::Load();
+		SaveLoad_Cfg::Load(true,false);
 		Log( "Loading Gene Points...Requested!\n");
 		SaveLoad_GenePoints::Load();
 		Log( "Loading KeyValues...Requested!\n");
@@ -227,7 +224,7 @@ namespace SaveLoad {
 		Log( "Loading Zombie Classes...Requested!\n");
 		SaveLoad_ZClasses::Load();
 		Log( "Loading Per Map Config...Requested!\n");
-		SaveLoad_MapCfg::Load();
+		SaveLoad_Cfg::Load(false,true);
 
 		//Make Sure everything is Ready
 		g_Scheduler.SetTimeout("Initialize_Ready", 0.1);

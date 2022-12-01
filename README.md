@@ -14,7 +14,7 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![55%](https://progress-bar.dev/55)
+#### Tasks Part 2: ![65%](https://progress-bar.dev/65)
   - ~~Do a fixes for some maps.~~
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
@@ -22,7 +22,7 @@
   - ~~Fixes for PvPvM Feature.~~
   - Add Breeder class.
   - Add usable headcrabs.
-  - Add Save by Steam ID or Name Option.
+  - ~~Add Save by Steam ID or Name Option.~~
   - Do a Second Release.
 #### Tasks Part 3: ![1%](https://progress-bar.dev/1)
   - ~~Work In Progress.~~
