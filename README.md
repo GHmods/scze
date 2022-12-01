@@ -10,11 +10,11 @@
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 
-#### Tasks Part 1: ![](https://geps.dev/progress/100)
+#### Tasks Part 1: ![100%](https://progress-bar.dev/100)
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![](https://geps.dev/progress/55)
+#### Tasks Part 2: ![55%](https://progress-bar.dev/55)
   - ~~Do a fixes for some maps.~~
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
@@ -24,7 +24,7 @@
   - Add usable headcrabs.
   - Add Save by Steam ID or Name Option.
   - Do a Second Release.
-#### Tasks Part 3: ![](https://geps.dev/progress/1)
+#### Tasks Part 3: ![1%](https://progress-bar.dev/1)
   - ~~Work In Progress.~~
 
 ## Tools I've used:
