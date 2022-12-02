@@ -76,6 +76,7 @@ namespace ZClasses
 									50.0,					//Damage
 									false,					//Start with Fast Attacking?
 									false,					//Can Break 'func_breakable' walls
+									false,					//Can Use Headcrabs?
 									3.5,					//Degen Rate
 									3.0,					//Degen Delay
 									Vector(255,0,0),			//Darkvision Color --> Vector(r,g,b)
@@ -102,6 +103,7 @@ namespace ZClasses
 									300.0,					//Damage
 									false,					//Start with Fast Attacking?
 									true,					//Can Break 'func_breakable' walls?
+									false,					//Can Use Headcrabs?
 									11.0,					//Degen Rate
 									50.0,					//Degen Delay
 									Vector(255,255,0),			//Darkvision Color --> Vector(r,g,b)
@@ -116,7 +118,7 @@ namespace ZClasses
 		//Register abilities to this class
 		crasher.Register_Ability("Acid Throw",80);	//+ATTACK3
 		acid_throw_Init(); //Register our Entity
-		//crasher.Register_Ability("Shield",80);	//Maybe if this zombie crouches
+		crasher.Register_Ability("Shield [Secondary Attack to Toggle]",80);
 		crasher.Register_Ability("Armor Upgrade (+50)",30); //+50 Armor
 		//crasher.Register_Ability("Fast Eating",45);
 		//----------------------------------------
@@ -228,11 +230,13 @@ final class Zombie_Class {
 	bool FastAttack = false;
 		//Can Break Walls?
 	bool BreakWalls = false;
+		//Can Use Headcrabs?
+	bool UseHeadcrabs = false;
 		//Degen
 	float DegenRate = 8.0; // -1 Health(Armor) Every [n] second(s)
 	float DegenDelay = 25.0; // [n] second(s) Delay before degen starts.
 		//Darkvision Color
-	Vector DV_Color(255,128,0); // +ATTACK2 to toggle Darkvision
+	Vector DV_Color(255,128,0); // use 'darkvision' command to toggle Darkvision
 		//View Offset
 	Vector ZView_Offset(0,0,27);
 	//Models
@@ -255,8 +259,8 @@ final class Zombie_Class {
 	
 	Zombie_Class(array<Zombie_Class@>@zc_array,
 				string zName="Default",int cost=0,float hp=80.0,int spd=80,int spd_c=160,int vp=100,
-				float dmg=30.0,bool fast_attack=false, bool breakWalls=false,float dgRate=8.0,float dgDelay=25.0,
-				Vector dvClr = Vector(255,128,0),Vector viewOfs = Vector(0,0,27),string v_mdl="v_zclaws.mdl",
+				float dmg=30.0,bool fast_attack=false, bool breakWalls=false,bool useHc=false,
+				float dgRate=8.0,float dgDelay=25.0,Vector dvClr = Vector(255,128,0),Vector viewOfs = Vector(0,0,27),string v_mdl="v_zclaws.mdl",
 				int vmd_bodyId=0,string player_mdl="null",string mut_message="",string mut_desc=""
 		) {
 		Name = zName;
@@ -268,6 +272,7 @@ final class Zombie_Class {
 		VoicePitch = vp;
 		FastAttack = fast_attack;
 		BreakWalls = breakWalls;
+		UseHeadcrabs = useHc;
 		DegenRate = dgRate;
 		DegenDelay = dgDelay;
 		DV_Color = dvClr;
@@ -528,7 +533,7 @@ namespace ZClass_Menu {
 			string AB_Num = ""+i;
 			string Ability_String = AB_Name;
 			if(i==0) { //Primary Ability
-				Ability_String +=" - [+ATTACK3 to Use]";
+				Ability_String +=" - [Tertiary Attack to Use]";
 			}
 			if(!unlocked) {
 				if(AB_Cost>0) Ability_String +="[Cost:"+AB_Cost+"]";

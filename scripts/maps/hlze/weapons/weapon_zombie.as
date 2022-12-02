@@ -45,6 +45,12 @@ enum ZombieAnimations
 	ZM_IDLE2,
 	ZM_IDLE3,
 	ZM_EAT,
+	ZM_ATTACK1_FAST,
+	ZM_ATTACK1_MISS_FAST,
+	ZM_ATTACK2_MISS_FAST,
+	ZM_ATTACK2_FAST,
+	ZM_ATTACK3_MISS_FAST,
+	ZM_ATTACK3_FAST,
 	ZM_COMMAND_ATTACK,
 	ZM_COMMAND_RESSURECT,
 	ZM_SHIELD_START,
@@ -181,6 +187,9 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 	float zm_MutationTime = g_Engine.time;
 	float zm_MutationDelay = 5.0;
 	
+	//Take Damage Value
+	float zm_LastTookedDmg = 0.0;
+
 	void Spawn()
 	{
 		self.Precache();
@@ -606,6 +615,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		int pId = m_pPlayer.entindex();
 		
 		if((flags & FL_DUCKING) != 0) {
+			m_pPlayer.pev.flDuckTime = 0.0;
 			m_pPlayer.pev.view_ofs = ZClass.ZView_Offset / Vector(2,2,2);
 		} else m_pPlayer.pev.view_ofs = ZClass.ZView_Offset;
 
@@ -1225,19 +1235,17 @@ HookReturnCode ZClass_Think(CBasePlayer@ pPlayer, uint& out dummy )
 	weapon_zclaws@ zclaws = cast<weapon_zclaws@>(CastToScriptClass(pWpn));
 	
 	if(zclaws !is null) {
-		ZClass_Process_PlayerProcess(pPlayer,zclaws.ZClass);
+		ZClass_Process_PlayerProcess(zclaws,pWpn,pPlayer,zclaws.ZClass);
 	}
 	
 	return HOOK_CONTINUE;
 }
 
-void ZClass_Process_PlayerProcess(CBasePlayer@ m_pPlayer, Zombie_Class@ ZClass) {
+void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer@ m_pPlayer,Zombie_Class@ ZClass) {
 	//g_Log.PrintF("Player: "+m_pPlayer.pev.netname+" is with AnimExt:'"+m_pPlayer.get_m_szAnimExtension()+"'\n");
 	
 	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
-	if(isZombie!=1)
-		return;
 	//----------------------------------------------------------------------
 	int flags = m_pPlayer.pev.flags;
 	int old_buttons = m_pPlayer.pev.oldbuttons;
@@ -1250,11 +1258,11 @@ void ZClass_Process_PlayerProcess(CBasePlayer@ m_pPlayer, Zombie_Class@ ZClass) 
 	
 	//Go through the array
 	for(uint a=0;a<ZClass.Abilities.length();a++) {
-		//"Long Jump"
-		if(ZClass.Abilities[a].Name == "Long Jump") {
-			//Check if unlocked and activated!
-			if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId])
-			{
+		//Check if unlocked and activated!
+		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && isZombie==1)
+		{
+			//"Long Jump"
+			if(ZClass.Abilities[a].Name == "Long Jump") {
 				if(ZClass.Ability_Timer[pId] < g_Engine.time) {
 					if((flags & FL_ONGROUND) != 0 &&(button & IN_DUCK) != 0 && (button & IN_JUMP) != 0
 						&& (old_buttons & IN_JUMP) == 0) {
@@ -1284,8 +1292,114 @@ void ZClass_Process_PlayerProcess(CBasePlayer@ m_pPlayer, Zombie_Class@ ZClass) 
 						PlayerAnimator::Schedule_Animation(m_pPlayer,PLAYER_JUMP,0.01);
 					}
 				}
+			} else if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {
+				if((flags & FL_ONGROUND) != 0
+				&& (button & IN_ATTACK2) == 0 && (old_buttons & IN_ATTACK2) != 0) {
+					if(ZClass.Ability_Timer[pId] < g_Engine.time) {
+						g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
+						ZClass.Ability_Timer[pId] = g_Engine.time + ZClass.Ability_ToggleDelay;
+						//Toggle
+						if(zclaw.zm_ability_state == 4) {
+							zclaw.zm_ability_state = 0;
+							z_wpn.SendWeaponAnim(ZM_SHIELD_END,0,ZClass.VIEW_MODEL_BODY_ID);
+							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
+							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
+							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
+							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+
+							m_pPlayer.pev.rendermode = kRenderNormal;
+							m_pPlayer.pev.renderfx = kRenderFxNone;
+						} else {
+							zclaw.zm_ability_state = 4;
+							z_wpn.SendWeaponAnim(ZM_SHIELD_START,0,ZClass.VIEW_MODEL_BODY_ID);
+							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
+							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
+							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
+							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+						}
+					}
+				} else {
+					//Process
+					if(zclaw.zm_ability_state == 4)
+					{
+						//Prevent Idling/Attacking
+						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.0;
+						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.0;
+						z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.0;
+						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.0;
+
+						m_pPlayer.pev.rendermode = kRenderNormal;
+						m_pPlayer.pev.renderfx = kRenderFxGlowShell;
+						m_pPlayer.pev.rendercolor = Vector(25,25,25);
+
+						if(zclaw.zm_LastTookedDmg > 0.0) {
+							zclaw.zm_LastTookedDmg /= 2.0;
+							if(m_pPlayer.pev.armorvalue > 0.0 && m_pPlayer.pev.armorvalue <= ZClass.Health) {
+								float resistance = zclaw.zm_LastTookedDmg*0.75;
+								m_pPlayer.pev.armorvalue += (m_pPlayer.pev.armorvalue+resistance <= ZClass.Health)?resistance:ZClass.Health-m_pPlayer.pev.armorvalue;
+							}
+
+							//Reset Damage
+							zclaw.zm_LastTookedDmg = 0.0;
+						}
+					}
+				}
+			}
+		} else if(ZClass.Abilities[a].Unlocked[pId] && !ZClass.Abilities[a].Active[pId] && isZombie==1)
+		{
+			if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {
+				if(ZClass.Ability_Timer[pId] < g_Engine.time) {
+					//Toggle
+					if(zclaw.zm_ability_state == 4) {
+						g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
+						ZClass.Ability_Timer[pId] = g_Engine.time + ZClass.Ability_ToggleDelay;
+						
+						zclaw.zm_ability_state = 0;
+						z_wpn.SendWeaponAnim(ZM_SHIELD_END,0,ZClass.VIEW_MODEL_BODY_ID);
+						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
+						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
+						z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
+						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+
+						m_pPlayer.pev.rendermode = kRenderNormal;
+						m_pPlayer.pev.renderfx = kRenderFxNone;
+					}
+				}
+			}
+		}
+	}
+
+	//Reset Abilities if we leave body or something
+	//Aquire ZClass from HClass ID
+	Zombie_Class@ zc = ZClasses::Zombie_Classes[HClass_Holder[pId]];
+	for(uint a=0;a<zc.Abilities.length();a++)
+	{
+		if(zc.Abilities[a].Unlocked[pId] && isZombie!=1)
+		{
+			if(zc.Abilities[a].Name == "Shield [Secondary Attack to Toggle]")
+			{
+				m_pPlayer.pev.rendermode = kRenderNormal;
+				m_pPlayer.pev.renderfx = kRenderFxNone;
 			}
 		}
 	}
 	//----------------------------------------------------------------------
+}
+
+HookReturnCode ZC_TakeDamage(DamageInfo@ info) {
+	CBasePlayer@ pPlayer = cast<CBasePlayer@>(g_EntityFuncs.Instance(info.pVictim.pev));
+
+	if(pPlayer !is null)
+	{
+		int index = pPlayer.entindex();
+		float dmgAmount = info.flDamage;
+		
+		CBasePlayerWeapon@ pWpn = Get_Weapon_FromPlayer(pPlayer,"weapon_zclaws");
+		weapon_zclaws@ zclaw = cast<weapon_zclaws@>(CastToScriptClass(pWpn));
+		if(pWpn !is null && zclaw !is null) {
+			zclaw.zm_LastTookedDmg = dmgAmount;
+		}
+	}
+
+	return HOOK_CONTINUE;
 }

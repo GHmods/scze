@@ -14,8 +14,8 @@
 #include "..\classes\gene_points"
 
 //Saves
-#include "..\save-load\hclass"
-#include "..\save-load\keyvalues"
+#include "..\save-load\base"
+#include "..\pvpvm\pvpvm"
 
 enum HeadcrabAnimations
 {
@@ -497,7 +497,7 @@ HookReturnCode HC_Think(CBasePlayer@ pPlayer, uint& out dummy )
 {
 	int index = pPlayer.entindex();
 	
-	HC_VisionProcess(pPlayer);
+	//HC_VisionProcess(pPlayer);
 	
 	CBasePlayerWeapon@ pWpn = Get_Weapon_FromPlayer(pPlayer,"weapon_hclaws");
 	weapon_hclaws@ hclaws = cast<weapon_hclaws@>(CastToScriptClass(pWpn));
@@ -505,11 +505,28 @@ HookReturnCode HC_Think(CBasePlayer@ pPlayer, uint& out dummy )
 	if(hclaws !is null) {
 		HClass_Process(pPlayer,hclaws.HClass);
 	}
+
+	CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+	int isHeadcrab = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
+
+	if(isZombie == 1 || isHeadcrab == 1)
+	{
+		if(pPlayer.FlashlightIsOn()) {
+			pPlayer.FlashlightTurnOff();
+			g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, "Flashlight is for Humans, use 'darkvision' command to activate Dark Vision!\n");
+			g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, "[Example] Write in console: bind f darkvision\n");
+		}
+	}
 	
 	return HOOK_CONTINUE;
 }
 
-void HC_VisionProcess(CBasePlayer@ m_pPlayer) {
+CClientCommand darkvision("darkvision", "Toggles dark vision on/off", @HC_VisionProcess);
+void HC_VisionProcess(const CCommand@ args)
+{
+        CBasePlayer@ m_pPlayer = g_ConCommandSystem.GetCurrentPlayer();
+
 	//Toggle
 	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
@@ -518,26 +535,24 @@ void HC_VisionProcess(CBasePlayer@ m_pPlayer) {
 	if(isZombie == 1 || isHeadcrab == 1) {
 		m_pPlayer.m_iFlashBattery = 0;
 		
-		if(m_pPlayer.FlashlightIsOn())
-			m_pPlayer.FlashlightTurnOff();
-		
 		int hc_vision = atoui(KeyValues.GetKeyvalue("$i_hc_vision").GetString());
-		
+
 		//Get User Input
 		int old_buttons = m_pPlayer.pev.oldbuttons;
 		int button = m_pPlayer.pev.button;
 		
-		if((button & IN_ATTACK2) != 0 && (old_buttons & IN_ATTACK2) == 0) {
-			if(hc_vision==0) {
-				m_pPlayer.KeyValue("$i_hc_vision",true);
-				g_PlayerFuncs.ClientPrint(m_pPlayer, HUD_PRINTTALK, "Darkvision Activated!\n");
-			} else {
-				m_pPlayer.KeyValue("$i_hc_vision",false);
-				g_PlayerFuncs.ClientPrint(m_pPlayer, HUD_PRINTTALK, "Darkvision Deactivated!\n");
-			}
-			
-			SaveLoad_KeyValues::SaveData(m_pPlayer.entindex()); //Save KeyValues
+		if(hc_vision==0) {
+			m_pPlayer.KeyValue("$i_hc_vision",true);
+			//g_PlayerFuncs.ClientPrint(m_pPlayer, HUD_PRINTTALK, "Darkvision Activated!\n");
+		} else {
+			m_pPlayer.KeyValue("$i_hc_vision",false);
+			//g_PlayerFuncs.ClientPrint(m_pPlayer, HUD_PRINTTALK, "Darkvision Deactivated!\n");
 		}
+
+		SaveLoad_GenePoints::SaveData(m_pPlayer.entindex());
+	} else if(pvpvm::TeamChosen[m_pPlayer.entindex()] == PVPVM_HUMAN){
+		if(m_pPlayer.FlashlightIsOn()) m_pPlayer.FlashlightTurnOff();
+		else m_pPlayer.FlashlightTurnOn();
 	}
 }
 
