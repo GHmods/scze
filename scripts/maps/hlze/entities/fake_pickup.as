@@ -11,7 +11,9 @@
 array<string>IgnoreEntities = {
 	//classname
 	"weapon_hclaws",
-	"weapon_zclaws"
+	"weapon_zclaws",
+	"weapon_zhcrab",
+	"ammo_headcrabs"
 };
 
 enum PickupTypes {
@@ -163,8 +165,17 @@ void fake_pickup_Process() {
 	for(uint i=0;i<searchedEntities.length();i++)
 	{
 		CBaseEntity@ ent = searchedEntities[i];
+		bool brk = false;
+
+		for(uint w=0;w<IgnoreEntities.length();w++) {
+			if(ent is null || ent.pev.classname == IgnoreEntities[w]) {
+				brk = true;
+				break;
+			}
+		}
 		//Check if the entity is not NULL
-		if(ent !is null)
+		//if(ent !is null && brk)
+		if(!brk)
 		{
 			found_ents++;
 			string cName = ent.pev.classname;
@@ -177,7 +188,7 @@ void fake_pickup_Process() {
 			CBaseEntity@ pOwner = g_EntityFuncs.Instance(ent.pev.owner);
 			CBasePlayer@ pPlayer = cast<CBasePlayer>(pOwner);
 
-			if(mName=="weapon"||mName=="ammo"||mName=="item") {
+			if(mName=="weapon"||mName=="ammo"||mName=="item" && !brk) {
 				if(pOwner is null || pPlayer is null)
 				{
 					CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("fake_pickup");

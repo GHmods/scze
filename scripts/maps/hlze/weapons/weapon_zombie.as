@@ -221,7 +221,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= 0;
+		info.iSlot		= 0;
 		info.iPosition		= 6;
 		info.iWeight		= 0;
 		return true;
@@ -268,6 +268,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		NVColor.z = ZClass.DV_Color.z / 8;
 		
 		m_pPlayer.KeyValue("$i_isZombie",true);
+		m_pPlayer.KeyValue("$i_ZombieWeapon",1);
 		
 		//Get View Model from Zombie Class
 		return self.DefaultDeploy( self.GetV_Model(ZClass.VIEW_MODEL),
@@ -284,6 +285,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		m_pPlayer.pev.viewmodel = "";
 		
 		m_pPlayer.KeyValue("$i_isZombie",false);
+		m_pPlayer.KeyValue("$i_ZombieWeapon",0);
 		
 		SetThink( null );
 		
@@ -717,6 +719,36 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		//Something like Nightvision
 		DarkVision();
+
+		//Pickup Headcrabs
+		//if((player_buttons & IN_USE) != 0 && (player_old_buttons & IN_USE) == 0) {
+		if((player_buttons & IN_USE) != 0) {
+			TraceResult tr;
+			
+			Math.MakeVectors( m_pPlayer.pev.v_angle );
+			Vector vecSrc	= m_pPlayer.GetGunPosition();
+			Vector vecEnd	= vecSrc + g_Engine.v_forward * 50;
+			
+			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+			
+			// hit
+			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
+
+			if(pEntity !is null && pEntity.pev.classname == "monster_headcrab" && pEntity.IsAlive())
+			{
+				CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
+				if(hcWep !is null)
+				{
+					if(m_pPlayer.GiveAmmo((m_pPlayer.HasNamedPlayerItem("weapon_zhcrab").GetWeaponPtr().m_iDefaultAmmo),"ammo_headcrabs",m_pPlayer.GetMaxAmmo("ammo_headcrabs"))!=-1) {
+						m_pPlayer.GiveNamedItem("ammo_headcrabs");
+						g_EntityFuncs.Remove(pEntity);
+					}
+				} else {
+					m_pPlayer.GiveNamedItem("weapon_zhcrab");
+					g_EntityFuncs.Remove(pEntity);
+				}
+			}
+		}
 	}
 	
 	void LeaveBody() {
@@ -726,6 +758,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - ZClass.Health;
 		
 		self.DestroyItem();
+		m_pPlayer.RemoveAllItems(false);
+		m_pPlayer.SetItemPickupTimes(0);
 		//Leave Body
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_infected_leaved");
 		Infected_Leaved@ ent = cast<Infected_Leaved@>(CastToScriptClass(entBase));
@@ -1236,6 +1270,7 @@ HookReturnCode ZClass_Think(CBasePlayer@ pPlayer, uint& out dummy )
 	
 	if(zclaws !is null) {
 		ZClass_Process_PlayerProcess(zclaws,pWpn,pPlayer,zclaws.ZClass);
+		ZClass_Process_PlayerProcess_Off(zclaws,pWpn,pPlayer,zclaws.ZClass);
 	}
 	
 	return HOOK_CONTINUE;
@@ -1246,6 +1281,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	
 	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+	int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());
 	//----------------------------------------------------------------------
 	int flags = m_pPlayer.pev.flags;
 	int old_buttons = m_pPlayer.pev.oldbuttons;
@@ -1259,7 +1295,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	//Go through the array
 	for(uint a=0;a<ZClass.Abilities.length();a++) {
 		//Check if unlocked and activated!
-		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && isZombie==1)
+		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && (isZombie==1 && ZWeaponId!=0))
 		{
 			//"Long Jump"
 			if(ZClass.Abilities[a].Name == "Long Jump") {
@@ -1380,6 +1416,42 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 			{
 				m_pPlayer.pev.rendermode = kRenderNormal;
 				m_pPlayer.pev.renderfx = kRenderFxNone;
+			}
+		}
+	}
+	//----------------------------------------------------------------------
+}
+
+void ZClass_Process_PlayerProcess_Off(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer@ m_pPlayer,Zombie_Class@ ZClass) {
+	//g_Log.PrintF("Player: "+m_pPlayer.pev.netname+" is with AnimExt:'"+m_pPlayer.get_m_szAnimExtension()+"'\n");
+	
+	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
+	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+	int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());
+	//----------------------------------------------------------------------
+	int flags = m_pPlayer.pev.flags;
+	int old_buttons = m_pPlayer.pev.oldbuttons;
+	int button = m_pPlayer.pev.button;
+	int pId = m_pPlayer.entindex();
+	
+	//Make sure Player is not Mutating
+	if(ZClass_MutationState[pId]!=ZM_MUTATION_NONE)
+		return;
+	
+	//Reset Abilities if we leave body or something
+	//Aquire ZClass from HClass ID
+	Zombie_Class@ zc = ZClasses::Zombie_Classes[HClass_Holder[pId]];
+	for(uint a=0;a<zc.Abilities.length();a++)
+	{
+		if(zc.Abilities[a].Unlocked[pId] && (isZombie!=1||ZWeaponId==0))
+		{
+			if(zc.Abilities[a].Name == "Shield [Secondary Attack to Toggle]")
+			{
+				m_pPlayer.pev.rendermode = kRenderNormal;
+				m_pPlayer.pev.renderfx = kRenderFxNone;
+				if(zclaw !is null) {
+					zclaw.zm_ability_state = 0;
+				}
 			}
 		}
 	}

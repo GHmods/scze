@@ -21,7 +21,7 @@
   - ~~Add Acid Projectile.~~
   - ~~Fixes for PvPvM Feature.~~
   - Add Breeder class.
-  - Add usable headcrabs.
+  - ~~Add usable headcrabs.~~
   - ~~Add Save by Steam ID or Name Option.~~
   - Add Installation Instructions.
   - Do a Second Release.
