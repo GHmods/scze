@@ -14,7 +14,7 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![70%](https://progress-bar.dev/60)
+#### Tasks Part 2: ![70%](https://progress-bar.dev/70)
   - ~~Do a fixes for some maps.~~
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
