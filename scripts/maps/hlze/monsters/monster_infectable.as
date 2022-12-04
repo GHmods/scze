@@ -70,7 +70,6 @@ void Infect_Process(CBaseMonster@ monster) {
 					
 					bool isWall = Unstuck::is_wall_between_points(hc_monster.pev.origin,monster.pev.origin,hc_monster);
 					
-					//if(target_dist <= 80.0) {
 					if(target_dist <= hc_size && !isWall) {
 						for(uint i=0;i<attack_anims.length();i++) {
 							if(hc_monster.pev.sequence == attack_anims[i]) {

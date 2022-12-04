@@ -719,36 +719,6 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		//Something like Nightvision
 		DarkVision();
-
-		//Pickup Headcrabs
-		//if((player_buttons & IN_USE) != 0 && (player_old_buttons & IN_USE) == 0) {
-		if((player_buttons & IN_USE) != 0) {
-			TraceResult tr;
-			
-			Math.MakeVectors( m_pPlayer.pev.v_angle );
-			Vector vecSrc	= m_pPlayer.GetGunPosition();
-			Vector vecEnd	= vecSrc + g_Engine.v_forward * 50;
-			
-			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
-			
-			// hit
-			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
-
-			if(pEntity !is null && pEntity.pev.classname == "monster_headcrab" && pEntity.IsAlive())
-			{
-				CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
-				if(hcWep !is null)
-				{
-					if(m_pPlayer.GiveAmmo((m_pPlayer.HasNamedPlayerItem("weapon_zhcrab").GetWeaponPtr().m_iDefaultAmmo),"ammo_headcrabs",m_pPlayer.GetMaxAmmo("ammo_headcrabs"))!=-1) {
-						m_pPlayer.GiveNamedItem("ammo_headcrabs");
-						g_EntityFuncs.Remove(pEntity);
-					}
-				} else {
-					m_pPlayer.GiveNamedItem("weapon_zhcrab");
-					g_EntityFuncs.Remove(pEntity);
-				}
-			}
-		}
 	}
 	
 	void LeaveBody() {
@@ -1288,6 +1258,36 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	int button = m_pPlayer.pev.button;
 	int pId = m_pPlayer.entindex();
 	
+	//Pickup Headcrabs
+	if(isZombie != 0 && (button & IN_USE) != 0 && (old_buttons & IN_USE) == 0)
+	{
+		TraceResult tr;
+		
+		Math.MakeVectors( m_pPlayer.pev.v_angle );
+		Vector vecSrc	= m_pPlayer.GetGunPosition();
+		Vector vecEnd	= vecSrc + g_Engine.v_forward * 50;
+		
+		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+		
+		// hit
+		CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
+
+		if(pEntity !is null && pEntity.pev.classname == "monster_headcrab" && pEntity.IsAlive())
+		{
+			CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
+			if(hcWep !is null)
+			{
+				if(m_pPlayer.GiveAmmo((m_pPlayer.HasNamedPlayerItem("weapon_zhcrab").GetWeaponPtr().m_iDefaultAmmo),"ammo_headcrabs",m_pPlayer.GetMaxAmmo("ammo_headcrabs"))!=-1) {
+					m_pPlayer.GiveNamedItem("ammo_headcrabs");
+					g_EntityFuncs.Remove(pEntity);
+				}
+			} else {
+				m_pPlayer.GiveNamedItem("weapon_zhcrab");
+				g_EntityFuncs.Remove(pEntity);
+			}
+		}
+	}
+
 	//Make sure Player is not Mutating
 	if(ZClass_MutationState[pId]!=ZM_MUTATION_NONE)
 		return;
@@ -1330,8 +1330,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 				}
 			} else if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {
 				if((flags & FL_ONGROUND) != 0
-				&& (button & IN_ATTACK2) == 0 && (old_buttons & IN_ATTACK2) != 0) {
-					if(ZClass.Ability_Timer[pId] < g_Engine.time) {
+				&& (button & IN_ATTACK2) != 0 && (old_buttons & IN_ATTACK2) == 0) {
+					if(ZClass.Ability_Timer[pId] < g_Engine.time && z_wpn.m_flNextSecondaryAttack < g_Engine.time) {
 						g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
 						ZClass.Ability_Timer[pId] = g_Engine.time + ZClass.Ability_ToggleDelay;
 						//Toggle
@@ -1361,7 +1361,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						//Prevent Idling/Attacking
 						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.0;
 						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.0;
-						z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.0;
+						//z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.0;
 						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.0;
 
 						m_pPlayer.pev.rendermode = kRenderNormal;

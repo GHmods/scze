@@ -130,12 +130,14 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		NVColor.z = ZClass.DV_Color.z / 8;
 		
 		m_pPlayer.KeyValue("$i_isZombie",true);
-		
-		self.m_flTimeWeaponIdle = g_Engine.time + 0.8; 
 
 		//Set View Model from v_zheadcrab and body id from Zombie Class
-		return self.DefaultDeploy( self.GetV_Model(V_MODEL_ZOMBIE_HC),
-							self.GetP_Model(P_MODEL_ZOMBIE_HC), ZMHC_DRAW, "python", 0, ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy( self.GetV_Model(V_MODEL_ZOMBIE_HC),
+							self.GetP_Model(P_MODEL_ZOMBIE_HC), ZMHC_DRAW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		
+		self.m_flNextPrimaryAttack = g_Engine.time + 0.8;
+		self.m_flTimeWeaponIdle = g_Engine.time + 0.8;
+		return true;
 	}
 	
 	void Holster( int skiplocal /* = 0 */ )
@@ -172,26 +174,30 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		
 		//Randomize Idle Animations
 		int anim_index = 0;
+		float idle_time = 0.0;
 		int random_anim = Math.RandomLong(0,2);
 		switch(random_anim) {
 			case 0: {
 				anim_index = ZMHC_IDLE1;
-				self.m_flTimeWeaponIdle = g_Engine.time + 6.0;
+				idle_time = g_Engine.time + 6.0;
 				break;
 			}
 			case 1: {
 				anim_index = ZMHC_IDLE2;
-				self.m_flTimeWeaponIdle = g_Engine.time + 2.4;
+				idle_time = g_Engine.time + 2.4;
 				break;
 			}
 			case 2: {
 				anim_index = ZMHC_IDLE3;
-				self.m_flTimeWeaponIdle = g_Engine.time + 2.4;
+				idle_time = g_Engine.time + 2.4;
 				break;
 			}
 		}
 		
-		self.SendWeaponAnim(anim_index,0,ZClass.VIEW_MODEL_BODY_ID);
+		//self.SendWeaponAnim(anim_index,0,ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_HC),
+							self.GetP_Model(P_MODEL_ZOMBIE_HC), anim_index, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		self.m_flTimeWeaponIdle = idle_time;
 	}
 	
 	void PrimaryAttack()
@@ -215,8 +221,10 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 			hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
 		}
 
-		self.SendWeaponAnim(ZMHC_THROW,0,ZClass.VIEW_MODEL_BODY_ID);
-		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
+		//self.SendWeaponAnim(ZMHC_THROW,0,ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_HC),
+							self.GetP_Model(P_MODEL), ZMHC_THROW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		m_pPlayer.SetAnimation(PLAYER_RELOAD);
 		self.m_flNextPrimaryAttack = g_Engine.time + 0.5;
 
 		if(m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 1)
@@ -277,36 +285,6 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		
 		//Something like Nightvision
 		DarkVision();
-
-		//Pickup Headcrabs
-		//if((player_buttons & IN_USE) != 0 && (player_old_buttons & IN_USE) == 0) {
-		if((player_buttons & IN_USE) != 0) {
-			TraceResult tr;
-			
-			Math.MakeVectors( m_pPlayer.pev.v_angle );
-			Vector vecSrc	= m_pPlayer.GetGunPosition();
-			Vector vecEnd	= vecSrc + g_Engine.v_forward * 50;
-			
-			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
-			
-			// hit
-			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
-
-			if(pEntity !is null && pEntity.pev.classname == "monster_headcrab" && pEntity.IsAlive())
-			{
-				CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
-				if(hcWep !is null)
-				{
-					if(m_pPlayer.GiveAmmo((m_pPlayer.HasNamedPlayerItem("weapon_zhcrab").GetWeaponPtr().m_iDefaultAmmo),"ammo_headcrabs",m_pPlayer.GetMaxAmmo("ammo_headcrabs"))!=-1) {
-						m_pPlayer.GiveNamedItem("ammo_headcrabs");
-						g_EntityFuncs.Remove(pEntity);
-					}
-				} else {
-					m_pPlayer.GiveNamedItem("weapon_zhcrab");
-					g_EntityFuncs.Remove(pEntity);
-				}
-			}
-		}
 	}
 	
 	void LeaveBody() {
