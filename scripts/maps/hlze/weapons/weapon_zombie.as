@@ -188,6 +188,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 	float zm_MutationDelay = 5.0;
 	
 	//Take Damage Value
+	float zm_LastHealth = 0.0; //This is Used for Armor Actually
 	float zm_LastTookedDmg = 0.0;
 
 	void Spawn()
@@ -957,6 +958,9 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				}
 			}
 		}
+
+		//Initialize our Last Health
+		zm_LastHealth = m_pPlayer.pev.armorvalue;
 	}
 	
 	void ZClass_Process() {
@@ -1337,6 +1341,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						//Toggle
 						if(zclaw.zm_ability_state == 4) {
 							zclaw.zm_ability_state = 0;
+							zclaw.zm_LastHealth = m_pPlayer.pev.armorvalue;
 							z_wpn.SendWeaponAnim(ZM_SHIELD_END,0,ZClass.VIEW_MODEL_BODY_ID);
 							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
@@ -1347,6 +1352,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 							m_pPlayer.pev.renderfx = kRenderFxNone;
 						} else {
 							zclaw.zm_ability_state = 4;
+							zclaw.zm_LastHealth = m_pPlayer.pev.armorvalue;
 							z_wpn.SendWeaponAnim(ZM_SHIELD_START,0,ZClass.VIEW_MODEL_BODY_ID);
 							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
@@ -1369,13 +1375,13 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						m_pPlayer.pev.rendercolor = Vector(25,25,25);
 
 						if(zclaw.zm_LastTookedDmg > 0.0) {
-							zclaw.zm_LastTookedDmg /= 2.0;
-							if(m_pPlayer.pev.armorvalue > 0.0 && m_pPlayer.pev.armorvalue <= ZClass.Health) {
-								float resistance = zclaw.zm_LastTookedDmg*0.75;
-								m_pPlayer.pev.armorvalue += (m_pPlayer.pev.armorvalue+resistance <= ZClass.Health)?resistance:ZClass.Health-m_pPlayer.pev.armorvalue;
+							if(m_pPlayer.pev.armorvalue > 0.0 && m_pPlayer.pev.armorvalue <= zclaw.zm_LastHealth) {
+								float resistance = zclaw.zm_LastTookedDmg/3.0;
+								m_pPlayer.pev.armorvalue += (m_pPlayer.pev.armorvalue+resistance <= zclaw.zm_LastHealth)?resistance:zclaw.zm_LastHealth-m_pPlayer.pev.armorvalue;
 							}
 
 							//Reset Damage
+							zclaw.zm_LastHealth = m_pPlayer.pev.armorvalue;
 							zclaw.zm_LastTookedDmg = 0.0;
 						}
 					}
