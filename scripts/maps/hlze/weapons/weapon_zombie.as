@@ -1089,7 +1089,6 @@ void ZClass_Ability(weapon_zclaws@ zclaw, CBasePlayerWeapon@ z_wpn,CBasePlayer@ 
 	//All toggleable Primary Abilities
 	//Check ability state
 	if(zclaw.zm_ability_state==0) {
-		zclaw.zm_ability_state = 1;
 		ZClass_Ability_ON(zclaw,z_wpn,m_pPlayer,ZClass);
 	} else {
 		if(ZClass.Abilities[0].Name == "Frenzy Mode") {
@@ -1135,6 +1134,54 @@ void ZClass_Ability_ON(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer
 		z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.0;
 		
 		zclaw.zm_ability_timer = g_Engine.time;
+		zclaw.zm_ability_state = 1;
+	} else if(ZClass.Abilities[0].Name == "Move Command") {
+		z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
+							z_wpn.GetP_Model(P_MODEL), ZM_COMMAND_ATTACK,"shotgun",0,ZClass.VIEW_MODEL_BODY_ID);
+		m_pPlayer.SetAnimation(PLAYER_RELOAD);
+		
+		z_wpn.m_flNextSecondaryAttack = g_Engine.time + 3.4;
+		z_wpn.m_flNextTertiaryAttack = g_Engine.time + 3.4;
+		z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.4;
+		
+		zclaw.zm_ability_timer = g_Engine.time + 3.4;
+
+		//g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTTALK,ZClass.Abilities[0].Name+" - Draw!\n");
+		//Find any monster at our looking position
+		TraceResult tr;
+		Math.MakeVectors( m_pPlayer.pev.v_angle );
+		Vector vecSrc	= m_pPlayer.GetGunPosition();
+		Vector vecEnd	= vecSrc + g_Engine.v_forward * 3000;
+		
+		g_Utility.TraceLine(vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+
+		//Find Path
+		Vector EndPoint = tr.vecEndPos;
+		
+		//Get All Monsters near the Player
+		array<CBaseEntity@>MonstersAround(50);
+		g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.origin,500.0);
+
+		for(uint i=0;i<MonstersAround.length();i++)
+		{
+			CBaseMonster@ pMonster;
+			if(MonstersAround[i] !is null)
+				@pMonster = MonstersAround[i].MyMonsterPointer();
+
+			if(pMonster !is null && pMonster.IsAlive() && !pMonster.IsPlayer()
+				&& pMonster.IRelationship(m_pPlayer) == R_AL)
+			{
+				//pMonster.StopPlayerFollowing(false,false);
+				pMonster.FGetNodeRoute(EndPoint);
+
+				pMonster.m_vecMoveGoal = EndPoint;
+				pMonster.m_movementGoal = bits_MF_TO_LOCATION;
+				pMonster.SetActivity(ACT_RUN);
+				pMonster.SetGaitActivity(ACT_RUN);
+				pMonster.m_movementActivity = ACT_RUN;
+			}
+		}
+		zclaw.zm_ability_state = 0;
 	}
 	//----------------------------------------------------------------------
 }
