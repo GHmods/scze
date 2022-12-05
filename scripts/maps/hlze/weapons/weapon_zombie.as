@@ -1302,7 +1302,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && (isZombie==1 && ZWeaponId!=0))
 		{
 			//"Long Jump"
-			if(ZClass.Abilities[a].Name == "Long Jump") {
+			if(ZClass.Abilities[a].Name == "Long Jump")
+			{
 				if(ZClass.Ability_Timer[pId] < g_Engine.time) {
 					if((flags & FL_ONGROUND) != 0 &&(button & IN_DUCK) != 0 && (button & IN_JUMP) != 0
 						&& (old_buttons & IN_JUMP) == 0) {
@@ -1332,7 +1333,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						PlayerAnimator::Schedule_Animation(m_pPlayer,PLAYER_JUMP,0.01);
 					}
 				}
-			} else if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {
+			} else if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]")
+			{
 				if((flags & FL_ONGROUND) != 0
 				&& (button & IN_ATTACK2) != 0 && (old_buttons & IN_ATTACK2) == 0) {
 					if(ZClass.Ability_Timer[pId] < g_Engine.time && z_wpn.m_flNextSecondaryAttack < g_Engine.time) {
@@ -1387,7 +1389,41 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 					}
 				}
 			}
-		} else if(ZClass.Abilities[a].Unlocked[pId] && !ZClass.Abilities[a].Active[pId] && isZombie==1)
+		}
+
+		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && isZombie==1)
+		{
+			if(ZClass.Abilities[a].Name == "Zombie Orders")
+			{
+				if((button & IN_USE) != 0 && (old_buttons & IN_USE) == 0)
+				{
+					//Find any monster at our looking position
+					TraceResult tr;
+					Math.MakeVectors( m_pPlayer.pev.v_angle );
+					Vector vecSrc	= m_pPlayer.GetGunPosition();
+					Vector vecEnd	= vecSrc + g_Engine.v_forward * 500;
+					
+					g_Utility.TraceLine(vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+					
+					// hit
+					CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
+					CBaseMonster@ pMonster = pEntity.MyMonsterPointer();
+					
+					if(pMonster !is null && pMonster.IsAlive() && pMonster.pev.classname == "monster_zombie")
+					{
+						if(!pMonster.IsPlayerFollowing()) {
+							pMonster.StartPlayerFollowing(m_pPlayer,false);
+							g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Following!\n");
+						} else {
+							pMonster.StopPlayerFollowing(false,false);
+							g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Stand Still!\n");
+						}
+					}
+				}
+			}
+		}
+		
+		if(ZClass.Abilities[a].Unlocked[pId] && !ZClass.Abilities[a].Active[pId] && isZombie==1)
 		{
 			if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {
 				if(ZClass.Ability_Timer[pId] < g_Engine.time) {
