@@ -1263,7 +1263,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	int pId = m_pPlayer.entindex();
 	
 	//Pickup Headcrabs
-	if(isZombie != 0 && (button & IN_USE) != 0 && (old_buttons & IN_USE) == 0)
+	if(isZombie != 0 && (button & IN_USE) != 0 && (old_buttons & IN_USE) == 0 && ZClass.UseHeadcrabs)
 	{
 		TraceResult tr;
 		

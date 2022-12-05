@@ -76,7 +76,7 @@ namespace ZClasses
 									50.0,					//Damage
 									false,					//Start with Fast Attacking?
 									false,					//Can Break 'func_breakable' walls
-									false,					//Can Use Headcrabs?
+									true,					//Can Use Headcrabs?
 									3.5,					//Degen Rate
 									3.0,					//Degen Delay
 									Vector(255,0,0),			//Darkvision Color --> Vector(r,g,b)
@@ -103,7 +103,7 @@ namespace ZClasses
 									300.0,					//Damage
 									false,					//Start with Fast Attacking?
 									true,					//Can Break 'func_breakable' walls?
-									false,					//Can Use Headcrabs?
+									true,					//Can Use Headcrabs?
 									11.0,					//Degen Rate
 									50.0,					//Degen Delay
 									Vector(255,255,0),			//Darkvision Color --> Vector(r,g,b)
@@ -120,7 +120,37 @@ namespace ZClasses
 		acid_throw_Init(); //Register our Entity
 		crasher.Register_Ability("Shield [Secondary Attack to Toggle]",80);
 		crasher.Register_Ability("Armor Upgrade (+50)",30); //+50 Armor
-		//crasher.Register_Ability("Fast Eating",45);
+		//----------------------------------------
+		//Breeder
+		Zombie_Class breeder(Zombie_Classes,			//Array that is used to register this class
+									"Breeder",				//Name
+									90,					//Cost
+									60.0,					//Health
+									80,					//Speed
+									160,					//Speed while crouching
+									100,					//Voice Pitch
+									20.0,					//Damage
+									false,					//Start with Fast Attacking?
+									false,					//Can Break 'func_breakable' walls?
+									true,					//Can Use Headcrabs?
+									5.0,					//Degen Rate
+									15.0,					//Degen Delay
+									Vector(255,255,255),			//Darkvision Color --> Vector(r,g,b)
+									Vector(0,0,27),				//View Offset
+									"v_zclaws.mdl",				//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									3,					//View Model Body Number
+									"hlze_breeder",				//Player Model (Leave "null" to use default)
+									//Message that shows when player mutates to this class
+									"You are now 'Breeder' Zombie Class",
+									"Incubator for parasites!"
+		); //End of this Zombie Class
+		//Register abilities to this class
+		breeder.Register_Ability("Move Command",80);	//+ATTACK3
+		breeder.Register_Ability("Mass Ressurect",80);	//+ATTACK2
+		breeder.Register_Ability("Baby Crabs",80);
+		breeder.Register_Ability("Zombie Orders",30);
+		breeder.Register_Ability("Ammo Upgrade",30);
+		breeder.Register_Ability("Armor Upgrade (+25)",40); //+25 Armor
 		//----------------------------------------
 		
 		g_Log.PrintF(ZCLASS_SYSTEM_TAG+" "+Zombie_Classes.length());
@@ -231,7 +261,7 @@ final class Zombie_Class {
 		//Can Break Walls?
 	bool BreakWalls = false;
 		//Can Use Headcrabs?
-	bool UseHeadcrabs = false;
+	bool UseHeadcrabs = true;
 		//Degen
 	float DegenRate = 8.0; // -1 Health(Armor) Every [n] second(s)
 	float DegenDelay = 25.0; // [n] second(s) Delay before degen starts.
@@ -259,7 +289,7 @@ final class Zombie_Class {
 	
 	Zombie_Class(array<Zombie_Class@>@zc_array,
 				string zName="Default",int cost=0,float hp=80.0,int spd=80,int spd_c=160,int vp=100,
-				float dmg=30.0,bool fast_attack=false, bool breakWalls=false,bool useHc=false,
+				float dmg=30.0,bool fast_attack=false, bool breakWalls=false,bool useHc=true,
 				float dgRate=8.0,float dgDelay=25.0,Vector dvClr = Vector(255,128,0),Vector viewOfs = Vector(0,0,27),string v_mdl="v_zclaws.mdl",
 				int vmd_bodyId=0,string player_mdl="null",string mut_message="",string mut_desc=""
 		) {

@@ -24,35 +24,35 @@ namespace HClasses
 		//Just Register Default Class
 		Headcrab_Class default_class(Headcrab_Classes);
 		//Rushcrab
-		Headcrab_Class rushcrab(Headcrab_Classes,				//Array that is used to register this class
+		Headcrab_Class rushcrab(Headcrab_Classes,		//Array that is used to register this class
 									"Rushcrab",					//Name
-									0,							//Cost (Useless)
+									0,						//Cost (Useless)
 									20.0,						//Health
 									400,						//Speed
 									140,						//Voice Pitch
 									5.0,						//Damage
-									Vector(255,0,0),			//Darkvision Color --> Vector(r,g,b)
+									Vector(255,0,0),				//Darkvision Color --> Vector(r,g,b)
 									0.5,						//Jump Frequency
-									"v_rhclaws.mdl",			//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
-									0,							//View Model Body Number
-									"hlze_rushcrab",			//Player Model
+									"v_rhclaws.mdl",				//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									0,						//View Model Body Number
+									"hlze_rushcrab",				//Player Model
 									//Message that shows when player mutates to this class
 									"You are now 'Rusher' Headcrab Class",
 									"Fast and Deadly!"
 		); //End of this Headcrab Class
 		//Rushcrab
-		Headcrab_Class crashercrab(Headcrab_Classes,			//Array that is used to register this class
-									"Crasher-crab",				//Name
-									0,							//Cost (Useless)
+		Headcrab_Class crashercrab(Headcrab_Classes,		//Array that is used to register this class
+									"Crasher-crab",					//Name
+									0,						//Cost (Useless)
 									65.0,						//Health
 									200,						//Speed
-									85,							//Voice Pitch
+									85,						//Voice Pitch
 									20.0,						//Damage
-									Vector(255,255,0),			//Darkvision Color --> Vector(r,g,b)
+									Vector(255,255,0),				//Darkvision Color --> Vector(r,g,b)
 									2.0,						//Jump Frequency
-									"v_crasher_hclaws.mdl",		//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
-									0,							//View Model Body Number
-									"hlze_crasher_crab",		//Player Model
+									"v_crasher_hclaws.mdl",				//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									0,						//View Model Body Number
+									"hlze_crasher_crab",				//Player Model
 									//Message that shows when player mutates to this class
 									"You are now 'Crasher-crab' Headcrab Class",
 									"Strong,Solid and Slow!"
@@ -61,6 +61,23 @@ namespace HClasses
 		crashercrab.Register_Ability("Nothing",0);//Toggleable Ability(Must be first!), Leave ("Nothing",0) to ignore this
 		crashercrab.Register_Ability("Armor Upgrade",50);
 		//----------------------------------------
+		//Breeder-crab
+		Headcrab_Class breedercrab(Headcrab_Classes,		//Array that is used to register this class
+									"Breeder-crab",					//Name
+									0,						//Cost (Useless)
+									30.0,						//Health
+									270,						//Speed
+									100,						//Voice Pitch
+									8.0,						//Damage
+									Vector(255,255,255),				//Darkvision Color --> Vector(r,g,b)
+									0.8,						//Jump Frequency
+									"v_hclaws.mdl",					//View Model (WITHOUT 'models/....') (it must be stored in 'models/hlze/'
+									0,						//View Model Body Number
+									"hlze_headcrab",				//Player Model
+									//Message that shows when player mutates to this class
+									"You are now 'Breeder-crab' Headcrab Class",
+									"Intelligent Headcrab."
+		); //End of this Headcrab Class
 		
 		g_Log.PrintF(HCLASS_SYSTEM_TAG+" "+Headcrab_Classes.length());
 		
