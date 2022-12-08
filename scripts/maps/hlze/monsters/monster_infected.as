@@ -185,8 +185,12 @@ class Infected : ScriptBaseMonsterEntity {
 					m.End();
 					
 					//Restore Player's Render Mode
-					InfectorPlayer.pev.rendermode = kRenderTransAlpha;
+					InfectorPlayer.pev.rendermode = kRenderNormal;
+					InfectorPlayer.pev.renderfx = kRenderFxNone;
 					InfectorPlayer.pev.renderamt = 255;
+
+					//Remove GodMode
+					InfectorPlayer.m_iEffectInvulnerable = 0;
 					
 					self.pev.framerate = 0.0;
 					self.pev.body = infected_first_body;
@@ -244,6 +248,11 @@ class Infected : ScriptBaseMonsterEntity {
 				
 				Infection_State++;
 				Infection_Timer = g_Engine.time + 1.4;
+				if(isInfectedByPlayer) {
+					//Set GodMode
+					InfectorPlayer.m_iEffectInvulnerable = 1;
+				}
+
 				return;
 			} else if(Infection_State==3) {
 				Vector createOrigin = self.pev.origin;
@@ -268,7 +277,8 @@ class Infected : ScriptBaseMonsterEntity {
 							InfectorPlayer.GiveNamedItem("weapon_zclaws");
 							
 							//Restore Player's Render Mode
-							InfectorPlayer.pev.rendermode = kRenderTransAlpha;
+							InfectorPlayer.pev.rendermode = kRenderNormal;
+							InfectorPlayer.pev.renderfx = kRenderFxNone;
 							InfectorPlayer.pev.renderamt = 255;
 							
 							if(InfectorPlayer.IsAlive()) {

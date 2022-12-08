@@ -592,6 +592,9 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 	void ZombieProcess() {
 		self.pev.nextthink = g_Engine.time + 0.1;
 		
+		//Something like Nightvision
+		DarkVision();
+
 		//Zombie Class process
 		ZClass_Process();
 		
@@ -717,9 +720,6 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				zm_DegenTime = g_Engine.time + zm_DegenFreq;
 			}
 		}
-		
-		//Something like Nightvision
-		DarkVision();
 	}
 	
 	void LeaveBody() {
@@ -728,9 +728,38 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		if(m_pPlayer.pev.armorvalue >= ZClass.Health)
 			m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - ZClass.Health;
 		
+		float fUp = 0.0;
+		array<Vector>hcTriangle = {
+			Vector(0.0,0.0,0.0),
+			Vector(40.0,0.0,0.0),
+			Vector(40.0,40.0,0.0),
+			Vector(-40.0,40.0,0.0),
+			Vector(-60.0,80.0,0.0)
+		};
+		int ammo = m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType);
+		for(uint c=0;c<uint(ammo);c++)
+		{
+			Math.MakeVectors(m_pPlayer.pev.v_angle);
+			//Vector vecSrc	= m_pPlayer.GetGunPosition();
+			Vector vecSrc = m_pPlayer.pev.origin + Vector(0,0,fUp);
+			fUp+=9.0;
+			float throw_amount = 500.0;
+			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
+			CBaseMonster@ hc = entBase.MyMonsterPointer();
+			if(hc !is null) {
+				g_EntityFuncs.DispatchSpawn(hc.edict());
+				hc.SetPlayerAllyDirect(true);
+				hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
+				hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
+				hc.pev.velocity = g_Engine.v_forward * throw_amount;
+			}
+		}
+		m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType,0);
+
 		self.DestroyItem();
 		m_pPlayer.RemoveAllItems(false);
 		m_pPlayer.SetItemPickupTimes(0);
+		
 		//Leave Body
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_infected_leaved");
 		Infected_Leaved@ ent = cast<Infected_Leaved@>(CastToScriptClass(entBase));
@@ -1422,6 +1451,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						m_pPlayer.pev.rendermode = kRenderNormal;
 						m_pPlayer.pev.renderfx = kRenderFxGlowShell;
 						m_pPlayer.pev.rendercolor = Vector(25,25,25);
+						m_pPlayer.pev.renderamt = 10;
 
 						if(zclaw.zm_LastTookedDmg > 0.0) {
 							if(m_pPlayer.pev.armorvalue > 0.0 && m_pPlayer.pev.armorvalue <= zclaw.zm_LastHealth) {
@@ -1434,6 +1464,79 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 							zclaw.zm_LastTookedDmg = 0.0;
 						}
 					}
+				}
+			} else if(ZClass.Abilities[a].Name == "Mass Ressurect - [Secondary Attack to Use]")
+			{
+				if((flags & FL_ONGROUND) != 0
+				&& (button & IN_ATTACK2) != 0 && (old_buttons & IN_ATTACK2) == 0) {
+					if(ZClass.Ability_Timer[pId] < g_Engine.time && z_wpn.m_flNextSecondaryAttack < g_Engine.time) {
+						ZClass.Ability_Timer[pId] = g_Engine.time + ZClass.Ability_ToggleDelay;
+						//Start
+						zclaw.zm_ability_state = 6;
+						
+						z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
+							z_wpn.GetP_Model(P_MODEL), ZM_COMMAND_RESSURECT, "sniper", 0, ZClass.VIEW_MODEL_BODY_ID);
+						m_pPlayer.m_Activity = ACT_RELOAD;
+						m_pPlayer.pev.sequence = 162;
+						m_pPlayer.pev.frame = 0.0000001f;
+						m_pPlayer.ResetSequenceInfo();
+						m_pPlayer.pev.framerate = 0.7;
+
+						ZClass.Ability_Timer[pId] = g_Engine.time + 5.0;
+						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.1;
+						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 3.1;
+						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+
+						m_pPlayer.m_flEffectSpeed = 0.0;
+						m_pPlayer.m_flFallVelocity = 100.0;
+						m_pPlayer.m_flEffectGravity = 100.0;
+
+						//Find any monster at our looking position
+						TraceResult tr;
+						Math.MakeVectors(m_pPlayer.pev.v_angle);
+						Vector vecSrc = m_pPlayer.GetGunPosition();
+						Vector vecEnd = vecSrc + g_Engine.v_forward * 80;
+						
+						g_Utility.TraceLine(vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+						
+						m_pPlayer.pev.vuser1 = tr.vecEndPos;
+					}
+				}
+
+
+				if(z_wpn.m_flNextTertiaryAttack < g_Engine.time
+					&& zclaw.zm_ability_state == 6)
+				{
+					zclaw.zm_ability_state = 7;
+
+					z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.1;
+
+					//Do Ressurect
+					g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
+					
+					//Get 1 Monster near the looking point
+					array<CBaseEntity@>MonstersAround(25);
+					g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.vuser1,50.0);
+
+					for(uint i=0;i<MonstersAround.length();i++)
+					{
+						CBaseMonster@ pMonster;
+						if(MonstersAround[i] !is null)
+							@pMonster = MonstersAround[i].MyMonsterPointer();
+
+						if(pMonster !is null && !pMonster.IsAlive()
+							&& pMonster.IRelationship(m_pPlayer) == R_AL)
+						{
+							pMonster.Revive();
+							break;
+						}
+					}
+					//......
+				} else if(z_wpn.m_flNextTertiaryAttack < g_Engine.time
+					&& zclaw.zm_ability_state == 7)
+				{
+					zclaw.zm_ability_state = 0;
+					m_pPlayer.ResetEffects();
 				}
 			}
 		}
@@ -1488,8 +1591,13 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 
 						m_pPlayer.pev.rendermode = kRenderNormal;
 						m_pPlayer.pev.renderfx = kRenderFxNone;
+						m_pPlayer.pev.renderamt = 255;
 					}
 				}
+			} else if(ZClass.Abilities[a].Name == "Mass Ressurect - [Secondary Attack to Use]")
+			{
+				zclaw.zm_ability_state = 0;
+				m_pPlayer.ResetEffects();
 			}
 		}
 	}
@@ -1505,6 +1613,11 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 			{
 				m_pPlayer.pev.rendermode = kRenderNormal;
 				m_pPlayer.pev.renderfx = kRenderFxNone;
+				m_pPlayer.pev.renderamt = 255;
+			} else if(ZClass.Abilities[a].Name == "Mass Ressurect - [Secondary Attack to Use]")
+			{
+				zclaw.zm_ability_state = 0;
+				m_pPlayer.ResetEffects();
 			}
 		}
 	}

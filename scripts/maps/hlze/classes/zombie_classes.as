@@ -146,7 +146,7 @@ namespace ZClasses
 		); //End of this Zombie Class
 		//Register abilities to this class
 		breeder.Register_Ability("Move Command",80);	//+ATTACK3
-		breeder.Register_Ability("Mass Ressurect",80);	//+ATTACK2
+		breeder.Register_Ability("Mass Ressurect - [Secondary Attack to Use]",80);	//+ATTACK2
 		breeder.Register_Ability("Baby Crabs",80);
 		breeder.Register_Ability("Zombie Orders",30);
 		breeder.Register_Ability("Ammo Upgrade",30);
