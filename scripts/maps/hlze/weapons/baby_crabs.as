@@ -94,7 +94,7 @@ namespace BabyCrabs {
 			}
 		}
 		
-		if(isZombie==1 && hasBCAbility)
+		if(isZombie==1 && hasBCAbility && ZClass_MutationState[pId]==ZM_MUTATION_NONE)
 		{
 			g_PlayerFuncs.HudToggleElement(pPlayer,5,true);
 			//Process
