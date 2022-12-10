@@ -736,26 +736,32 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			Vector(-40.0,40.0,0.0),
 			Vector(-60.0,80.0,0.0)
 		};
-		int ammo = m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType);
-		for(uint c=0;c<uint(ammo);c++)
-		{
-			Math.MakeVectors(m_pPlayer.pev.v_angle);
-			//Vector vecSrc	= m_pPlayer.GetGunPosition();
-			Vector vecSrc = m_pPlayer.pev.origin + Vector(0,0,fUp);
-			fUp+=9.0;
-			float throw_amount = 500.0;
-			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
-			CBaseMonster@ hc = entBase.MyMonsterPointer();
-			if(hc !is null) {
-				g_EntityFuncs.DispatchSpawn(hc.edict());
-				hc.SetPlayerAllyDirect(true);
-				hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
-				hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
-				hc.pev.velocity = g_Engine.v_forward * throw_amount;
-			}
-		}
-		m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType,0);
 
+		CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
+		if(hcWep !is null)
+		{
+			int ammo = m_pPlayer.m_rgAmmo(hcWep.m_iPrimaryAmmoType);
+			for(uint c=0;c<uint(ammo);c++)
+			{
+				Math.MakeVectors(m_pPlayer.pev.v_angle);
+				//Vector vecSrc	= m_pPlayer.GetGunPosition();
+				Vector vecSrc = m_pPlayer.pev.origin + Vector(0,0,fUp);
+				fUp+=9.0;
+				float throw_amount = 500.0;
+				CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
+				CBaseMonster@ hc = entBase.MyMonsterPointer();
+				if(hc !is null) {
+					g_EntityFuncs.DispatchSpawn(hc.edict());
+					hc.SetPlayerAllyDirect(true);
+					hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
+					hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
+					hc.pev.velocity = g_Engine.v_forward * throw_amount;
+				}
+			}
+			m_pPlayer.m_rgAmmo(hcWep.m_iPrimaryAmmoType,0);
+		}
+
+		hcWep.DestroyItem();
 		self.DestroyItem();
 		m_pPlayer.RemoveAllItems(false);
 		m_pPlayer.SetItemPickupTimes(0);
