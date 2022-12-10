@@ -1,36 +1,36 @@
 /*  
-* Zombie
+* Baby Crabs
 */
 #include "weapon_zombie"
 
-const string V_MODEL_ZOMBIE_HC = "models/hlze/v_zheadcrab.mdl";
-const string P_MODEL_ZOMBIE_HC = "models/hlze/p_zheadcrab.mdl";
-const string W_MODEL_ZOMBIE_HC = "models/hlze/headcrab.mdl";
+const string V_MODEL_ZOMBIE_BC = "models/hlze/v_babycrab.mdl";
+const string P_MODEL_ZOMBIE_BC = P_MODEL;
+const string W_MODEL_ZOMBIE_BC = "models/baby_headcrab.mdl";
 
-enum ZombieHC_Animations
+enum ZombieBC_Animations
 {
-	ZMHC_IDLE1,
-	ZMHC_IDLE2,
-	ZMHC_IDLE3,
-	ZMHC_HOLSTER,
-	ZMHC_DRAW,
-	ZMHC_THROW
+	ZMBC_IDLE1,
+	ZMBC_IDLE2,
+	ZMBC_IDLE3,
+	ZMBC_DRAW,
+	ZMBC_HOLSTER,
+	ZMBC_THROW
 };
 
-void ZombieHC_Precache() {
+void ZombieBC_Precache() {
 	//Precache Models
-	g_Game.PrecacheModel(V_MODEL_ZOMBIE_HC);
-	g_Game.PrecacheModel(P_MODEL_ZOMBIE_HC);
-	g_Game.PrecacheModel(W_MODEL_ZOMBIE_HC);
+	g_Game.PrecacheModel(V_MODEL_ZOMBIE_BC);
+	g_Game.PrecacheModel(P_MODEL_ZOMBIE_BC);
+	g_Game.PrecacheModel(W_MODEL_ZOMBIE_BC);
 	
 	//Precache Sprites
-	g_Game.PrecacheGeneric( "sprites/weapon_hclaws_01.spr" );
-	g_Game.PrecacheGeneric( "sprites/weapon_hclaws_02.spr" );
-	g_Game.PrecacheGeneric( "sprites/weapon_hclaws_hud.spr" );
-	g_Game.PrecacheGeneric( "sprites/weapon_zhcrab.txt" );
+	g_Game.PrecacheGeneric( "sprites/weapon_zbcrab.spr" );
+	g_Game.PrecacheGeneric( "sprites/weapon_zbcrab_hud.spr" );
+	g_Game.PrecacheGeneric( "sprites/hlze/interface.spr" );
+	g_Game.PrecacheGeneric( "sprites/weapon_zbcrab.txt" );
 }
 
-class weapon_zhcrab : ScriptBasePlayerWeaponEntity
+class weapon_zbcrab : ScriptBasePlayerWeaponEntity
 {
 	private CBasePlayer@ m_pPlayer = null;
 	//Player Zombie Class Holder
@@ -59,7 +59,7 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 	void Spawn()
 	{
 		self.Precache();
-		g_EntityFuncs.SetModel( self, self.GetW_Model(W_MODEL_ZOMBIE_HC) );
+		g_EntityFuncs.SetModel( self, self.GetW_Model(W_MODEL_ZOMBIE_BC) );
 		self.m_iDefaultAmmo 		= 1;
 		self.m_iClip 			= 1;
 		self.m_flCustomDmg		= self.pev.dmg;
@@ -72,25 +72,24 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		self.PrecacheCustomModels();
 
 		//Precache Models
-		g_Game.PrecacheModel(V_MODEL_ZOMBIE_HC);
-		g_Game.PrecacheModel(P_MODEL_ZOMBIE_HC);
-		g_Game.PrecacheModel(W_MODEL_ZOMBIE_HC);
+		g_Game.PrecacheModel(V_MODEL_ZOMBIE_BC);
+		g_Game.PrecacheModel(P_MODEL_ZOMBIE_BC);
+		g_Game.PrecacheModel(W_MODEL_ZOMBIE_BC);
 		
 		//Precache Sprites
-		g_Game.PrecacheGeneric( "sprites/weapon_hclaws_01.spr" );
-		g_Game.PrecacheGeneric( "sprites/weapon_hclaws_02.spr" );
-		g_Game.PrecacheGeneric( "sprites/weapon_hclaws_hud.spr" );
+		g_Game.PrecacheGeneric( "sprites/weapon_zbcrab.spr" );
+		g_Game.PrecacheGeneric( "sprites/weapon_zbcrab_hud.spr" );
 		g_Game.PrecacheGeneric( "sprites/hlze/interface.spr" );
-		g_Game.PrecacheGeneric( "sprites/weapon_zhcrab.txt" );
+		g_Game.PrecacheGeneric( "sprites/weapon_zbcrab.txt" );
 	}
 	
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1		= 5;
+		info.iMaxAmmo1		= 10;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= -1;
 		info.iSlot		= 4;
-		info.iPosition		= 6;
+		info.iPosition		= 7;
 		info.iFlags		= 0;
 		info.iWeight		= 0;
 
@@ -103,7 +102,7 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 			return false;
 		
 		@m_pPlayer = pPlayer;
-		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 95 + Math.RandomLong( 0, 0xa ));
+		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 130);
 
 		if(ZClass_Holder[m_pPlayer.entindex()] == HClass_Holder[m_pPlayer.entindex()]) {
 			ZClass_Mutate(HClass_Holder[m_pPlayer.entindex()]);
@@ -133,8 +132,8 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		m_pPlayer.KeyValue("$i_isZombie",true);
 
 		//Set View Model from v_zheadcrab and body id from Zombie Class
-		self.DefaultDeploy( self.GetV_Model(V_MODEL_ZOMBIE_HC),
-							self.GetP_Model(P_MODEL_ZOMBIE_HC), ZMHC_DRAW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy( self.GetV_Model(V_MODEL_ZOMBIE_BC),
+							self.GetP_Model(P_MODEL_ZOMBIE_BC), ZMBC_DRAW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
 		
 		self.m_flNextPrimaryAttack = g_Engine.time + 0.8;
 		self.m_flTimeWeaponIdle = g_Engine.time + 0.8;
@@ -179,25 +178,25 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		int random_anim = Math.RandomLong(0,2);
 		switch(random_anim) {
 			case 0: {
-				anim_index = ZMHC_IDLE1;
-				idle_time = g_Engine.time + 6.0;
+				anim_index = ZMBC_IDLE1;
+				idle_time = g_Engine.time + 5.0;
 				break;
 			}
 			case 1: {
-				anim_index = ZMHC_IDLE2;
-				idle_time = g_Engine.time + 2.4;
+				anim_index = ZMBC_IDLE2;
+				idle_time = g_Engine.time + 2.5;
 				break;
 			}
 			case 2: {
-				anim_index = ZMHC_IDLE3;
-				idle_time = g_Engine.time + 2.4;
+				anim_index = ZMBC_IDLE3;
+				idle_time = g_Engine.time + 2.5;
 				break;
 			}
 		}
 		
 		//self.SendWeaponAnim(anim_index,0,ZClass.VIEW_MODEL_BODY_ID);
-		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_HC),
-							self.GetP_Model(P_MODEL_ZOMBIE_HC), anim_index, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_BC),
+							self.GetP_Model(P_MODEL_ZOMBIE_BC), anim_index, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
 		self.m_flTimeWeaponIdle = idle_time;
 	}
 	
@@ -212,19 +211,18 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 		Math.MakeVectors(m_pPlayer.pev.v_angle);
 		Vector vecSrc	= m_pPlayer.GetGunPosition();
 		float throw_amount = 500.0;
-		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
-		CBaseMonster@ hc = entBase.MyMonsterPointer();
-		if(hc !is null) {
-			g_EntityFuncs.DispatchSpawn(hc.edict());
-			hc.SetPlayerAllyDirect(true);
-			hc.pev.origin = vecSrc + g_Engine.v_forward * 70 + g_Engine.v_right * 6;
-			hc.pev.velocity = g_Engine.v_forward * throw_amount + g_Engine.v_up * 36.0;
-			hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
+		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_babycrab");
+		CBaseMonster@ bc = entBase.MyMonsterPointer();
+		if(bc !is null) {
+			g_EntityFuncs.DispatchSpawn(bc.edict());
+			bc.SetPlayerAllyDirect(true);
+			bc.pev.origin = vecSrc + g_Engine.v_forward * 70 + g_Engine.v_right * 6;
+			bc.pev.velocity = g_Engine.v_forward * throw_amount + g_Engine.v_up * 36.0;
+			bc.pev.angles.y = m_pPlayer.pev.v_angle.y;
 		}
 
-		//self.SendWeaponAnim(ZMHC_THROW,0,ZClass.VIEW_MODEL_BODY_ID);
-		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_HC),
-							self.GetP_Model(P_MODEL), ZMHC_THROW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
+		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_BC),
+							self.GetP_Model(P_MODEL), ZMBC_THROW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
 		m_pPlayer.SetAnimation(PLAYER_RELOAD);
 		self.m_flNextPrimaryAttack = g_Engine.time + 0.5;
 
@@ -295,12 +293,17 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 			m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - ZClass.Health;
 
 		float fUp = 0.0;
-		array<Vector>hcTriangle = {
+		array<Vector>bcTriangle = {
 			Vector(0.0,0.0,0.0),
-			Vector(40.0,0.0,0.0),
-			Vector(40.0,40.0,0.0),
-			Vector(-40.0,40.0,0.0),
-			Vector(-60.0,80.0,0.0)
+			Vector(20.0,0.0,0.0),
+			Vector(20.0,20.0,0.0),
+			Vector(-20.0,20.0,0.0),
+			Vector(-20.0,40.0,0.0),
+			Vector(20.0,40.0,0.0),
+			Vector(-20.0,-40.0,0.0),
+			Vector(-40.0,-20.0,0.0),
+			Vector(-40.0,20.0,0.0),
+			Vector(40.0,-20.0,0.0)
 		};
 		int ammo = m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType);
 		for(uint c=0;c<uint(ammo);c++)
@@ -310,14 +313,14 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 			Vector vecSrc = m_pPlayer.pev.origin + Vector(0,0,fUp);
 			fUp+=9.0;
 			float throw_amount = 500.0;
-			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
-			CBaseMonster@ hc = entBase.MyMonsterPointer();
-			if(hc !is null) {
-				g_EntityFuncs.DispatchSpawn(hc.edict());
-				hc.SetPlayerAllyDirect(true);
-				hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
-				hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
-				hc.pev.velocity = g_Engine.v_forward * throw_amount;
+			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_babycrab");
+			CBaseMonster@ bc = entBase.MyMonsterPointer();
+			if(bc !is null) {
+				g_EntityFuncs.DispatchSpawn(bc.edict());
+				bc.SetPlayerAllyDirect(true);
+				bc.pev.origin = vecSrc + g_Engine.v_forward * bcTriangle[c].y + g_Engine.v_right * bcTriangle[c].x;
+				bc.pev.angles.y = m_pPlayer.pev.v_angle.y;
+				bc.pev.velocity = g_Engine.v_forward * throw_amount;
 			}
 		}
 		m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType,0);
@@ -426,13 +429,13 @@ class weapon_zhcrab : ScriptBasePlayerWeaponEntity
 	}
 }
 
-class ammo_headcrabs : ScriptBasePlayerAmmoEntity
+class ammo_babycrabs : ScriptBasePlayerAmmoEntity
 {	
 	bool CommonAddAmmo( CBaseEntity& inout pOther, int& in iAmmoClip, int& in iAmmoCarry, string& in iAmmoType )
 	{
 		if( pOther.GiveAmmo( iAmmoClip, iAmmoType, iAmmoCarry ) != -1 )
 		{
-			g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 95 + Math.RandomLong( 0, 0xa ));
+			g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 130);
 			return true;
 		}
 		return false;
@@ -441,25 +444,25 @@ class ammo_headcrabs : ScriptBasePlayerAmmoEntity
 	void Spawn()
 	{
 		Precache();
-		g_EntityFuncs.SetModel( self, W_MODEL_ZOMBIE_HC);
+		g_EntityFuncs.SetModel( self, W_MODEL_ZOMBIE_BC);
 		self.pev.body = 0;
 		BaseClass.Spawn();
 	}
 
 	void Precache()
 	{
-		g_Game.PrecacheModel(W_MODEL_ZOMBIE_HC);
+		g_Game.PrecacheModel(W_MODEL_ZOMBIE_BC);
 	}
 
 	bool AddAmmo( CBaseEntity@ pOther )
 	{
-		return CommonAddAmmo(pOther, 1, 5,"ammo_headcrabs");
+		return CommonAddAmmo(pOther, 1, 5,"ammo_babycrabs");
 	}
 }
 
-void Register_ZombieHeadcrab()
+void Register_ZombieBabycrab()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_zhcrab", "weapon_zhcrab" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_headcrabs", "ammo_headcrabs" ); // Register the ammo entity
-	g_ItemRegistry.RegisterWeapon( "weapon_zhcrab", "", "ammo_headcrabs");
+	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_zbcrab", "weapon_zbcrab" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_babycrabs", "ammo_babycrabs" ); // Register the ammo entity
+	g_ItemRegistry.RegisterWeapon( "weapon_zbcrab", "", "ammo_babycrabs");
 }

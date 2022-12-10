@@ -759,9 +759,9 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				}
 			}
 			m_pPlayer.m_rgAmmo(hcWep.m_iPrimaryAmmoType,0);
+			hcWep.DestroyItem();
 		}
 
-		hcWep.DestroyItem();
 		self.DestroyItem();
 		m_pPlayer.RemoveAllItems(false);
 		m_pPlayer.SetItemPickupTimes(0);
@@ -972,6 +972,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//----------------------------------------------------------------------
 		
 		SaveLoad_ZClasses::SaveData(m_pPlayer.entindex());
+		SaveLoad_HClasses::SaveData(m_pPlayer.entindex());
 		
 		//Check if any starting abilities are there
 		//Go through the array

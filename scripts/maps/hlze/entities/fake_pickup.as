@@ -13,7 +13,9 @@ array<string>IgnoreEntities = {
 	"weapon_hclaws",
 	"weapon_zclaws",
 	"weapon_zhcrab",
-	"ammo_headcrabs"
+	"ammo_headcrabs",
+	"weapon_zbcrab",
+	"ammo_babycrabs"
 };
 
 enum PickupTypes {

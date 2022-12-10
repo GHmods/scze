@@ -1,0 +1,5 @@
+4
+weapon				640 	weapon_zbcrab		0	0	170	60
+weapon_s			640 	weapon_zbcrab		0	60	170	60
+ammo				640 	hlze/interface		192	32	32	32
+crosshair			640		weapon_zbcrab_hud	0	48	24	24
