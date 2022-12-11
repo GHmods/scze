@@ -2,7 +2,7 @@
 ![](https://i.imgur.com/ee9K4AJ.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
 
-- This mod is in early stages, don't expect proficiency in code since im not a profesional coder.
+- This mod is in early stages, don't expect proficiency in code since im not a professional coder.
 - I will try to update this mod more frequently.
 
 ### Training map is: hlze_betamap.bsp
@@ -14,13 +14,13 @@
   - ~~Upload all resources.~~
   - ~~Upload my private code.~~
   - ~~Do my first release.~~
-#### Tasks Part 2: ![70%](https://progress-bar.dev/70)
+#### Tasks Part 2: ![80%](https://progress-bar.dev/80)
   - ~~Do a fixes for some maps.~~
   - ~~Fix/Improve uploaded code.~~
   - ~~Fix Crasher class.~~
   - ~~Add Acid Projectile.~~
   - ~~Fixes for PvPvM Feature.~~
-  - Add Breeder class.
+  - ~~Add Breeder class.~~
   - ~~Add usable headcrabs.~~
   - ~~Add Save by Steam ID or Name Option.~~
   - Add Installation Instructions.
