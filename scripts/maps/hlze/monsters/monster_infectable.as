@@ -90,7 +90,8 @@ void Infected_Process(CBaseMonster@ monster, CBaseEntity@ hc) {
 	if(monster is null) {
 		return;
 	}
-	
+	monster.KeyValue("$i_infected",false);
+
 	Vector createOrigin = monster.pev.origin;
 	
 	Vector createAngles = monster.pev.angles;
@@ -124,7 +125,8 @@ void Infected_Process_NoOwner(CBaseMonster@ monster) {
 	if(monster is null) {
 		return;
 	}
-	
+	monster.KeyValue("$i_infected",false);
+
 	Vector createOrigin = monster.pev.origin;
 	
 	Vector createAngles = monster.pev.angles;
@@ -157,7 +159,8 @@ void Infected_Process_Player(CBaseMonster@ monster, CBasePlayer@ m_pPlayer) {
 	if(monster is null) {
 		return;
 	}
-	
+	monster.KeyValue("$i_infected",false);
+
 	//Remove Player's Velocity
 	m_pPlayer.pev.velocity = Vector(0.0,0.0,0.0);
 	

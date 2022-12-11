@@ -284,6 +284,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		m_pPlayer.m_flNextAttack = g_WeaponFuncs.WeaponTimeBase() + 0.5; 
 
 		m_pPlayer.pev.viewmodel = "";
+
+		b_FakeAttack = false;
 		
 		m_pPlayer.KeyValue("$i_isZombie",false);
 		m_pPlayer.KeyValue("$i_ZombieWeapon",0);
@@ -877,6 +879,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		zm_ability_timer = g_Engine.time;
 
 		b_FastAttack = ZClass.FastAttack;
+		//Damage
+		zm_Damage = ZClass.Damage;
 		
 		m_pPlayer.pev.armortype = 500;
 		
@@ -1522,20 +1526,21 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 					g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
 					
 					//Get 1 Monster near the looking point
-					array<CBaseEntity@>MonstersAround(25);
+					array<CBaseEntity@>MonstersAround(150);
 					g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.vuser1,50.0);
 
 					for(uint i=0;i<MonstersAround.length();i++)
 					{
 						CBaseMonster@ pMonster;
-						if(MonstersAround[i] !is null)
+						if(MonstersAround[i] !is null) {
 							@pMonster = MonstersAround[i].MyMonsterPointer();
 
-						if(pMonster !is null && !pMonster.IsAlive()
+							if(pMonster !is null && !pMonster.IsAlive()
 							&& pMonster.IRelationship(m_pPlayer) == R_AL)
-						{
-							pMonster.Revive();
-							break;
+							{
+								pMonster.Revive();
+								break;
+							}
 						}
 					}
 					//......
