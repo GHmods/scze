@@ -7,7 +7,7 @@ namespace BabyCrabs {
 	array<float>BC_Timer(33,g_Engine.time);
 	array<float>BC_GiveDelay(33,g_Engine.time);
 	array<bool>BC_GiveNow(33,false);
-	float BC_Frequency = 5.0;
+	float BC_Frequency = 15.0;
 
 	void Precache() {
 		g_Game.PrecacheGeneric( "sprites/"+BabyCrabs_SignSpr );
