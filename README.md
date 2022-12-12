@@ -52,7 +52,7 @@ I don't know, email me.
   - Use 'hcwall1','hcwall2',...,'hcwall9','hcwall10',...,'hcwall15';
 - Zombie Players can trigger 'func_breakable' with targetname: 'flr_brk';
 - Zombie Players can use all rotating doors('func_door_rotating') with targetnames: 'ds1', 'd1', 'd2', 'd3',...,'d9';
-- To make Zombie Players open rotating doors('func_door_rotating'), use 'trigger_multiple'; ~~~(See Examples)~~~;
+- To make Zombie Players open rotating doors('func_door_rotating'), use 'trigger_multiple'; (See Examples Folder)
 - More defines can be defined in 'entities/multisource.as'
 For More Doors:
 ```
@@ -70,14 +70,14 @@ array<array<string>>WallEntities_Settings = {
   ....
 };
 ```
-- (Only defined in Crasher Class) To make Zombie Players break walls('func_breakable'), set targetnames: 'zWall', 'zWall1', 'zWall2',...,'zWall9'; ~~~(See Examples);~~
+- (Only defined in Crasher Class) To make Zombie Players break walls('func_breakable'), set targetnames: 'zWall', 'zWall1', 'zWall2',...,'zWall9'; (See Examples Folder)
 - More defines can be defined in 'weapons/weapon_zombie.as' --->
 For More Walls: 
 ```
   array<string>BreakableZWalls = { ... };
 ```
-- Every door is locked with 'multisource' entity; (To block Headcrabs from opening them);
--~~~Examples are in 'Examples' folder;~~~
+- Every door is locked with 'multisource' entity; (To block Headcrabs from opening them).
+-Examples are in 'Examples' folder.
 - If PvPvM Feature is Enabled, use 'info_target' with targetname: 'info_human_spawn' to create multiple spawn
 points for Humans.
 ---
