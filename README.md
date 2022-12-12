@@ -15,9 +15,9 @@
 2. Open 'scze-x.x.zip' and select:
 > maps,models,scripts,sound,sprites and zombie.wad
 3. Extract it inside 'svencoop_addon' folder.
-4. Now start Sven Co-op on:
-> Training map is: hlze_betamap
-> First Story Map is: hlze_zem1
+4. Now start Sven Co-op on: <br>
+- Training map is: hlze_betamap <br>
+- First Story Map is: hlze_zem1 <br>
 5. Good Luck :-D.
 #### Aditional Information:
 - Scripts can be found inside 'scripts/maps/hlze/' folder.
