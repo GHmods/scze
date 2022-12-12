@@ -18,7 +18,7 @@
 4. Now start Sven Co-op on: <br>
 - Training map is: hlze_betamap <br>
 - First Story Map is: hlze_zem1 <br>
-5. Good Luck :).
+5. Good Luck :smile:.
 #### Aditional Information:
 - Scripts can be found inside 'scripts/maps/hlze/' folder.
 ### Configuration:
