@@ -17,7 +17,7 @@
 by fErMangan tuU!!
 
 ### How to Install?
-#### Instalation Instructions:
+#### Installation Instructions:
 1. Download Latest Release from <a href="https://github.com/GHmods/scze/releases/latest">here</a>.
 2. Open 'scze-x.x.zip' and select:
 > maps,models,scripts,sound,sprites and zombie.wad
@@ -104,8 +104,12 @@ points for Humans.
   - ~~Add Save by Steam ID or Name Option.~~
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
-#### Tasks Part 3: ![1%](https://progress-bar.dev/1)
-  - ~~Work In Progress.~~
+#### Tasks Part 3: ![0%](https://progress-bar.dev/0)
+  - Fix 'fake_pickup'
+  - Add Models from Headcrab Classes to Victim's Head.
+  - Add Barnacle Weapon for Breeder Zombie Class.
+  - Add Custom Zombie NPC.
+  - ~~More Tasks Soon....~~
 
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
