@@ -9,6 +9,13 @@
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
 ---
+### Short Gameplay Video of this Mod: (Version used on video: v0.3)
+<a href="https://youtu.be/mcpfW0ufbQM">
+	<img src="https://i.imgur.com/DDoAp4R.png" alt="Watch Sven Co-op Zombie Edition Gameplay Video on YouTube" width=768>
+</a>
+<br>
+by fErMangan tuU!!
+
 ### How to Install?
 #### Instalation Instructions:
 1. Download Latest Release from <a href="https://github.com/GHmods/scze/releases/latest">here</a>.
