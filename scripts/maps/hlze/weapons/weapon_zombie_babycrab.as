@@ -224,7 +224,7 @@ class weapon_zbcrab : ScriptBasePlayerWeaponEntity
 		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_BC),
 							self.GetP_Model(P_MODEL), ZMBC_THROW, "shotgun", 0, ZClass.VIEW_MODEL_BODY_ID);
 		m_pPlayer.SetAnimation(PLAYER_RELOAD);
-		self.m_flNextPrimaryAttack = g_Engine.time + 0.5;
+		self.m_flNextPrimaryAttack = g_Engine.time + 2.08;
 
 		if(m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 1)
 		{

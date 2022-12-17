@@ -14,6 +14,8 @@
 #include "..\classes\headcrab_classes"
 //Gene Points
 #include "..\classes\gene_points"
+//Zombie Ability HUD
+#include "zAbilityHud"
 
 array<string>Eatable = {
 	"monster_barney_dead",
@@ -1493,10 +1495,12 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						m_pPlayer.ResetSequenceInfo();
 						m_pPlayer.pev.framerate = 0.7;
 
-						ZClass.Ability_Timer[pId] = g_Engine.time + 5.0;
+						ZClass.Ability_Timer[pId] = g_Engine.time + 15.0;
 						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.1;
 						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 3.1;
 						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+						//Ability Hud
+						zAbilityHud::ShowMassRessurection(m_pPlayer,15.0);
 
 						m_pPlayer.m_flEffectSpeed = 0.0;
 						m_pPlayer.m_flFallVelocity = 100.0;

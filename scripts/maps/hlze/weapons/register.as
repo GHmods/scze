@@ -2,7 +2,7 @@
 #include "weapon_headcrab"
 #include "weapon_zombie"
 #include "weapon_zombie_headcrab"
-#include "baby_crabs"
+#include "zAbilityHud"
 #include "weapon_zombie_babycrab"
 
 void RegisterWeapons() {
@@ -18,7 +18,7 @@ void RegisterWeapons() {
 	//Baby Crabs
 	Register_ZombieBabycrab(); //Babycrabs as a weapon for Zombies
 	ZombieBC_Precache(); //Stuff Needed for Babycrabs Weapon
-	BabyCrabs::Precache();
-	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, BabyCrabs::PlayerJoin);
-	g_Hooks.RegisterHook(Hooks::Player::PlayerPostThink, BabyCrabs::PlayerThink);
+	zAbilityHud::Precache();
+	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, zAbilityHud::PlayerQuit);
+	g_Hooks.RegisterHook(Hooks::Player::PlayerPostThink, zAbilityHud::PlayerThink);
 }
