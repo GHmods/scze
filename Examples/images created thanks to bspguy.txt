@@ -2,4 +2,4 @@ Useful tool to easily modify maps:
 https://github.com/wootguy/bspguy/releases
 	-Drag and Drop .bsp file to bspguy.exe
 
-More info: ReadMe.txt and on github.
+More info: ReadMe.md and on github.
