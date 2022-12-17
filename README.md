@@ -105,6 +105,7 @@ points for Humans.
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
 #### Tasks Part 3: ![0%](https://progress-bar.dev/0)
+  - Fixes for 'Breeder' Zombie Class.
   - Fix 'fake_pickup'
   - Add Models from Headcrab Classes to Victim's Head.
   - Add Barnacle Weapon for Breeder Zombie Class.
