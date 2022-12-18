@@ -64,17 +64,16 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 {
 	void Spawn()
 	{
-		self.pev.solid = SOLID_SLIDEBOX;
-		self.pev.movetype = MOVETYPE_STEP;
 		//Monster Stuff
 		self.MonsterInitDead();
+
+		self.pev.solid = SOLID_NOT;
 		
 		self.SetPlayerAlly(false);
 	}
-	
-	int	Classify()
-	{
-		return self.GetClassification(CLASS_HUMAN_MILITARY);
+
+	int Classify() {
+		return CLASS_HUMAN_PASSIVE;
 	}
 	
 	void CopyMonster(CBaseMonster@ monster) {
@@ -113,8 +112,8 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		self.pev.flags = monster.pev.flags;
 		
 		//Setup
-		Setup_Eatable(monster.pev.model,monster.pev.mins,monster.pev.maxs,monster.pev.skin,monster.pev.body,
-										monster.pev.origin,monster.pev.velocity,monster.pev.angles,monster.BloodColor());
+		Setup_Eatable(monster.pev.model,monster.pev.skin,monster.pev.body,
+				monster.pev.origin,monster.pev.velocity,monster.pev.angles,monster.BloodColor());
 		//Animate
 		Animate_Eatable(monster.pev.frame,monster.pev.framerate,monster.pev.animtime,monster.pev.sequence);
 		
@@ -122,10 +121,9 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		g_EntityFuncs.Remove(monster);
 	}
 	
-	void Setup_Eatable(string model,Vector mins,Vector maxs,int skin,int body,Vector createOrigin,Vector velocity,Vector createAngles,int bc) {
+	void Setup_Eatable(string model,int skin,int body,Vector createOrigin,Vector velocity,Vector createAngles,int bc) {
 		g_EntityFuncs.SetModel(self,model);
-		//g_EntityFuncs.SetSize(self.pev,mins,maxs);
-		g_EntityFuncs.SetSize(self.pev,Vector(-2,-2,0),Vector(2,2,18));
+		g_EntityFuncs.SetSize(self.pev,Vector(-9,-18,0),Vector(9,18,9));
 		
 		self.pev.skin = skin;
 		self.pev.body = body;
@@ -136,8 +134,6 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		self.pev.angles = createAngles;
 		
 		self.m_bloodColor = bc;
-		
-		//self.SetObjectCollisionBox();
 		
 		self.pev.health = 1.5;
 		self.pev.takedamage = DAMAGE_YES;
@@ -164,6 +160,7 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	//Thinking
 	void Eatable_Think() {
 		self.pev.nextthink = g_Engine.time + 0.1;
+
 		
 		Unstuck::UnstuckEntity(self);
 	}

@@ -635,69 +635,87 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			
 			Math.MakeVectors( m_pPlayer.pev.v_angle );
 			Vector vecSrc	= m_pPlayer.GetGunPosition();
-			Vector vecEnd	= vecSrc + g_Engine.v_forward * 80;
+			Vector vecEnd	= vecSrc + g_Engine.v_forward * 40;
 			
 			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
 			
-			// hit
-			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
+			//Get 1 Monster near the looking point
+			array<CBaseEntity@>MonstersAround(150);
+			g_EntityFuncs.MonstersInSphere(@MonstersAround,tr.vecEndPos,20.0);
+			CBaseEntity@ pEntity;
+
+			for(uint i=0;i<MonstersAround.length();i++)
+			{
+				CBaseEntity@ tempEnt = MonstersAround[i];
+				if(tempEnt !is null
+				&& tempEnt.Classify() != CLASS_NONE
+				&& tempEnt.Classify() != CLASS_MACHINE
+				&& tempEnt.BloodColor() != DONT_BLEED)
+				{
+					bool brkNow = false;
+					for(uint i1=0;i1<Eatable.length();i1++)
+					{
+						if(tempEnt.pev.classname == Eatable[i1])
+						{
+							@pEntity = MonstersAround[i];
+							brkNow = true;
+							break;
+						}
+					}
+
+					if(brkNow) break;
+				}
+			}
 			
 			if( pEntity !is null )
 			{
-				if( pEntity.Classify() != CLASS_NONE && pEntity.Classify() != CLASS_MACHINE && pEntity.BloodColor() != DONT_BLEED )
+				if(pEntity.IsMonster() && !pEntity.IsPlayer() && !pEntity.IsAlive() && self.m_flNextPrimaryAttack < g_Engine.time)
 				{
-					if(pEntity.IsMonster() && !pEntity.IsPlayer() && !pEntity.IsAlive() && self.m_flNextPrimaryAttack < g_Engine.time) {
-						for(uint i=0;i<Eatable.length();i++) {
-							if(pEntity.pev.classname == Eatable[i]) {
-								CBaseMonster@ eatable_monster = pEntity.MyMonsterPointer();
-								//g_Log.PrintF("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n");
+					CBaseMonster@ eatable_monster = pEntity.MyMonsterPointer();
+					//g_Log.PrintF("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n");
+					
+					eatable_monster.TraceBleed(0.1, eatable_monster.pev.origin + Vector(0,0,2), tr, DMG_CLUB);
+					eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_CLUB);
+						
+					//m_pPlayer.pev.armortype = m_pPlayer.pev.armortype + 1;
+					m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue + 1;
 								
-								eatable_monster.TraceBleed(0.1, eatable_monster.pev.origin + Vector(0,0,2), tr, DMG_CLUB);
-								eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_CLUB);
+					//Regen our Headcrab
+					if(m_pPlayer.pev.health < m_pPlayer.pev.max_health)
+						m_pPlayer.pev.health = m_pPlayer.pev.health + 1;
 								
-								//m_pPlayer.pev.armortype = m_pPlayer.pev.armortype + 1;
-								m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue + 1;
+					//Gain Gene Points
+					//GenePts_Holder[pId]++;
+					Gene_Points::AddPoints(pId,Math.RandomLong(0,3));
 								
-								//Regen our Headcrab
-								if(m_pPlayer.pev.health < m_pPlayer.pev.max_health)
-									m_pPlayer.pev.health = m_pPlayer.pev.health + 1;
-								
-								//Gain Gene Points
-								//GenePts_Holder[pId]++;
-								Gene_Points::AddPoints(pId,Math.RandomLong(0,3));
-								
-								//if(m_pPlayer.pev.weaponanim != ZM_EAT && EatingTime < g_Engine.time) {
-								if(EatingTime < g_Engine.time) {
-									self.DefaultDeploy( self.GetV_Model(self.GetV_Model(ZClass.VIEW_MODEL)),
-												self.GetP_Model(P_MODEL), ZM_EAT, "rpg", 0, ZClass.VIEW_MODEL_BODY_ID);
-									m_pPlayer.SetAnimation(PLAYER_RELOAD);
-									EatingTime = g_Engine.time + 0.9;
-									zm_DegenTime = g_Engine.time + 2.0;
-									self.m_flTimeWeaponIdle = g_Engine.time + 3.0;
-								}
-								
-								int random_sound = Math.RandomLong(0,2);
-								switch(random_sound) {
-									case 0: {
-										g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite1.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
-										break;
-									}
-									case 1: {
-										g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite2.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
-										break;
-									}
-									case 2: {
-										g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite3.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
-										break;
-									}
-								}
-								
-								self.m_flNextPrimaryAttack = g_Engine.time + 0.8;
-								self.m_flNextSecondaryAttack = g_Engine.time + 0.8;
-								break;
-							}
+					//if(m_pPlayer.pev.weaponanim != ZM_EAT && EatingTime < g_Engine.time) {
+					if(EatingTime < g_Engine.time) {
+						self.DefaultDeploy( self.GetV_Model(self.GetV_Model(ZClass.VIEW_MODEL)),
+									self.GetP_Model(P_MODEL), ZM_EAT, "rpg", 0, ZClass.VIEW_MODEL_BODY_ID);
+						m_pPlayer.SetAnimation(PLAYER_RELOAD);
+						EatingTime = g_Engine.time + 0.9;
+						zm_DegenTime = g_Engine.time + 2.0;
+						self.m_flTimeWeaponIdle = g_Engine.time + 3.0;
+					}
+							
+					int random_sound = Math.RandomLong(0,2);
+					switch(random_sound) {
+						case 0: {
+							g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite1.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
+							break;
+						}
+						case 1: {
+							g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite2.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
+							break;
+						}
+						case 2: {
+							g_SoundSystem.EmitSoundDyn(m_pPlayer.edict(),CHAN_BODY,"bullchicken/bc_bite3.wav",1,ATTN_NORM,0,94+Math.RandomLong(0,0xF));
+							break;
 						}
 					}
+							
+					self.m_flNextPrimaryAttack = g_Engine.time + 0.8;
+					self.m_flNextSecondaryAttack = g_Engine.time + 0.8;
 				}
 			}
 		} else if((player_buttons & IN_USE) != 0 && (player_old_buttons & IN_USE) != 0) {
