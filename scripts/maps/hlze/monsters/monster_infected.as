@@ -281,6 +281,9 @@ class Infected : ScriptBaseMonsterEntity {
 							InfectorPlayer.pev.renderfx = kRenderFxNone;
 							InfectorPlayer.pev.renderamt = 255;
 							
+							//Remove GodMode
+							InfectorPlayer.m_iEffectInvulnerable = 0;
+
 							if(InfectorPlayer.IsAlive()) {
 								InfectorPlayer.KeyValue("$i_infected_type",infected_type);
 								InfectorPlayer.KeyValue("$i_infected_type_maskless",zombie_isMaskLess);

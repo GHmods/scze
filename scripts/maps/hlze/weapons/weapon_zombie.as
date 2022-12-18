@@ -1196,10 +1196,19 @@ void ZClass_Ability_ON(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer
 		zclaw.zm_ability_timer = g_Engine.time;
 		zclaw.zm_ability_state = 1;
 	} else if(ZClass.Abilities[0].Name == "Move Command") {
+		/*
 		z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
 							z_wpn.GetP_Model(P_MODEL), ZM_COMMAND_ATTACK,"shotgun",0,ZClass.VIEW_MODEL_BODY_ID);
 		m_pPlayer.SetAnimation(PLAYER_RELOAD);
+		*/
+		z_wpn.SendWeaponAnim(ZM_COMMAND_ATTACK,0,ZClass.VIEW_MODEL_BODY_ID);
 		
+		m_pPlayer.m_Activity = ACT_RELOAD;
+		m_pPlayer.pev.sequence = 116;
+		m_pPlayer.pev.frame = 0.0000001f;
+		m_pPlayer.ResetSequenceInfo();
+		m_pPlayer.pev.framerate = 1.0;
+
 		z_wpn.m_flNextSecondaryAttack = g_Engine.time + 3.4;
 		z_wpn.m_flNextTertiaryAttack = g_Engine.time + 3.4;
 		z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.4;
