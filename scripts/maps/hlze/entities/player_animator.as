@@ -12,6 +12,15 @@ namespace PlayerAnimator{
 		AnimationTimer[pId] = g_Engine.time + delay;
 	}
 	
+	void Force_Animation(CBasePlayer@ pPlayer, int animId, float frameRate = 1.0)
+	{
+		pPlayer.m_Activity = ACT_RELOAD;
+		pPlayer.pev.sequence = animId;
+		pPlayer.pev.frame = 0.0000001f;
+		pPlayer.ResetSequenceInfo();
+		pPlayer.pev.framerate = frameRate;
+	}
+
 	HookReturnCode PlayerThink(CBasePlayer@ pPlayer)
 	{
 		int pId = pPlayer.entindex();

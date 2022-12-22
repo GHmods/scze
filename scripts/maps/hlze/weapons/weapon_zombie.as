@@ -1203,11 +1203,7 @@ void ZClass_Ability_ON(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer
 		*/
 		z_wpn.SendWeaponAnim(ZM_COMMAND_ATTACK,0,ZClass.VIEW_MODEL_BODY_ID);
 		
-		m_pPlayer.m_Activity = ACT_RELOAD;
-		m_pPlayer.pev.sequence = 116;
-		m_pPlayer.pev.frame = 0.0000001f;
-		m_pPlayer.ResetSequenceInfo();
-		m_pPlayer.pev.framerate = 1.0;
+		PlayerAnimator::Force_Animation(m_pPlayer,116,1.0);
 
 		z_wpn.m_flNextSecondaryAttack = g_Engine.time + 3.4;
 		z_wpn.m_flNextTertiaryAttack = g_Engine.time + 3.4;
@@ -1516,11 +1512,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						
 						z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
 							z_wpn.GetP_Model(P_MODEL), ZM_COMMAND_RESSURECT, "sniper", 0, ZClass.VIEW_MODEL_BODY_ID);
-						m_pPlayer.m_Activity = ACT_RELOAD;
-						m_pPlayer.pev.sequence = 162;
-						m_pPlayer.pev.frame = 0.0000001f;
-						m_pPlayer.ResetSequenceInfo();
-						m_pPlayer.pev.framerate = 0.7;
+						
+						PlayerAnimator::Force_Animation(m_pPlayer, 162, 0.7);
 
 						ZClass.Ability_Timer[pId] = g_Engine.time + 15.0;
 						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 3.1;
@@ -1648,6 +1641,9 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	//Reset Abilities if we leave body or something
 	//Aquire ZClass from HClass ID
 	Zombie_Class@ zc = ZClasses::Zombie_Classes[HClass_Holder[pId]];
+	if(zc.Abilities.length() <= 0)
+		return;
+	
 	for(uint a=0;a<zc.Abilities.length();a++)
 	{
 		if(zc.Abilities[a].Unlocked[pId] && isZombie!=1)
