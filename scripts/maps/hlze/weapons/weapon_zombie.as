@@ -1563,6 +1563,17 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 							&& pMonster.IRelationship(m_pPlayer) == R_AL)
 							{
 								pMonster.Revive();
+								//Give weapons if this is player
+								if(pMonster.IsPlayer()) {
+									//Convert it to CBasePlayer
+									CBasePlayer@ revPlayer = cast<CBasePlayer@>(pMonster);
+									int rev_pId = revPlayer.entindex();
+									if(revPlayer.HasNamedPlayerItem("weapon_zclaws") !is null) {
+										SaveLoad::Give_HLZE_Weapons(rev_pId,0);
+									} else {
+										SaveLoad::Give_HLZE_Weapons(rev_pId);
+									}
+								}
 								break;
 							}
 						}

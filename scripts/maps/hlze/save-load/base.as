@@ -147,13 +147,13 @@ namespace SaveLoad {
 	void SpawnAsDelay(const int& in index)
 	{
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
-		if(pPlayer !is null)
+		if(pPlayer !is null && pPlayer.IsAlive())
 			PlayerSpawn(pPlayer);
 	}
 
 	void SpawnAs(const int& in index) {
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
-		
+
 		if(!EverythingIsReady4Player(index)) {
 			pPlayer.RemoveAllItems(false);
 			g_Scheduler.SetTimeout("SpawnAsDelay", 0.2, index);
@@ -189,6 +189,37 @@ namespace SaveLoad {
 				//Turn this player into headcrab
 				pPlayer.GiveNamedItem("weapon_hclaws");
 			}
+		}
+	}
+
+	void Give_HLZE_Weapons(const int& in index, int giveType=-1) {
+		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
+		
+		//Remove All Weapons from Player
+		pPlayer.RemoveAllItems(false);
+		pPlayer.SetItemPickupTimes(0);
+		//Get Player KeyValues
+		CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+		int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+		if(giveType<0) {
+			//If this player is a zombie
+			if(isZombie==1) {
+				//Give 'weapon_zclaws'
+				pPlayer.GiveNamedItem("weapon_zclaws");
+				HClass_Holder[index] = ZClass_Holder[index];
+				HClass_Mutation_Holder[index] = ZClass_Holder[index];
+			} else {
+				//Turn this player into headcrab
+				pPlayer.GiveNamedItem("weapon_hclaws");
+			}
+		} else if(giveType==0) {
+			//Give 'weapon_zclaws'
+			pPlayer.GiveNamedItem("weapon_zclaws");
+			HClass_Holder[index] = ZClass_Holder[index];
+			HClass_Mutation_Holder[index] = ZClass_Holder[index];
+		} else {
+			//Turn this player into headcrab
+			pPlayer.GiveNamedItem("weapon_hclaws");
 		}
 	}
 	
