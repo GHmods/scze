@@ -1457,21 +1457,26 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 							zclaw.zm_ability_state = 0;
 							zclaw.zm_LastHealth = m_pPlayer.pev.armorvalue;
 							z_wpn.SendWeaponAnim(ZM_SHIELD_END,0,ZClass.VIEW_MODEL_BODY_ID);
-							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
-							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
-							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
-							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+							m_pPlayer.set_m_szAnimExtension("python");
+							PlayerAnimator::Force_Animation(m_pPlayer,111,0.8);
+							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.2;
+							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.2;
+							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.2;
+							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.2;
 
 							m_pPlayer.pev.rendermode = kRenderNormal;
 							m_pPlayer.pev.renderfx = kRenderFxNone;
 						} else {
 							zclaw.zm_ability_state = 4;
 							zclaw.zm_LastHealth = m_pPlayer.pev.armorvalue;
-							z_wpn.SendWeaponAnim(ZM_SHIELD_START,0,ZClass.VIEW_MODEL_BODY_ID);
-							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
-							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
-							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
-							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+							//z_wpn.SendWeaponAnim(ZM_SHIELD_START,0,ZClass.VIEW_MODEL_BODY_ID);
+							z_wpn.DefaultDeploy(z_wpn.GetV_Model(ZClass.VIEW_MODEL),
+								z_wpn.GetP_Model(P_MODEL), ZM_SHIELD_START, "saw", 0, ZClass.VIEW_MODEL_BODY_ID);
+							PlayerAnimator::Force_Animation(m_pPlayer,169,0.7);
+							z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.2;
+							z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.2;
+							z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.2;
+							z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.2;
 						}
 					}
 				} else {
@@ -1479,10 +1484,10 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 					if(zclaw.zm_ability_state == 4)
 					{
 						//Prevent Idling/Attacking
-						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.0;
-						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.0;
+						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 0.5;
+						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 0.5;
 						//z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.0;
-						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.0;
+						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 0.5;
 
 						m_pPlayer.pev.rendermode = kRenderNormal;
 						m_pPlayer.pev.renderfx = kRenderFxGlowShell;
@@ -1631,10 +1636,12 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						
 						zclaw.zm_ability_state = 0;
 						z_wpn.SendWeaponAnim(ZM_SHIELD_END,0,ZClass.VIEW_MODEL_BODY_ID);
-						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 2.0;
-						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 2.0;
-						z_wpn.m_flNextSecondaryAttack = g_Engine.time + 2.0;
-						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 2.0;
+						m_pPlayer.set_m_szAnimExtension("python");
+						PlayerAnimator::Force_Animation(m_pPlayer,111,0.8);
+						z_wpn.m_flTimeWeaponIdle = g_Engine.time + 1.2;
+						z_wpn.m_flNextPrimaryAttack = g_Engine.time + 1.2;
+						z_wpn.m_flNextSecondaryAttack = g_Engine.time + 1.2;
+						z_wpn.m_flNextTertiaryAttack = g_Engine.time + 1.2;
 
 						m_pPlayer.pev.rendermode = kRenderNormal;
 						m_pPlayer.pev.renderfx = kRenderFxNone;
