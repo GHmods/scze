@@ -5,6 +5,7 @@
 - This mod is in early stages, don't expect proficiency in code since im not a professional coder.
 - I will try to update this mod more frequently.
 
+# Visit the <a href="https://ghmods.github.io/scze-website">website</a> for this mod.
 
 # Want to support my work?
 - ☕ <a href="https://www.buymeacoffee.com/GHmods">You can buy me a coffee!</a>
