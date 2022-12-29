@@ -36,16 +36,18 @@ namespace zAbilityHud {
 
 		return HOOK_CONTINUE;
 	}
-	
-	HookReturnCode PlayerThink(CBasePlayer@ pPlayer)
-	{
-		if( pPlayer is null ) //Null pointer checker
-			return HOOK_CONTINUE;
-		
-		UpdateBabyCrabs(pPlayer);
-		UpdateMassRessurection(pPlayer);
 
-		return HOOK_CONTINUE;
+	void zHudThink()
+	{
+		for(uint i=0;i<33;i++) {
+			CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(i);
+			if(pPlayer !is null) {
+				UpdateBabyCrabs(pPlayer);
+				UpdateMassRessurection(pPlayer);
+			}
+		}
+
+		g_Scheduler.SetTimeout("zHudThink", 1.0);
 	}
 
 	void ShowBabyCrabs(CBasePlayer@ pPlayer, int ammo,int MaxAmmo)

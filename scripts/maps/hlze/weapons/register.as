@@ -20,5 +20,5 @@ void RegisterWeapons() {
 	ZombieBC_Precache(); //Stuff Needed for Babycrabs Weapon
 	zAbilityHud::Precache();
 	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, zAbilityHud::PlayerQuit);
-	g_Hooks.RegisterHook(Hooks::Player::PlayerPostThink, zAbilityHud::PlayerThink);
+	g_Scheduler.SetTimeout("zHudThink", 1.0);
 }
