@@ -37,19 +37,6 @@ namespace zAbilityHud {
 		return HOOK_CONTINUE;
 	}
 
-	void zHudThink()
-	{
-		for(uint i=0;i<33;i++) {
-			CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(i);
-			if(pPlayer !is null) {
-				UpdateBabyCrabs(pPlayer);
-				UpdateMassRessurection(pPlayer);
-			}
-		}
-
-		g_Scheduler.SetTimeout("zHudThink", 1.0);
-	}
-
 	void ShowBabyCrabs(CBasePlayer@ pPlayer, int ammo,int MaxAmmo)
 	{
 		int pId = pPlayer.entindex();
@@ -279,4 +266,25 @@ namespace zAbilityHud {
 			MR_State[pId] = false;
 		}
 	}
+}
+
+void zHudThink()
+{
+	for(uint i=0;i<33;i++) {
+		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(i);
+		if(pPlayer !is null) {
+			zAbilityHud::UpdateBabyCrabs(pPlayer);
+			zAbilityHud::UpdateMassRessurection(pPlayer);
+			//Hide HUD if this player is not Zombie
+			CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+			int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+			if(isZombie!=1) {
+				g_PlayerFuncs.HudToggleElement(pPlayer,5,false);
+				g_PlayerFuncs.HudToggleElement(pPlayer,6,false);
+				g_PlayerFuncs.HudToggleElement(pPlayer,7,false);
+			}
+		}
+	}
+
+	g_Scheduler.SetTimeout("zHudThink", 1.0);
 }
