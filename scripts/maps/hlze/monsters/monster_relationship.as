@@ -1,4 +1,6 @@
 //Set Monster Relationship Sven Co-op Zombie Edition
+//Code for our Custom Entities
+#include "npcs/npc_register"
 
 array<string>Enemies = {
 	"monster_apache",
@@ -62,7 +64,8 @@ array<string>Allies = {
 	"monster_tentacle",
 	"monster_zombie",
 	"monster_zombie_barney",
-	"monster_zombie_soldier"
+	"monster_zombie_soldier",
+	"monster_hlze_zombie" //Our Custom NPC
 };
 
 array<string>Team1 = {
@@ -83,7 +86,7 @@ array<string>Team2 = {
 	"monster_hgrunt_dead"
 };
 
-void SetAllies()
+void RelationshipProcess()
 {
 	//Find all monsters
 	array<CBaseEntity@>Monsters(1000);
@@ -92,14 +95,16 @@ void SetAllies()
 	for(uint i=0;i<Monsters.length();i++) {
 		CBaseEntity@ ent = Monsters[i];
 		//Check if the entity is not NULL
-		if(ent !is null) {
+		if(ent !is null)
+		{
 			//Check if is Monster and not Player
 			if(ent.IsMonster() && !ent.IsPlayer())
 			{
 				//g_Log.PrintF("["+i+"] Found: "+ent.pev.classname);
 				//Get Monster Base from this Entity
 				CBaseMonster@ ent_monster = ent.MyMonsterPointer();
-				if(ent_monster !is null) {
+				if(ent_monster !is null)
+				{
 					for(uint i1=0;i1<Enemies.length();i1++) {
 						if(ent_monster.pev.classname == Enemies[i1]) {
 							if(ent_monster.IsPlayerAlly())
@@ -112,6 +117,24 @@ void SetAllies()
 							ent_monster.SetPlayerAllyDirect(true);
 						}
 					}
+
+					//Replace Some Monsters (Used for HLZE Custom NPCS)
+					if(ent_monster.pev.classname == "monster_zombie")
+					{
+						dictionary keys;
+						keys["origin"] = ""+ent_monster.pev.origin.ToString();
+						keys["angles"] = ""+ent_monster.pev.angles.ToString();
+						keys["spawnflags"] = ""+ent_monster.pev.flags;
+						keys["body"] = ""+ent_monster.pev.body;
+						keys["skin"] = ""+ent_monster.pev.skin;
+						keys["health"] = ""+ent_monster.pev.health;
+						keys["targetname"] = ""+ent_monster.pev.targetname;
+						CBaseEntity@ replacedEnt = g_EntityFuncs.CreateEntity("monster_hlze_zombie", keys);
+						HLZE_Zombie::CHLZE_Zombie@ replacedMonster = cast<HLZE_Zombie::CHLZE_Zombie@>(CastToScriptClass(replacedEnt));
+						g_EntityFuncs.Remove(ent_monster);
+						replacedMonster.Setup_Zombie(-1,true);
+						g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
+					}
 				}
 				
 				Set_Team(ent);
@@ -122,7 +145,7 @@ void SetAllies()
 		}
 	}
 	
-	g_Scheduler.SetTimeout( "SetAllies", 1.0);
+	g_Scheduler.SetTimeout( "RelationshipProcess", 1.0);
 }
 
 void Set_Team(CBaseEntity@ ent)
@@ -156,14 +179,18 @@ void BarnacleFix()
 	Vector maxs = Vector(99999999.0,99999999.0,99999999.0);
 	g_EntityFuncs.EntitiesInBox(Ents, mins, maxs, 0);
 	
-	for(uint i=0;i<Ents.length();i++) {
+	for(uint i=0;i<Ents.length();i++)
+	{
 		CBaseEntity@ ent = Ents[i];
 		//Check if the entity is not NULL
-		if(ent !is null) {
+		if(ent !is null)
+		{
 			//Get Monster Base from this Entity
 			CBaseMonster@ ent_monster = ent.MyMonsterPointer();
-			if(ent_monster !is null) {
-				if(ent_monster.pev.classname=="monster_barnacle") {
+			if(ent_monster !is null)
+			{
+				if(ent_monster.pev.classname=="monster_barnacle")
+				{
 					//If this is barnacle, try to recreate it as ally
 					dictionary keys;
 					keys["origin"] = ""+ent_monster.pev.origin.ToString();

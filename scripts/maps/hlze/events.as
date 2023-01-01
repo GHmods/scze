@@ -1,6 +1,4 @@
 //Events file for Sven Co-op Zombie Edition
-#include "monster_relationship" //Set Monster Relationship
-
 #include "entities/player_animator"
 #include "classes/zombie_classes"
 #include "classes/headcrab_classes"
@@ -20,10 +18,6 @@ void Events_PluginInit()
 
 void Events_MapInit()
 {
-	//Monster Relationship
-	g_Scheduler.SetTimeout( "SetAllies", 1.0);
-	g_Scheduler.SetTimeout( "BarnacleFix", 5.0);
-	
 	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, @PlayerJoin);
 	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, @PlayerQuit);
 	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink,@Event_PlayerThink);
