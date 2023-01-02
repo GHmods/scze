@@ -62,6 +62,7 @@ I don't know, email me.
 - Zombie Players can use all rotating doors('func_door_rotating') with targetnames: 'ds1', 'd1', 'd2', 'd3',...,'d9';
 - To make Zombie Players open rotating doors('func_door_rotating'), use 'trigger_multiple'; (See Examples Folder)
 - More defines can be defined in 'entities/multisource.as'
+
 For More Doors:
 ```
 array<array<string>>DoorEntities = { ... };
