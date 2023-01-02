@@ -160,7 +160,7 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 		m_pPlayer.SetOverriddenPlayerModel(HClass.PLAYER_MODEL);
 		
 		m_pPlayer.SetMaxSpeed(HClass.Get_MaxSpeed());
-		
+
 		//Wait for attack
 		if(attacking) {
 			TraceResult tr;
@@ -498,7 +498,6 @@ HookReturnCode HC_Think(CBasePlayer@ pPlayer, uint& out dummy )
 	int index = pPlayer.entindex();
 	
 	//HC_VisionProcess(pPlayer);
-	
 	CBasePlayerWeapon@ pWpn = Get_Weapon_FromPlayer(pPlayer,"weapon_hclaws");
 	weapon_hclaws@ hclaws = cast<weapon_hclaws@>(CastToScriptClass(pWpn));
 	
@@ -518,7 +517,7 @@ HookReturnCode HC_Think(CBasePlayer@ pPlayer, uint& out dummy )
 			g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, "[Example] Write in console: bind f darkvision\n");
 		}
 	}
-	
+
 	return HOOK_CONTINUE;
 }
 
@@ -548,8 +547,7 @@ void HC_VisionProcess(const CCommand@ args)
 			m_pPlayer.KeyValue("$i_hc_vision",false);
 			//g_PlayerFuncs.ClientPrint(m_pPlayer, HUD_PRINTTALK, "Darkvision Deactivated!\n");
 		}
-
-		SaveLoad_GenePoints::SaveData(m_pPlayer.entindex());
+		SaveLoad_KeyValues::SaveData(m_pPlayer.entindex());
 	} else if(pvpvm::TeamChosen[m_pPlayer.entindex()] == PVPVM_HUMAN){
 		if(m_pPlayer.FlashlightIsOn()) m_pPlayer.FlashlightTurnOff();
 		else m_pPlayer.FlashlightTurnOn();
