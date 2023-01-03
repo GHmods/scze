@@ -2,6 +2,7 @@
 	Infected Monster
 */
 #include "../classes/headcrab_classes"
+#include "npcs/npc_register"
 
 array<string>Infect_Sounds = {
 	"vox/zombie_pain1.wav",
@@ -345,20 +346,22 @@ class Infected : ScriptBaseMonsterEntity
 						}
 					} else {
 						
-						CBaseEntity@ zombie;
-						@zombie = g_EntityFuncs.CreateEntity("monster_zombie");
-						
-						zombie.MyMonsterPointer().SetPlayerAllyDirect(true);
+						CBaseEntity@ zombieEnt = g_EntityFuncs.CreateEntity("monster_hlze_zombie");
+						CBaseMonster@ zombieMonster = zombieEnt.MyMonsterPointer();
+						HLZE_Zombie::CHLZE_Zombie@ zombie = cast<HLZE_Zombie::CHLZE_Zombie@>(CastToScriptClass(zombieEnt));
 						
 						zombie.pev.origin = createOrigin;
 						zombie.pev.angles = createAngles;
-						zombie.MyMonsterPointer().StartPlayerFollowing(Infector, false);
+
+						zombieMonster.SetPlayerAllyDirect(true);
+						zombieMonster.StartPlayerFollowing(Infector, false);
 						
-						if(infected_type==INFECTED_SCIENTIST) zombie.MyMonsterPointer().m_FormattedName = "Infected Scientist";
-						else if(infected_type==INFECTED_GUARD) zombie.MyMonsterPointer().m_FormattedName = "Infected Guard";
-						else if(infected_type==INFECTED_HGRUNT) zombie.MyMonsterPointer().m_FormattedName = "Infected Human Grunt";
+						if(infected_type==INFECTED_SCIENTIST) zombieMonster.m_FormattedName = "Infected Scientist";
+						else if(infected_type==INFECTED_GUARD) zombieMonster.m_FormattedName = "Infected Guard";
+						else if(infected_type==INFECTED_HGRUNT) zombieMonster.m_FormattedName = "Infected Human Grunt";
 						
-						zombie.MyMonsterPointer().pev.body = zombie_body;
+						zombie.pev.body = zombie_body;
+						zombie.Setup_Zombie(-1,true);
 					}
 				}
 				g_EntityFuncs.Remove(self);

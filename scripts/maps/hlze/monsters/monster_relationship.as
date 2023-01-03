@@ -133,7 +133,7 @@ void RelationshipProcess()
 						HLZE_Zombie::CHLZE_Zombie@ replacedMonster = cast<HLZE_Zombie::CHLZE_Zombie@>(CastToScriptClass(replacedEnt));
 						g_EntityFuncs.Remove(ent_monster);
 						replacedMonster.Setup_Zombie(-1,true);
-						g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
+						//g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
 					}
 				}
 				

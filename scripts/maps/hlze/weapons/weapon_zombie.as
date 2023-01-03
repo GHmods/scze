@@ -1565,11 +1565,12 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 							@pMonster = MonstersAround[i].MyMonsterPointer();
 
 							if(pMonster !is null && !pMonster.IsAlive()
-							&& pMonster.IRelationship(m_pPlayer) == R_AL)
+							&& pMonster.IRelationship(m_pPlayer) == R_AL
+							&& pMonster.IsRevivable())
 							{
-								pMonster.Revive();
 								//Give weapons if this is player
 								if(pMonster.IsPlayer()) {
+									pMonster.Revive();
 									//Convert it to CBasePlayer
 									CBasePlayer@ revPlayer = cast<CBasePlayer@>(pMonster);
 									int rev_pId = revPlayer.entindex();
@@ -1578,6 +1579,9 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 									} else {
 										SaveLoad::Give_HLZE_Weapons(rev_pId);
 									}
+								} else {
+									pMonster.BeginRevive(0.01);
+									pMonster.EndRevive(0.5);
 								}
 								break;
 							}
