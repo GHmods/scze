@@ -100,14 +100,6 @@ const float zombieSlashDist		= 70.0;
 const float zombieDmgOneSlash		= 25.0;
 const float zombieDmgBothSlash		= 50.0;
 
-enum ZombieTypes {
-	INFECTED_NONE = 0,
-	INFECTED_SCIENTIST,
-	INFECTED_GUARD,
-	INFECTED_HGRUNT,
-	INFECTED_HGRUNT_MASKLESS,
-	INFECTED_MASSN,
-}
 const int INFECTED_ID_MASK		= 3;
 
 class CHLZE_Zombie : ScriptBaseMonsterEntity

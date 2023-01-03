@@ -192,12 +192,13 @@ void Infected_Process_Player(CBaseMonster@ monster, CBasePlayer@ m_pPlayer) {
 		}
 	}
 	ent.infected_first_body = monster.pev.body;
-	ent.BigProcess();
 	
 	ent.isInfectedByPlayer = true;
 	@ent.InfectorPlayer = m_pPlayer;
 	
 	ent.pev.angles = createAngles;
+
+	ent.BigProcess();
 	
 	//Lock the Player
 	m_pPlayer.pev.flags |= FL_FROZEN;

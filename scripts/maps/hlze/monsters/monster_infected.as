@@ -1,6 +1,7 @@
 /*
 	Infected Monster
 */
+#include "../classes/headcrab_classes"
 
 array<string>Infect_Sounds = {
 	"vox/zombie_pain1.wav",
@@ -13,31 +14,37 @@ array<string>Infect_Sounds = {
 };
 
 array<string>Infectable = {
+	"",
 	"monster_scientist",
 	"monster_barney",
 	"monster_human_grunt"
 };
 
-enum InfectedType
-{
-	INFECTED_SCIENTIST = 0,
+enum InfectionType {
+	INFECTED_NONE = 0,
+	INFECTED_SCIENTIST,
 	INFECTED_GUARD,
-	//INFECTED_MASSN,
-	INFECTED_HGRUNT
+	INFECTED_HGRUNT,
+	INFECTED_HGRUNT_MASKLESS,
+	INFECTED_MASSN
 };
 
 array<string>InfectedModels = {
+	"models/hlze/null.mdl",
 	"models/hlze/scientist.mdl",
 	"models/hlze/barney.mdl",
 	"models/hlze/hgrunt.mdl"
 };
 
-array<array<int>>InfectedData = {
-	//BODY, SKIN, ZOMBIE BODY ID
-		{4,2,0}, //Scientist
-		{10,1,6}, //Guard
-		{16,2,12}, //Human Grunt Without Mask
-		{17,2,17} //Human Grunt With Mask
+
+//ZOMBIE BODY ID
+array<int>InfectedZombieData = {
+	0, //None
+	0, //Scientist
+	6, //Guard
+	18, //Human Grunt With Mask
+	12, //Human Grunt Without Mask
+	4 //MASSN
 };
 
 array<string>InfectedPlayerModels = {
@@ -69,7 +76,8 @@ void Register_Infected(const string& in szName = "monster_infected")
 	PrecacheSounds(Infect_Sounds);
 }
 
-class Infected : ScriptBaseMonsterEntity {
+class Infected : ScriptBaseMonsterEntity
+{
 	CBaseEntity@ Infector = null;
 	private int Infection_State = 0;
 	private float Infection_Timer = g_Engine.time;
@@ -103,7 +111,8 @@ class Infected : ScriptBaseMonsterEntity {
 		self.pev.framerate = 1.0;
 	}
 	
-	void BigProcess() {
+	void BigProcess()
+	{
 		//Validate stuff before doing anything
 		g_Log.PrintF("Trying to Infect: "+infected_class+"\n");
 		
@@ -137,26 +146,63 @@ class Infected : ScriptBaseMonsterEntity {
 		}
 		
 		//Body ID Depends on Infected Type
+		//Get 'InfectionInfo' from Player's HClass
+		Headcrab_Class@ pHClass = HClasses::Headcrab_Classes[0];
+
+		if(isInfectedByPlayer && InfectorPlayer !is null) //Check if Infector is Player
+		{
+			@pHClass = Get_HeadcrabClass_FromPlayer(InfectorPlayer);
+		}
+
+		InfectionInfo@ infection_info = @pHClass.infection_info;
+
+		g_Log.PrintF("Infected by: '"+pHClass.Name+"'.\n");
+		
 		if(infected_type==INFECTED_SCIENTIST) {
-			self.pev.body = InfectedData[INFECTED_SCIENTIST][0];
-			self.pev.skin = InfectedData[INFECTED_SCIENTIST][1];
-			zombie_body = InfectedData[INFECTED_SCIENTIST][2];
+			self.pev.skin = infection_info.SkinId_Scientist;
+			for(uint b=0;b<infection_info.BodyScientist.length();b++) {
+				self.SetBodygroup(
+					infection_info.BodyScientist[b][0],
+					infection_info.BodyScientist[b][1]
+				);
+			}
 		} else if(infected_type==INFECTED_GUARD) {
-			self.pev.body = InfectedData[INFECTED_GUARD][0];
-			self.pev.skin = InfectedData[INFECTED_GUARD][1];
-			zombie_body = InfectedData[INFECTED_GUARD][2];
+			self.pev.skin = infection_info.SkinId_Guard;
+			for(uint b=0;b<infection_info.BodyGuard.length();b++) {
+				self.SetBodygroup(
+					infection_info.BodyGuard[b][0],
+					infection_info.BodyGuard[b][1]
+				);
+			}
 		} else if(infected_type==INFECTED_HGRUNT) {
-			int dataID = INFECTED_HGRUNT+1;
+			int dataID = INFECTED_HGRUNT;
 			if(zombie_isMaskLess)
-				dataID = INFECTED_HGRUNT;
+				dataID = INFECTED_HGRUNT_MASKLESS;
 			
-			self.pev.body = InfectedData[dataID][0];
-			self.pev.skin = InfectedData[dataID][1];
-			zombie_body = InfectedData[dataID][2];
+			if(dataID==INFECTED_HGRUNT) {
+				self.pev.skin = infection_info.SkinId_HGrunt;
+				for(uint b=0;b<infection_info.BodyHGrunt.length();b++) {
+					self.SetBodygroup(
+						infection_info.BodyHGrunt[b][0],
+						infection_info.BodyHGrunt[b][1]
+					);
+				}
+			} else {
+				self.pev.skin = infection_info.SkinId_HGruntMaskless;
+				for(uint b=0;b<infection_info.BodyHGruntMaskless.length();b++) {
+					self.SetBodygroup(
+						infection_info.BodyHGruntMaskless[b][0],
+						infection_info.BodyHGruntMaskless[b][1]
+					);
+				}
+			}
+			infected_type = dataID;
 		} else {
 			g_EntityFuncs.Remove(self);
 			return;
 		}
+
+		zombie_body = InfectedZombieData[infected_type];
 		
 		self.pev.set_controller(0,125);
 		
@@ -217,7 +263,6 @@ class Infected : ScriptBaseMonsterEntity {
 						InfectorPlayer.m_bloodColor = BLOOD_COLOR_YELLOW;
 					}
 				}
-				
 				
 				self.pev.animtime = g_Engine.time;
 				self.pev.sequence = self.LookupSequence("zombify_begin");

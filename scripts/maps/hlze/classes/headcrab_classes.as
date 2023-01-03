@@ -24,6 +24,12 @@ namespace HClasses
 		//Just Register Default Class
 		Headcrab_Class default_class(Headcrab_Classes);
 		//Rushcrab
+		//Build Infection Information
+		InfectionInfo rushcrab_infectInfo = InfectionInfo();
+		rushcrab_infectInfo.BodyScientist={{1,4},{4,2}};
+		rushcrab_infectInfo.BodyGuard={{2,2},{3,2}};
+		rushcrab_infectInfo.BodyHGruntMaskless={{1,4},{2,3},{3,2}};
+		rushcrab_infectInfo.BodyHGrunt={{1,4},{2,4},{3,2}};
 		Headcrab_Class rushcrab(Headcrab_Classes,		//Array that is used to register this class
 									"Rushcrab",					//Name
 									0,						//Cost (Useless)
@@ -38,9 +44,15 @@ namespace HClasses
 									"hlze_rushcrab",				//Player Model
 									//Message that shows when player mutates to this class
 									"You are now 'Rusher' Headcrab Class",
-									"Fast and Deadly!"
+									"Fast and Deadly!",
+									rushcrab_infectInfo //Information Used for Models upon Infection
 		); //End of this Headcrab Class
-		//Rushcrab
+		//Crashercrab
+		InfectionInfo crashercrab_infectInfo = InfectionInfo();
+		crashercrab_infectInfo.BodyScientist={{1,4},{4,3}};
+		crashercrab_infectInfo.BodyGuard={{2,2},{3,3}};
+		crashercrab_infectInfo.BodyHGruntMaskless={{1,4},{2,5},{3,2}};
+		crashercrab_infectInfo.BodyHGrunt={{1,4},{2,6},{3,2}};
 		Headcrab_Class crashercrab(Headcrab_Classes,		//Array that is used to register this class
 									"Crasher-crab",					//Name
 									0,						//Cost (Useless)
@@ -55,7 +67,8 @@ namespace HClasses
 									"hlze_crasher_crab",				//Player Model
 									//Message that shows when player mutates to this class
 									"You are now 'Crasher-crab' Headcrab Class",
-									"Strong,Solid and Slow!"
+									"Strong,Solid and Slow!",
+									crashercrab_infectInfo //Information Used for Models upon Infection
 		); //End of this Headcrab Class
 		//Register abilities to this class
 		crashercrab.Register_Ability("Nothing",0);//Toggleable Ability(Must be first!), Leave ("Nothing",0) to ignore this
@@ -77,6 +90,7 @@ namespace HClasses
 									//Message that shows when player mutates to this class
 									"You are now 'Breeder-crab' Headcrab Class",
 									"Intelligent Headcrab."
+									//Information Used for Models upon Infection - Same as Default
 		); //End of this Headcrab Class
 		
 		g_Log.PrintF(HCLASS_SYSTEM_TAG+" "+Headcrab_Classes.length());
@@ -159,6 +173,33 @@ final class Headcrab_Ability {
 	}
 }
 
+final class InfectionInfo {
+	//Scientist
+	int SkinId_Scientist;
+	//<Body Id> will be set to this <Value>
+	array<array<int>>BodyScientist;
+	//Security Guard
+	int SkinId_Guard;
+	array<array<int>>BodyGuard;
+	//Human Grunt - Maskless
+	int SkinId_HGruntMaskless;
+	array<array<int>>BodyHGruntMaskless;
+	//Human Grunt
+	int SkinId_HGrunt;
+	array<array<int>>BodyHGrunt;
+
+	InfectionInfo() {
+		SkinId_Scientist = 2;
+		BodyScientist = {{1,4},{4,1}};
+		SkinId_Guard = 1;
+		BodyGuard = {{2,2},{3,1}};
+		SkinId_HGruntMaskless = 2;
+		BodyHGruntMaskless = {{1,4},{2,1},{3,2}};
+		SkinId_HGrunt = 2;
+		BodyHGrunt = {{1,4},{2,2},{3,2}};
+	}
+}
+
 final class Headcrab_Class {
 	//Is Class Unlocked
 	array<bool>HClass_Unlocked(33);
@@ -197,11 +238,17 @@ final class Headcrab_Class {
 	
 	float Ability_ToggleDelay = 2.0;
 	array<float>Ability_Timer(33);
+
+	//Information used for Victim's Model
+	InfectionInfo@ infection_info;
 	
 	Headcrab_Class(array<Headcrab_Class@>@hc_array,
 				string zName="Default",int cost=0,float hp=35.0,int spd=270,int vp=100,
 				float dmg=10.0,Vector dvClr = Vector(255,128,0),float jf=1.0,
-				string v_mdl="v_hclaws.mdl",int vmd_bodyId=0,string player_mdl="hlze_headcrab",string mut_message="",string mut_desc=""
+				string v_mdl="v_hclaws.mdl",int vmd_bodyId=0,string player_mdl="hlze_headcrab",
+				string mut_message="",string mut_desc="",
+				//Infection Info
+				InfectionInfo infectInfo = InfectionInfo()
 		) {
 		
 		Name = zName;
@@ -219,6 +266,9 @@ final class Headcrab_Class {
 		
 		MESSAGE = mut_message;
 		DESCRIPTION = mut_desc;
+
+		//Infection Info
+		@infection_info = infectInfo;
 		
 		//If cost is <=0, Unlock this class for all players
 		if(HClass_Cost<=0) {
