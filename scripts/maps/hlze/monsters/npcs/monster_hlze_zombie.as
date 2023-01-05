@@ -368,7 +368,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			self.m_FormattedName = "Zombie";
 		}
 
-		Setup_Zombie(Math.RandomLong(INFECTED_SCIENTIST,INFECTED_MASSN));
+		//Setup_Zombie(Math.RandomLong(INFECTED_SCIENTIST,INFECTED_MASSN));
 	}
 
 	void Setup_Monster() {
