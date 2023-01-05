@@ -406,7 +406,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
 		g_EntityFuncs.SetModel(zombieMonster,zombieModel);
 
-		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,self.pev.armorvalue);
 		zombie.getUp = false;
 		zombie.deadOnStomach = true;
 		zombie.zombie_LimpNow = true;
@@ -435,9 +435,9 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 
 		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
 		g_EntityFuncs.SetModel(zombieMonster,zombieModel_limped);
-		g_EntityFuncs.SetSize(zombieMonster.pev,VEC_HUMAN_HULL_MIN+Vector(0,-18,0),VEC_HUMAN_HULL_MAX/2+Vector(0,18,0));
+		g_EntityFuncs.SetSize(zombieMonster.pev,VEC_HUMAN_HULL_MIN,VEC_HUMAN_HULL_MAX/2);
 
-		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,self.pev.armorvalue);
 		zombie.getUp = false;
 		zombie.deadOnStomach = true;
 		zombie.zombie_LimpNow = false;
@@ -461,7 +461,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		zombie.Setup_Monster();
 		zombieMonster.pev.health = zombieHealth;
 
-		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,self.pev.armorvalue);
 		zombie.deadOnStomach = true;
 		zombie.getUp = true;
 
@@ -519,7 +519,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		}
 	}
 
-	void Setup_ZombieByType(int custom_id=-1,int gCount=0,bool firstTime=false) {
+	void Setup_ZombieByType(int custom_id=-1,int gCount=0,float ArmorValue=0.0) {
 		if(custom_id!=-1) {
 			zombie_type = custom_id;
 		} else {
@@ -527,41 +527,27 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		}
 		//Now Set Up Values
 		self.pev.skin=0;
+		GrenadeCount = gCount; //Grenade Ammo
+		self.pev.armorvalue = ArmorValue; //Armor Value
+		
 		if(zombie_type == INFECTED_NONE) {
 			self.SetBodygroup(1,4); //Headcrab
-			GrenadeCount = gCount; //Grenade Ammo
 		} else if(zombie_type == INFECTED_SCIENTIST) {
 			self.SetBodygroup(0,0); //Body
 			self.SetBodygroup(1,0); //Headcrab
-			GrenadeCount = gCount; //Grenade Ammo
 		} else if(zombie_type == INFECTED_GUARD) {
 			self.SetBodygroup(0,1); //Body
 			self.SetBodygroup(1,1); //Headcrab
-			GrenadeCount = gCount; //Grenade Ammo
-			if(firstTime) {
-				self.pev.armorvalue = 45;
-			}
 		} else if(zombie_type == INFECTED_HGRUNT_MASKLESS) {
 			self.SetBodygroup(0,2); //Body
 			self.SetBodygroup(1,2); //Headcrab
-			GrenadeCount = gCount; //Grenade Ammo
-			if(firstTime) {
-				self.pev.armorvalue = 100;
-			}
 		} else if(zombie_type == INFECTED_HGRUNT) {
 			self.SetBodygroup(0,2); //Body
 			self.SetBodygroup(1,3); //Headcrab
 			GrenadeCount = gCount; //Grenade Ammo
-			if(firstTime) {
-				self.pev.armorvalue = 100;
-			}
 		} else if(zombie_type == INFECTED_MASSN) {
 			self.SetBodygroup(0,4); //Body
 			self.SetBodygroup(1,0); //Headcrab
-			GrenadeCount = gCount; //Grenade Ammo
-			if(firstTime) {
-				self.pev.armorvalue = 80;
-			}
 		}
 	}
 
