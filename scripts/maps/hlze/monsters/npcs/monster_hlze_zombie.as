@@ -178,9 +178,22 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	//=========================================================
 	void TraceAttack(entvars_t@ pevAttacker, float flDamage, const Vector& in vecDir, TraceResult& in traceResult, int bitsDamageType)
 	{
-		BaseClass.TraceAttack(pevAttacker,flDamage,vecDir,traceResult,bitsDamageType);
-
 		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Hit group:"+traceResult.iHitgroup+".\n");
+		float ArmorValue = self.pev.armorvalue;
+		if(ArmorValue>0) {
+			if(flDamage<=ArmorValue) {
+				self.pev.armorvalue -= flDamage/2;
+				if(traceResult.iHitgroup==2||traceResult.iHitgroup==3) {
+					flDamage=0.01;
+					g_Utility.Ricochet(traceResult.vecEndPos,1.0);
+					flDamage/=Math.RandomFloat(ArmorValue,ArmorValue/(Math.RandomFloat(0.25,0.75)));
+				}
+			} else {
+				self.pev.armorvalue = 0.0;
+			}
+		}
+
+		BaseClass.TraceAttack(pevAttacker,flDamage,vecDir,traceResult,bitsDamageType);
 	}
 	//=========================================================
 	// Zombie Sounds
@@ -284,7 +297,35 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				//Do blood sprite only if zombie is eating
 				if(self.m_Activity==ACT_VICTORY_DANCE) {
 					//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"EATING...\n");
-					Vector blood_location = self.pev.origin + g_Engine.v_forward * -5.0 + g_Engine.v_up * 25.0;
+					//Vector blood_location = self.pev.origin + g_Engine.v_forward * -5.0 + g_Engine.v_up * 25.0;
+					Vector blood_location,blood_angles;
+					int ChestBoneID = 11;
+					self.GetBonePosition(ChestBoneID,blood_location,blood_angles);
+					Math.MakeVectors(self.pev.angles);
+					blood_location = blood_location + g_Engine.v_forward * 5.0;
+
+					//Try to obtain enemy blood color
+					int blood_color = BLOOD_COLOR_RED;
+					CBaseMonster@ enemyMonster;
+					Vector search_location = self.pev.origin + g_Engine.v_forward * 50.0;
+					array<CBaseEntity@>pMonsters(25);
+					g_EntityFuncs.MonstersInSphere(pMonsters, search_location, 50.0);
+					for(uint i=0;i<pMonsters.length();i++) {
+						if(pMonsters[i] !is null) {
+							//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Found:"+pMonsters[i].pev.classname+"\n");
+							CBaseMonster@ monster = pMonsters[i].MyMonsterPointer(); 
+							if(!monster.IsAlive() && monster.m_MonsterState==MONSTERSTATE_DEAD) {
+								@enemyMonster = monster;
+								break;
+							}
+						}
+					}
+
+					if(enemyMonster !is null) {
+						//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Custom Blood Color!\n");
+						blood_color = enemyMonster.m_bloodColor;
+					}
+
 					NetworkMessage blood(MSG_BROADCAST,NetworkMessages::SVC_TEMPENTITY);
 						blood.WriteByte(TE_BLOODSPRITE);
 						blood.WriteCoord(blood_location.x);
@@ -294,7 +335,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 						blood.WriteShort(int(m_iBlood[1]));
 						blood.WriteShort(int(m_iBlood[0]));
 						
-						blood.WriteByte(0xE5);
+						blood.WriteByte(blood_color);
 						blood.WriteByte(Math.RandomLong(10,17));
 					blood.End();
 				}
@@ -359,13 +400,13 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		
 		zombieMonster.pev.origin = self.pev.origin;
 		zombieMonster.pev.angles = self.pev.angles;
-		zombieMonster.pev.body = self.pev.body;
+		//zombieMonster.pev.body = self.pev.body;
 		zombieMonster.pev.health = zombieHealth/2;
 
 		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
 		g_EntityFuncs.SetModel(zombieMonster,zombieModel);
 
-		zombie.Setup_Zombie(-1,true);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
 		zombie.getUp = false;
 		zombie.deadOnStomach = true;
 		zombie.zombie_LimpNow = true;
@@ -374,7 +415,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		
 		zombieMonster.ResetSequenceInfo();
 		zombieMonster.SetSequenceByName("diesimple");
-		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping Started!\n");
+		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping Started!\n");
 
 		zombieMonster.pev.solid=SOLID_NOT;
 		zombieMonster.m_MonsterState=MONSTERSTATE_IDLE;
@@ -389,21 +430,21 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		
 		zombieMonster.pev.origin = self.pev.origin;
 		zombieMonster.pev.angles = self.pev.angles;
-		zombieMonster.pev.body = self.pev.body;
+		//zombieMonster.pev.body = self.pev.body;
 		zombieMonster.pev.health = zombieHealth/2;
 
 		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
 		g_EntityFuncs.SetModel(zombieMonster,zombieModel_limped);
 		g_EntityFuncs.SetSize(zombieMonster.pev,VEC_HUMAN_HULL_MIN+Vector(0,-18,0),VEC_HUMAN_HULL_MAX/2+Vector(0,18,0));
 
-		zombie.Setup_Zombie(-1,true);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
 		zombie.getUp = false;
 		zombie.deadOnStomach = true;
 		zombie.zombie_LimpNow = false;
 		zombie.zombie_IsLimped = true;
 
 		g_EntityFuncs.Remove(self);
-		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping....Initialized!\n");
+		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping....Initialized!\n");
 	}
 	void Setup_Monster_FromLimped() {
 		//Recreate this NPC
@@ -414,18 +455,18 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		
 		zombieMonster.pev.origin = self.pev.origin;
 		zombieMonster.pev.angles = self.pev.angles;
-		zombieMonster.pev.body = self.pev.body;
+		//zombieMonster.pev.body = self.pev.body;
 
 		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
 		zombie.Setup_Monster();
 		zombieMonster.pev.health = zombieHealth;
 
-		zombie.Setup_Zombie(-1,true);
+		zombie.Setup_ZombieByType(zombie_type,GrenadeCount,false);
 		zombie.deadOnStomach = true;
 		zombie.getUp = true;
 
 		g_EntityFuncs.Remove(self);
-		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healed!\n");
+		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healed!\n");
 
 		zombieMonster.ResetSequenceInfo();
 		zombieMonster.SetSequenceByName("limp_leg_idle");
@@ -459,18 +500,68 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			self.SetBodygroup(0,1); //Body
 			self.SetBodygroup(1,1); //Headcrab
 			GrenadeCount = 0; //Grenade Ammo
+			self.pev.armorvalue = 45;
 		} else if(zombie_type == INFECTED_HGRUNT_MASKLESS) {
 			self.SetBodygroup(0,2); //Body
 			self.SetBodygroup(1,2); //Headcrab
 			GrenadeCount = 3; //Grenade Ammo
+			self.pev.armorvalue = 100;
 		} else if(zombie_type == INFECTED_HGRUNT) {
 			self.SetBodygroup(0,2); //Body
 			self.SetBodygroup(1,3); //Headcrab
 			GrenadeCount = 3; //Grenade Ammo
+			self.pev.armorvalue = 100;
 		} else if(zombie_type == INFECTED_MASSN) {
 			self.SetBodygroup(0,4); //Body
 			self.SetBodygroup(1,0); //Headcrab
 			GrenadeCount = 2; //Grenade Ammo
+			self.pev.armorvalue = 80;
+		}
+	}
+
+	void Setup_ZombieByType(int custom_id=-1,int gCount=0,bool firstTime=false) {
+		if(custom_id!=-1) {
+			zombie_type = custom_id;
+		} else {
+			return;
+		}
+		//Now Set Up Values
+		self.pev.skin=0;
+		if(zombie_type == INFECTED_NONE) {
+			self.SetBodygroup(1,4); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+		} else if(zombie_type == INFECTED_SCIENTIST) {
+			self.SetBodygroup(0,0); //Body
+			self.SetBodygroup(1,0); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+		} else if(zombie_type == INFECTED_GUARD) {
+			self.SetBodygroup(0,1); //Body
+			self.SetBodygroup(1,1); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+			if(firstTime) {
+				self.pev.armorvalue = 45;
+			}
+		} else if(zombie_type == INFECTED_HGRUNT_MASKLESS) {
+			self.SetBodygroup(0,2); //Body
+			self.SetBodygroup(1,2); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+			if(firstTime) {
+				self.pev.armorvalue = 100;
+			}
+		} else if(zombie_type == INFECTED_HGRUNT) {
+			self.SetBodygroup(0,2); //Body
+			self.SetBodygroup(1,3); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+			if(firstTime) {
+				self.pev.armorvalue = 100;
+			}
+		} else if(zombie_type == INFECTED_MASSN) {
+			self.SetBodygroup(0,4); //Body
+			self.SetBodygroup(1,0); //Headcrab
+			GrenadeCount = gCount; //Grenade Ammo
+			if(firstTime) {
+				self.pev.armorvalue = 80;
+			}
 		}
 	}
 
@@ -569,7 +660,13 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			}
 			case SCHED_RESTORE_HEALTH:{
 				self.pev.health = self.pev.max_health;
-				//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"EATING...Done!\n");
+				
+				//Recreate if limping
+				if(zombie_IsLimped) {
+					//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healing Limped Zombie....\n");
+					//Recreate this NPC
+					Setup_Monster_FromLimped();
+				}
 				return psched;
 			}
 			case SCHED_GET_UP: {
@@ -764,7 +861,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 					&& zombie_CanBeLimped
 					&& !zombie_IsLimped)
 				{
-						g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Leg Shot!\n");
+						//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Leg Shot!\n");
 						Monster_Limping();
 				}
 
@@ -832,7 +929,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			case TASK_CROUCH:
 			{
 				zombie_IsLimped=true;
-				g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping......\n");
+				//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping......\n");
 				int iSequence1 = self.LookupSequence("diesimple");
 				int iSequence2 = self.LookupSequence("limp_leg_idle");
 				if(self.pev.sequence != iSequence1 && zombie_LimpNow) {
@@ -848,7 +945,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 					self.pev.frame = 0;
 					self.pev.sequence = iSequence2;
 					Setup_Monster_Limped();
-					g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping - Done!\n");
+					//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping - Done!\n");
 					self.TaskComplete();
 				}
 				BaseClass.RunTask(pTask);
@@ -875,7 +972,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	void EndRevive(float flTimeUntilRevive) {
 		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Custom 'Revive()' Function;\n");
 		if(self.IsAlive() && zombie_IsLimped) {
-			g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healing Limped Zombie....\n");
+			//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healing Limped Zombie....\n");
 			//Recreate this NPC
 			Setup_Monster_FromLimped();
 			return;
