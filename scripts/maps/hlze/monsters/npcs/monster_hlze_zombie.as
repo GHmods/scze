@@ -91,10 +91,14 @@ const int ZOMBIE_AE_ATTACK_RIGHT	= 1;
 const int ZOMBIE_AE_ATTACK_LEFT		= 2;
 const int ZOMBIE_AE_ATTACK_BOTH		= 3;
 const int ZOMBIE_AE_CHEST_BLOOD		= 5;
+const int ZOMBIE_AE_DEPLOY_GRENADE	= 10;
 
 const float ZOMBIE_FLINCH_DELAY		= 2.0;
+const float ZOMBIE_IDLE_SOUND_DELAY	= 3.5;
 
 const string zombieModel		= "models/hlze/zombie.mdl";
+const bool zombie_CanBeLimped		= true; //Can be limped?
+const string zombieModel_limped		= "models/hlze/zombie_limping.mdl";
 const float zombieHealth		= 100.0;
 const float zombieSlashDist		= 70.0;
 const float zombieDmgOneSlash		= 25.0;
@@ -108,6 +112,8 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	int zombie_type = INFECTED_NONE;
 	//Next Flinch Timer
 	private float m_flNextFlinch;
+	//Next Idle Sound Timer
+	private float m_flNextIdleSound;
 	//Used for 'Getting Up!' Task
 	private bool getUp = false;
 	private bool deadOnStomach = false;
@@ -118,6 +124,9 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	private float NextGrenadeThrow; //Throw Grenade Timer
 	int GrenadeCount = 0; //Grenade Ammo
 	float GrenadeSpeed = 100.0; //Grenade Forward Throw
+	//Limping
+	bool zombie_IsLimped = false;
+	bool zombie_LimpNow = false;
 	
 	//=========================================================
 	// Classify - indicates this monster's place in the 
@@ -193,9 +202,14 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	}
 	// Idle Sound
 	void IdleSound() {
+		if(m_flNextIdleSound>g_Engine.time)
+			return;
+		
 		int pitch = 95 + Math.RandomLong(0,9);
 		if(HasMask()) g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_VOICE,pIdleSounds_grunt[Math.RandomLong(0,pIdleSounds_grunt.length()-1)],1,ATTN_NORM,0,pitch);
 		else g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_VOICE,pIdleSounds[Math.RandomLong(0,pIdleSounds.length()-1)],1,ATTN_NORM,0,pitch);
+
+		m_flNextIdleSound = g_Engine.time + ZOMBIE_IDLE_SOUND_DELAY;
 	}
 	// Attack Sound
 	void AttackSound() {
@@ -286,6 +300,11 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				}
 				break;
 			}
+			case ZOMBIE_AE_DEPLOY_GRENADE: {
+				self.SetBodygroup(2,1); //Grenade
+				ThrowGrenade=true;
+				break;
+			}
 
 			default: {
 				BaseClass.HandleAnimEvent(pEvent);
@@ -308,7 +327,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			self.m_FormattedName = "Zombie";
 		}
 
-		//Setup_Zombie(Math.RandomLong(INFECTED_SCIENTIST,INFECTED_MASSN));
+		Setup_Zombie(Math.RandomLong(INFECTED_SCIENTIST,INFECTED_MASSN));
 	}
 
 	void Setup_Monster() {
@@ -324,9 +343,92 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 
 		self.MonsterInit();
 
+		self.ChangeYaw(30);
+
 		// Do Not Remove This Monster on Death
 		//SF_MONSTER_FADECORPSE = 512;
 		self.pev.spawnflags |= 512;
+	}
+	void Monster_Limping() {
+		//Recreate this NPC
+		CBaseEntity@ zombieEnt = g_EntityFuncs.CreateEntity("monster_hlze_zombie");
+		CBaseMonster@ zombieMonster = zombieEnt.MyMonsterPointer();
+		CHLZE_Zombie@ zombie = cast<CHLZE_Zombie@>(CastToScriptClass(zombieEnt));
+		g_EntityFuncs.DispatchSpawn(zombieMonster.edict());
+		zombie.Setup_Monster();
+		
+		zombieMonster.pev.origin = self.pev.origin;
+		zombieMonster.pev.angles = self.pev.angles;
+		zombieMonster.pev.body = self.pev.body;
+		zombieMonster.pev.health = zombieHealth/2;
+
+		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
+		g_EntityFuncs.SetModel(zombieMonster,zombieModel);
+
+		zombie.Setup_Zombie(-1,true);
+		zombie.getUp = false;
+		zombie.deadOnStomach = true;
+		zombie.zombie_LimpNow = true;
+
+		g_EntityFuncs.Remove(self);
+		
+		zombieMonster.ResetSequenceInfo();
+		zombieMonster.SetSequenceByName("diesimple");
+		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping Started!\n");
+
+		zombieMonster.pev.solid=SOLID_NOT;
+		zombieMonster.m_MonsterState=MONSTERSTATE_IDLE;
+	}
+	void Setup_Monster_Limped() {
+		//Recreate this NPC
+		CBaseEntity@ zombieEnt = g_EntityFuncs.CreateEntity("monster_hlze_zombie");
+		CBaseMonster@ zombieMonster = zombieEnt.MyMonsterPointer();
+		CHLZE_Zombie@ zombie = cast<CHLZE_Zombie@>(CastToScriptClass(zombieEnt));
+		g_EntityFuncs.DispatchSpawn(zombieMonster.edict());
+		zombie.Setup_Monster();
+		
+		zombieMonster.pev.origin = self.pev.origin;
+		zombieMonster.pev.angles = self.pev.angles;
+		zombieMonster.pev.body = self.pev.body;
+		zombieMonster.pev.health = zombieHealth/2;
+
+		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
+		g_EntityFuncs.SetModel(zombieMonster,zombieModel_limped);
+		g_EntityFuncs.SetSize(zombieMonster.pev,VEC_HUMAN_HULL_MIN+Vector(0,-18,0),VEC_HUMAN_HULL_MAX/2+Vector(0,18,0));
+
+		zombie.Setup_Zombie(-1,true);
+		zombie.getUp = false;
+		zombie.deadOnStomach = true;
+		zombie.zombie_LimpNow = false;
+		zombie.zombie_IsLimped = true;
+
+		g_EntityFuncs.Remove(self);
+		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping....Initialized!\n");
+	}
+	void Setup_Monster_FromLimped() {
+		//Recreate this NPC
+		CBaseEntity@ zombieEnt = g_EntityFuncs.CreateEntity("monster_hlze_zombie");
+		CBaseMonster@ zombieMonster = zombieEnt.MyMonsterPointer();
+		CHLZE_Zombie@ zombie = cast<CHLZE_Zombie@>(CastToScriptClass(zombieEnt));
+		g_EntityFuncs.DispatchSpawn(zombieMonster.edict());
+		
+		zombieMonster.pev.origin = self.pev.origin;
+		zombieMonster.pev.angles = self.pev.angles;
+		zombieMonster.pev.body = self.pev.body;
+
+		zombieMonster.SetPlayerAlly(self.IsPlayerAlly());
+		zombie.Setup_Monster();
+		zombieMonster.pev.health = zombieHealth;
+
+		zombie.Setup_Zombie(-1,true);
+		zombie.deadOnStomach = true;
+		zombie.getUp = true;
+
+		g_EntityFuncs.Remove(self);
+		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healed!\n");
+
+		zombieMonster.ResetSequenceInfo();
+		zombieMonster.SetSequenceByName("limp_leg_idle");
 	}
 
 	void Setup_Zombie(int custom_id=-1, bool byBody=false) {
@@ -478,10 +580,16 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				return slGetUp;
 			}
 			case SCHED_THROW_GRENADE: {
-				return slThrowGrenade;
+				//self.ResetSequenceInfo();
+				//self.SetSequenceByName("arm_grenade");
+				if(HasGrenade()) return slThrowGrenadeInHand;
+				else return slThrowGrenade;
 			}
 			case SCHED_KAMIKAZE_CHASE: {
 				return slKamikazeChase;
+			}
+			case SCHED_LIMPING: {
+				return slLimping;
 			}
 		}
 
@@ -489,11 +597,15 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	}
 	Schedule@ GetSchedule()
 	{
-		SetActivity(self.m_Activity);
+		if(zombie_LimpNow) {
+			return self.GetScheduleOfType(SCHED_LIMPING);
+		}
 
 		if(getUp) {
 			return self.GetScheduleOfType(SCHED_GET_UP);
 		}
+
+		SetActivity(self.m_Activity);
 
 		switch(self.m_MonsterState) {
 			case MONSTERSTATE_IDLE:
@@ -522,7 +634,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Grenade Count:"+GrenadeCount+".\n");
 
 				//Check Ammo and Timer
-				if(GrenadeCount > 0 && NextGrenadeThrow < g_Engine.time) {
+				if(!zombie_IsLimped && GrenadeCount > 0 && NextGrenadeThrow < g_Engine.time) {
 					if((self.pev.origin - enemyEnt.pev.origin).Length() < 128.0)
 					{
 						if(!ThrowGrenade && g_Engine.time > NextGrenadeCheck) {
@@ -539,7 +651,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		}
 
 		//Pain
-		if(m_flNextFlinch < g_Engine.time) {
+		if(m_flNextFlinch < g_Engine.time && !zombie_IsLimped) {
 			if(self.HasConditions(bits_COND_LIGHT_DAMAGE | bits_COND_HEAVY_DAMAGE)) {
 				return self.GetScheduleOfType(SCHED_SMALL_FLINCH); // flinch if hurt
 			}
@@ -588,16 +700,18 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				break;
 			}
 		}
-		self.m_Activity = NewActivity;
-		if(iSequence > -1) {
-			if(self.pev.sequence != iSequence || !self.m_fSequenceLoops )
-			{
-				self.pev.frame = 0;
-				self.pev.sequence = iSequence;
-				self.ResetSequenceInfo();
+		if(!zombie_IsLimped) {
+			self.m_Activity = NewActivity;
+			if(iSequence > -1) {
+				if(self.pev.sequence != iSequence || !self.m_fSequenceLoops )
+				{
+					self.pev.frame = 0;
+					self.pev.sequence = iSequence;
+					self.ResetSequenceInfo();
+				}
+			} else {
+				self.pev.sequence = 0;
 			}
-		} else {
-			self.pev.sequence = 0;
 		}
 	}
 	//=========================================================
@@ -618,6 +732,8 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				break;
 			}
 			case TASK_DIE: {
+				SetActivity(self.m_Activity);
+
 				if(self.m_LastHitGroup != 1
 				&& self.m_LastHitGroup != 6
 				&& self.m_LastHitGroup != 7
@@ -642,11 +758,15 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 						hc.pev.angles.y = self.pev.angles.y;
 						hc.pev.velocity = g_Engine.v_up * 100.0 + g_Engine.v_forward * 50.0;
 					}
-				} /* else if(self.m_LastHitGroup != 1
+				} else if(self.m_LastHitGroup != 1
 					&& (self.m_LastHitGroup == 6 || self.m_LastHitGroup == 7)
-					&& !self.IsAlive()) {
-						//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Leg Shot!\n");
-				}*/
+					&& !self.IsAlive()
+					&& zombie_CanBeLimped
+					&& !zombie_IsLimped)
+				{
+						g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Leg Shot!\n");
+						Monster_Limping();
+				}
 
 				BaseClass.StartTask(pTask);
 				break;
@@ -676,11 +796,14 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			case TASK_RANGE_ATTACK1:
 			{
 				//Deploy Grenade
-				ThrowGrenade=true;
-				self.SetBodygroup(2,1);
-				self.ResetSequenceInfo();
-				self.SetSequenceByName("idle_grenade");
-				self.TaskComplete();
+				if(HasGrenade()) {
+					self.ResetSequenceInfo();
+					self.SetSequenceByName("idle_grenade");
+					ThrowGrenade=true;
+					self.TaskComplete();
+				} else {
+					self.TaskFail();
+				}
 				break;
 			}
 			case TASK_RANGE_ATTACK2:
@@ -691,7 +814,9 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				if(result==2) {
 					self.ResetSequenceInfo();
 					self.SetSequenceByName("idle_grenade");
-					self.TaskComplete();
+					if(self.m_fSequenceFinished) {
+						self.TaskComplete();
+					}
 				} else if(result==1) {
 					ThrowGrenade = false;
 					self.TaskFail();
@@ -700,6 +825,32 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 						self.TaskFail();
 				}
 
+				BaseClass.RunTask(pTask);
+				break;
+			}
+			//Limping
+			case TASK_CROUCH:
+			{
+				zombie_IsLimped=true;
+				g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping......\n");
+				int iSequence1 = self.LookupSequence("diesimple");
+				int iSequence2 = self.LookupSequence("limp_leg_idle");
+				if(self.pev.sequence != iSequence1 && zombie_LimpNow) {
+					zombie_LimpNow=false;
+					self.ResetSequenceInfo();
+					self.pev.frame = 0;
+					self.pev.sequence = iSequence1;
+					g_EntityFuncs.SetModel(self,zombieModel_limped);
+				}
+				
+				if(self.m_fSequenceFinished && self.pev.sequence == iSequence1) {
+					self.ResetSequenceInfo();
+					self.pev.frame = 0;
+					self.pev.sequence = iSequence2;
+					Setup_Monster_Limped();
+					g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping - Done!\n");
+					self.TaskComplete();
+				}
 				BaseClass.RunTask(pTask);
 				break;
 			}
@@ -715,16 +866,27 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 	bool IsRevivable() {
 		if(!self.IsAlive()) {
 			return HasHeadcrab();
+		} else if(self.IsAlive() && zombie_IsLimped) {
+			return HasHeadcrab();
 		}
 		
 		return false;
 	}
 	void EndRevive(float flTimeUntilRevive) {
 		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Custom 'Revive()' Function;\n");
+		if(self.IsAlive() && zombie_IsLimped) {
+			g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Healing Limped Zombie....\n");
+			//Recreate this NPC
+			Setup_Monster_FromLimped();
+			return;
+		}
+
 		Setup_Monster();
 		self.pev.health = zombieHealth/2;
 		self.ClearSchedule();
+		getUp=true;
 		self.GetSchedule();
+		self.ChangeSchedule(self.GetScheduleOfType(SCHED_GET_UP));
 	}
 }
 
@@ -752,6 +914,11 @@ ScriptSchedule slThrowGrenade(
 	bits_SOUND_DANGER, 
 	"Throw Grenade");
 
+ScriptSchedule slThrowGrenadeInHand(
+	bits_COND_NEW_ENEMY,
+	bits_SOUND_DANGER, 
+	"Throw Grenade");
+
 ScriptSchedule slKamikazeChase(
 	bits_COND_NEW_ENEMY	|
 	bits_COND_LIGHT_DAMAGE	|
@@ -760,12 +927,18 @@ ScriptSchedule slKamikazeChase(
 	bits_SOUND_DANGER, 
 	"Kamikaze Chase");
 
+ScriptSchedule slLimping(
+	bits_COND_NEW_ENEMY,
+	0,
+	"Limping Process");
+
 enum monsterScheds
 {
 	SCHED_RESTORE_HEALTH = LAST_COMMON_SCHEDULE + 1,
 	SCHED_GET_UP = LAST_COMMON_SCHEDULE + 2,
 	SCHED_THROW_GRENADE = LAST_COMMON_SCHEDULE + 3,
 	SCHED_KAMIKAZE_CHASE = LAST_COMMON_SCHEDULE + 4,
+	SCHED_LIMPING = LAST_COMMON_SCHEDULE + 5,
 }
 
 void InitSchedules()
@@ -787,8 +960,9 @@ void InitSchedules()
 	slGetUp.AddTask(ScriptTask(TASK_SET_SCHEDULE,float(SCHED_IDLE_STAND)));
 
 	slThrowGrenade.AddTask(ScriptTask(TASK_STOP_MOVING));
+	slThrowGrenade.AddTask(ScriptTask(TASK_FACE_ENEMY));
+	slThrowGrenade.AddTask(ScriptTask(TASK_PLAY_SEQUENCE,float(ACT_SPECIAL_ATTACK1)));
 	slThrowGrenade.AddTask(ScriptTask(TASK_RANGE_ATTACK1));
-	//slThrowGrenade.AddTask(ScriptTask(TASK_FACE_ENEMY));
 	slThrowGrenade.AddTask(ScriptTask(TASK_SET_FAIL_SCHEDULE,float(SCHED_IDLE_STAND)));
 	slThrowGrenade.AddTask(ScriptTask(TASK_RANGE_ATTACK2));
 	slThrowGrenade.AddTask(ScriptTask(TASK_FIND_COVER_FROM_ORIGIN));
@@ -796,12 +970,27 @@ void InitSchedules()
 	slThrowGrenade.AddTask(ScriptTask(TASK_WAIT,2.5));
 	slThrowGrenade.AddTask(ScriptTask(TASK_SET_SCHEDULE,float(SCHED_IDLE_STAND)));
 
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_STOP_MOVING));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_FACE_ENEMY));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_RANGE_ATTACK1));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_SET_FAIL_SCHEDULE,float(SCHED_IDLE_STAND)));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_RANGE_ATTACK2));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_FIND_COVER_FROM_ORIGIN));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_RUN_PATH));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_WAIT,2.5));
+	slThrowGrenadeInHand.AddTask(ScriptTask(TASK_SET_SCHEDULE,float(SCHED_IDLE_STAND)));
+
 	//slKamikazeChase.AddTask(ScriptTask(TASK_GET_PATH_TO_ENEMY));
 	//slKamikazeChase.AddTask(ScriptTask(TASK_RUN_PATH));
 	slKamikazeChase.AddTask(ScriptTask(TASK_MOVE_TO_TARGET_RANGE,128.0f));
 	slKamikazeChase.AddTask(ScriptTask(TASK_SET_SCHEDULE,SCHED_TARGET_FACE));
+
+	slLimping.AddTask(ScriptTask(TASK_STOP_MOVING));
+	slLimping.AddTask(ScriptTask(TASK_CROUCH));
+	//slLimping.AddTask(ScriptTask(TASK_SET_SCHEDULE,float(SCHED_IDLE_STAND)));
+	slLimping.AddTask(ScriptTask(TASK_SET_SCHEDULE,float(SCHED_WAKE_ANGRY)));
 	
-	array<ScriptSchedule@> scheds = {slEating,slGetUp,slThrowGrenade,slKamikazeChase};
+	array<ScriptSchedule@> scheds = {slEating,slGetUp,slThrowGrenade,slThrowGrenadeInHand,slKamikazeChase,slLimping};
 	
 	@monster_hlze_zombie_schedules = @scheds;
 }
@@ -815,6 +1004,7 @@ void Register() {
 
 void PrecacheInit() {
 	g_Game.PrecacheModel(zombieModel);
+	g_Game.PrecacheModel(zombieModel_limped);
 	PrecacheSounds(pAttackHitSounds);
 	PrecacheSounds(pAttackMissSounds);
 	PrecacheSounds(pAttackSounds);
