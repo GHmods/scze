@@ -414,7 +414,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		g_EntityFuncs.Remove(self);
 		
 		zombieMonster.ResetSequenceInfo();
-		zombieMonster.SetSequenceByName("diesimple");
+		zombieMonster.SetSequenceByName("diesimple_limp");
 		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping Started!\n");
 
 		zombieMonster.pev.solid=SOLID_NOT;
@@ -916,7 +916,7 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 			{
 				zombie_IsLimped=true;
 				//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK,"Limping......\n");
-				int iSequence1 = self.LookupSequence("diesimple");
+				int iSequence1 = self.LookupSequence("diesimple_limp");
 				int iSequence2 = self.LookupSequence("limp_leg_idle");
 				if(self.pev.sequence != iSequence1 && zombie_LimpNow) {
 					zombie_LimpNow=false;
