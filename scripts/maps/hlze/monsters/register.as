@@ -8,6 +8,9 @@
 //NPCS
 #include "npcs/npc_register"
 
+//Barnacles
+#include "monster_barnacle"
+
 void RegisterMonsters() {
 	//Register our NPCS
 	HLZE_MonsterInit();
@@ -20,4 +23,6 @@ void RegisterMonsters() {
 	Register_Infected_Leaved();
 	g_Scheduler.SetTimeout("Infectable_Process", 3.0);
 	g_Scheduler.SetTimeout("Eatable_Process", 3.0);
+	//Barnacle Process
+	g_Scheduler.SetTimeout("Barnacle_Process", 3.0);
 }
