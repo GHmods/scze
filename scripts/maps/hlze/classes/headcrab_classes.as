@@ -92,6 +92,8 @@ namespace HClasses
 									"Intelligent Headcrab."
 									//Information Used for Models upon Infection - Same as Default
 		); //End of this Headcrab Class
+		breedercrab.Register_Ability("Nothing",0); //Toggleable Ability(Must be first!), Leave ("Nothing",0) to ignore this
+		breedercrab.Register_Ability("Headcrab Orders",30);
 		
 		g_Log.PrintF(HCLASS_SYSTEM_TAG+" "+Headcrab_Classes.length());
 		

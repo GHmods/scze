@@ -197,31 +197,42 @@ namespace SaveLoad_HClasses {
 					
 					//Load from Data
 					int offset = 0;
-					HClass_Holder[index] = atoi(config[offset]);offset++;//Selected Class
-					HClass_Mutation_Holder[index] = HClass_Holder[index];
+					int config_length = int(config.length());
+					if(config_length>offset) {
+						HClass_Holder[index] = atoi(config[offset]);offset++;//Selected Class
+						HClass_Mutation_Holder[index] = HClass_Holder[index];
+					}
 					
 					//Load Every Headcrab Class
 					for(uint i=0;i<HClasses::Headcrab_Classes.length();i++) {
 						Headcrab_Class@ pHClass = HClasses::Headcrab_Classes[i];
-						int unlocked1 = atoi(config[offset]);offset++; //Is ZClass Unlocked?
-						if(unlocked1==1) pHClass.HClass_Unlocked[index] = true;
-						else pHClass.HClass_Unlocked[index] = false;
-						//Abilities
-						for(uint a=0;a<pHClass.Abilities.length();a++) {
-							Headcrab_Ability@ hAbility = pHClass.Abilities[a];
-							//INT to Bool
-							int unlocked2 = atoi(config[offset]);offset++; //Is Z-Ability Unlocked?
-							if(unlocked2==1) hAbility.Unlocked[index] = true;
-							else hAbility.Unlocked[index] = false;
-							
-							int unlocked3 = atoi(config[offset]);offset++; //Is Z-Ability Active?
-							if(unlocked3==1) hAbility.Active[index] = true;
-							else hAbility.Active[index] = false;
-							
-							@pHClass.Abilities[a] = hAbility;
-						}
+						if(config_length>offset) {
+							if(config_length>offset) {
+								int unlocked1 = atoi(config[offset]);offset++; //Is ZClass Unlocked?
+								if(unlocked1==1) pHClass.HClass_Unlocked[index] = true;
+								else pHClass.HClass_Unlocked[index] = false;
+							}
+							//Abilities
+							for(uint a=0;a<pHClass.Abilities.length();a++) {
+								if(config_length>offset) {
+									Headcrab_Ability@ hAbility = pHClass.Abilities[a];
+									//INT to Bool
+									int unlocked2 = atoi(config[offset]);offset++; //Is Z-Ability Unlocked?
+									if(unlocked2==1) hAbility.Unlocked[index] = true;
+									else hAbility.Unlocked[index] = false;
+									
+									if(config_length>offset) {
+										int unlocked3 = atoi(config[offset]);offset++; //Is Z-Ability Active?
+										if(unlocked3==1) hAbility.Active[index] = true;
+										else hAbility.Active[index] = false;
+										
+										@pHClass.Abilities[a] = hAbility;
+									}
+								}
+							}
 						
-						@HClasses::Headcrab_Classes[i] = pHClass; //Class Loaded!
+							@HClasses::Headcrab_Classes[i] = pHClass; //Class Loaded!
+						}
 					}
 					
 					//Found Player's claw and call the Mutate function

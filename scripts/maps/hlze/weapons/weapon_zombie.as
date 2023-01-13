@@ -611,12 +611,12 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			int infected_type = atoui(KeyValues.GetKeyvalue("$i_infected_type").GetString());
 			int infected_maskless = atoui(KeyValues.GetKeyvalue("$i_infected_type_maskless").GetString());
 			
-			if(infected_type==INFECTED_SCIENTIST) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST+1]);
-			else if(infected_type==INFECTED_GUARD) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_GUARD+1]);
+			if(infected_type==INFECTED_SCIENTIST) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST]);
+			else if(infected_type==INFECTED_GUARD) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_GUARD]);
 			else if(infected_type==INFECTED_HGRUNT) {
-				if(infected_maskless==1) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT+2]);
-				else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT+1]);
-			} else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST+1]);
+				if(infected_maskless==1) m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT_MASKLESS]);
+				else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT]);
+			} else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST]);
 		} else m_pPlayer.SetOverriddenPlayerModel(ZClass.PLAYER_MODEL);
 
 		int flags = m_pPlayer.pev.flags;
@@ -1407,9 +1407,10 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 	//Make sure Player is not Mutating
 	if(ZClass_MutationState[pId]!=ZM_MUTATION_NONE)
 		return;
-	
+
 	//Go through the array
-	for(uint a=0;a<ZClass.Abilities.length();a++) {
+	for(uint a=0;a<ZClass.Abilities.length();a++)
+	{
 		//Check if unlocked and activated!
 		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && (isZombie==1 && ZWeaponId!=0))
 		{
@@ -1564,7 +1565,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						if(MonstersAround[i] !is null) {
 							@pMonster = MonstersAround[i].MyMonsterPointer();
 
-							if(pMonster !is null && !pMonster.IsAlive()
+							//if(pMonster !is null && !pMonster.IsAlive()
+							if(pMonster !is null
 							&& pMonster.IRelationship(m_pPlayer) == R_AL
 							&& pMonster.IsRevivable())
 							{
@@ -1596,39 +1598,44 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 				}
 			}
 		}
-
-		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && isZombie==1)
-		{
+		if(ZClass.Abilities[a].Unlocked[pId] && ZClass.Abilities[a].Active[pId] && isZombie==1) {
 			if(ZClass.Abilities[a].Name == "Zombie Orders")
 			{
 				if((button & IN_USE) != 0 && (old_buttons & IN_USE) == 0)
 				{
-					//Find any monster at our looking position
 					TraceResult tr;
+		
 					Math.MakeVectors( m_pPlayer.pev.v_angle );
 					Vector vecSrc	= m_pPlayer.GetGunPosition();
 					Vector vecEnd	= vecSrc + g_Engine.v_forward * 500;
 					
-					g_Utility.TraceLine(vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+					g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
 					
-					// hit
-					CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
-					CBaseMonster@ pMonster = pEntity.MyMonsterPointer();
-					
-					if(pMonster !is null && pMonster.IsAlive() && pMonster.pev.classname == "monster_zombie")
+					//Get 1 Monster near the looking point
+					array<CBaseEntity@>MonstersAround(50);
+					g_EntityFuncs.MonstersInSphere(@MonstersAround,tr.vecEndPos,50.0);
+
+					for(uint i=0;i<MonstersAround.length();i++)
 					{
-						if(!pMonster.IsPlayerFollowing()) {
-							pMonster.StartPlayerFollowing(m_pPlayer,false);
-							g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Following!\n");
-						} else {
-							pMonster.StopPlayerFollowing(false,false);
-							g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Stand Still!\n");
+						CBaseMonster@ pMonster;
+						if(MonstersAround[i] !is null)
+						{
+							@pMonster = MonstersAround[i].MyMonsterPointer();
+
+							if(pMonster.IsAlive() && pMonster.pev.classname=="monster_hlze_zombie") {
+								if(!pMonster.IsPlayerFollowing()) {
+									pMonster.StartPlayerFollowing(m_pPlayer,false);
+									g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Following!\n");
+								} else {
+									pMonster.StopPlayerFollowing(false,false);
+									g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,ZClass.Abilities[a].Name+" - Now Stand Still!\n");
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-		
 		if(ZClass.Abilities[a].Unlocked[pId] && !ZClass.Abilities[a].Active[pId] && isZombie==1)
 		{
 			if(ZClass.Abilities[a].Name == "Shield [Secondary Attack to Toggle]") {

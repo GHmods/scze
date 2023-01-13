@@ -82,7 +82,7 @@ namespace SaveLoad_Cfg {
 			
 			fData.Close();
 			
-			Log("Loaded "+iArraySize+" Config Values from Global Config File,'"+PathShort+"'.\n");
+			Log("Loaded "+iArraySize+" Config Values from Config File,'"+PathShort+"'.\n");
 		} else {
 			Log("Failed!\n", false);
 		}

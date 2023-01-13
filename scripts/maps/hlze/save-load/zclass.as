@@ -190,33 +190,42 @@ namespace SaveLoad_ZClasses {
 					int isZM = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
 					
 					int offset = 0;
-					ZClass_Holder[index] = atoi(config[offset]);offset++;//Selected Class
-					ZClass_MutationState[index] = ZM_MUTATION_NONE;
-					//HClass_Holder[index]=ZClass_Holder[index];
-					//HClass_Mutation_Holder[index]=ZClass_Holder[index];
+					int config_length = int(config.length());
+					if(config_length>offset) {
+						ZClass_Holder[index] = atoi(config[offset]);offset++;//Selected Class
+						ZClass_MutationState[index] = ZM_MUTATION_NONE;
+						//HClass_Holder[index]=ZClass_Holder[index];
+						//HClass_Mutation_Holder[index]=ZClass_Holder[index];
+					}
 					
 					//Load Every Zombie Class
 					for(uint i=0;i<ZClasses::Zombie_Classes.length();i++) {
-						Zombie_Class@ pZClass = ZClasses::Zombie_Classes[i];
-						int unlocked1 = atoi(config[offset]);offset++; //Is ZClass Unlocked?
-						if(unlocked1==1) pZClass.ZClass_Unlocked[index] = true;
-						else pZClass.ZClass_Unlocked[index] = false;
-						//Abilities
-						for(uint a=0;a<pZClass.Abilities.length();a++) {
-							Zombie_Ability@ zAbility = pZClass.Abilities[a];
-							//INT to Bool
-							int unlocked2 = atoi(config[offset]);offset++; //Is Z-Ability Unlocked?
-							if(unlocked2==1) zAbility.Unlocked[index] = true;
-							else zAbility.Unlocked[index] = false;
+						if(config_length>offset) {
+							Zombie_Class@ pZClass = ZClasses::Zombie_Classes[i];
+							int unlocked1 = atoi(config[offset]);offset++; //Is ZClass Unlocked?
+							if(unlocked1==1) pZClass.ZClass_Unlocked[index] = true;
+							else pZClass.ZClass_Unlocked[index] = false;
+							//Abilities
+							for(uint a=0;a<pZClass.Abilities.length();a++) {
+								if(config_length>offset) {
+									Zombie_Ability@ zAbility = pZClass.Abilities[a];
+									//INT to Bool
+									int unlocked2 = atoi(config[offset]);offset++; //Is Z-Ability Unlocked?
+									if(unlocked2==1) zAbility.Unlocked[index] = true;
+									else zAbility.Unlocked[index] = false;
+									
+									if(config_length>offset) {
+										int unlocked3 = atoi(config[offset]);offset++; //Is Z-Ability Active?
+										if(unlocked3==1) zAbility.Active[index] = true;
+										else zAbility.Active[index] = false;
+										
+										@pZClass.Abilities[a] = zAbility;
+									}
+								}
+							}
 							
-							int unlocked3 = atoi(config[offset]);offset++; //Is Z-Ability Active?
-							if(unlocked3==1) zAbility.Active[index] = true;
-							else zAbility.Active[index] = false;
-							
-							@pZClass.Abilities[a] = zAbility;
+							@ZClasses::Zombie_Classes[i] = pZClass; //Class Loaded!
 						}
-						
-						@ZClasses::Zombie_Classes[i] = pZClass; //Class Loaded!
 					}
 					
 					//Found Player's claw and call the Mutate function

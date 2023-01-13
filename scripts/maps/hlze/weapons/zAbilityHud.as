@@ -49,7 +49,7 @@ namespace zAbilityHud {
 		HudParams.top = 0; // Offset
 		HudParams.width = 0; // 0: auto; use total width of the sprite
 		HudParams.height = 0; // 0: auto; use total height of the sprite
-		HudParams.x = 650;
+		HudParams.x = 600;
 		HudParams.y = -35;
 		RGBA clr1 = RGBA(255,0,0,110);
 		RGBA clr2 = RGBA(0,255,0,255);
@@ -58,11 +58,6 @@ namespace zAbilityHud {
 		HudParams.frame = 0;
 		HudParams.numframes = 20;
 		HudParams.framerate = (HudParams.numframes)/BC_Frequency;
-		
-		if(MR_State[pId]) {
-			HudParams.x = 600;
-			HudParams.y = -35;
-		}
 
 		HudParams.fxTime = BC_Frequency;
 		

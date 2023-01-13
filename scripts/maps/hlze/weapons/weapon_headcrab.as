@@ -614,12 +614,46 @@ void HClass_Process(CBasePlayer@ m_pPlayer, Headcrab_Class@ HClass) {
 	
 	//Go through the array
 	for(uint a=0;a<HClass.Abilities.length();a++) {
-		//"Long Jump"
-		if(HClass.Abilities[a].Name == "Nothing") {
-			//Check if unlocked and activated!
-			if(HClass.Abilities[a].Unlocked[pId] && HClass.Abilities[a].Active[pId])
-			{
-				//Do Nothing.......
+		if(HClass.Abilities[a].Unlocked[pId] && HClass.Abilities[a].Active[pId])
+		{
+			//"Headcrab Orders"
+			if(HClass.Abilities[a].Name == "Headcrab Orders") {
+				if((button & IN_USE) != 0 && (old_buttons & IN_USE) == 0) {
+					TraceResult tr;
+		
+					Math.MakeVectors( m_pPlayer.pev.v_angle );
+					Vector vecSrc	= m_pPlayer.GetGunPosition();
+					Vector vecEnd	= vecSrc + g_Engine.v_forward * 500;
+					
+					g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
+
+					//Get 1 Monster near the looking point
+					array<CBaseEntity@>MonstersAround(50);
+					g_EntityFuncs.MonstersInSphere(@MonstersAround,tr.vecEndPos,50.0);
+
+					for(uint i=0;i<MonstersAround.length();i++)
+					{
+						CBaseMonster@ pMonster;
+						if(MonstersAround[i] !is null)
+						{
+							@pMonster = MonstersAround[i].MyMonsterPointer();
+
+							if(pMonster.IsAlive() &&
+							(pMonster.pev.classname=="monster_headcrab"
+							||pMonster.pev.classname=="monster_babycrab")
+							) {
+								if(!pMonster.IsPlayerFollowing()) {
+									pMonster.StartPlayerFollowing(m_pPlayer,false);
+									g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,HClass.Abilities[a].Name+" - Now Following!\n");
+								} else {
+									pMonster.StopPlayerFollowing(false,false);
+									g_PlayerFuncs.ClientPrint(m_pPlayer,HUD_PRINTCENTER,HClass.Abilities[a].Name+" - Now Stand Still!\n");
+								}
+							}
+						}
+					}
+				}
+				
 			}
 		}
 	}

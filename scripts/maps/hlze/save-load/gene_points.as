@@ -166,7 +166,9 @@ namespace SaveLoad_GenePoints {
 					
 					//Load from Data
 					int offset = 0;
-					GenePts_Holder[index] = atoi(config[offset]);offset++;
+					int config_length = int(config.length());
+					if(config_length>offset)
+						GenePts_Holder[index] = atoi(config[offset]);offset++;
 					
 					DataExists[index] = true;
 					loaddata[index] = true;
