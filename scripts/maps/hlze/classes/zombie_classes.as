@@ -56,6 +56,43 @@ Zombie_Class@ Get_ZombieClass_FromPlayer(CBasePlayer@ pPlayer) {
 	return ZClasses::Zombie_Classes[index];
 }
 
+bool ZombieClass_PlayerHasAbility(CBasePlayer@ pPlayer,string szName,bool ShouldBeOn=true) {
+	bool hasAbility = false;
+	//Null Checker
+	if(pPlayer is null)
+		return false;
+	//Gather Information from this Player
+	int pId = pPlayer.entindex();
+	CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+	//int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());
+	Zombie_Class@ pZClass = Get_ZombieClass_FromPlayer(pPlayer);
+
+	//Make sure Player is not Mutating
+	if(ZClass_MutationState[pId]!=ZM_MUTATION_NONE)
+		return false;
+	
+	//Go through the array
+	for(uint a=0;a<pZClass.Abilities.length();a++) {
+		//Check if unlocked
+		if(pZClass.Abilities[a].Unlocked[pId] && isZombie==1) {
+			bool proceed=true;
+			if(ShouldBeOn) {
+				proceed = pZClass.Abilities[a].Active[pId];
+			}
+
+			if(proceed) {
+				if(pZClass.Abilities[a].Name == szName) {
+					hasAbility = true;
+					break;
+				}
+			}
+		}
+	}
+
+	return hasAbility;
+}
+
 namespace ZClasses
 {
 	array<Zombie_Class@>Zombie_Classes;
@@ -149,6 +186,7 @@ namespace ZClasses
 		breeder.Register_Ability("Mass Ressurect - [Secondary Attack to Use]",80);	//+ATTACK2
 		breeder.Register_Ability("Baby Crabs",80);
 		breeder.Register_Ability("Zombie Orders",30);
+		breeder.Register_Ability("Barnacles",80); //Barnacles
 		breeder.Register_Ability("Ammo Upgrade",30);
 		breeder.Register_Ability("Armor Upgrade (+25)",40); //+25 Armor
 		//----------------------------------------

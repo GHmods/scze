@@ -4,6 +4,7 @@
 #include "weapon_zombie_headcrab"
 #include "zAbilityHud"
 #include "weapon_zombie_babycrab"
+#include "weapon_zombie_barnacle"
 
 void RegisterWeapons() {
 	Register_Headcrab(); //Headcrab
@@ -18,6 +19,10 @@ void RegisterWeapons() {
 	//Baby Crabs
 	Register_ZombieBabycrab(); //Babycrabs as a weapon for Zombies
 	ZombieBC_Precache(); //Stuff Needed for Babycrabs Weapon
+	//Barnacle Weapon
+	Register_ZombieBarnacleWeapon(); //Barnacle as a weapon for Zombies
+	ZombieBarnacleWeapon_Precache(); //Stuff Needed for Barnacle Weapon
+
 	zAbilityHud::Precache();
 	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, zAbilityHud::PlayerQuit);
 	g_Scheduler.SetTimeout("zHudThink", 1.0);

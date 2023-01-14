@@ -28,8 +28,8 @@ namespace HClasses
 		InfectionInfo rushcrab_infectInfo = InfectionInfo();
 		rushcrab_infectInfo.BodyScientist={{1,4},{4,2}};
 		rushcrab_infectInfo.BodyGuard={{2,2},{3,2}};
-		rushcrab_infectInfo.BodyHGruntMaskless={{1,4},{2,3},{3,2}};
-		rushcrab_infectInfo.BodyHGrunt={{1,4},{2,4},{3,2}};
+		rushcrab_infectInfo.BodyHGruntMaskless={{1,4},{3,3},{2,2}};
+		rushcrab_infectInfo.BodyHGrunt={{1,4},{3,4},{2,2}};
 		Headcrab_Class rushcrab(Headcrab_Classes,		//Array that is used to register this class
 									"Rushcrab",					//Name
 									0,						//Cost (Useless)
@@ -51,8 +51,8 @@ namespace HClasses
 		InfectionInfo crashercrab_infectInfo = InfectionInfo();
 		crashercrab_infectInfo.BodyScientist={{1,4},{4,3}};
 		crashercrab_infectInfo.BodyGuard={{2,2},{3,3}};
-		crashercrab_infectInfo.BodyHGruntMaskless={{1,4},{2,5},{3,2}};
-		crashercrab_infectInfo.BodyHGrunt={{1,4},{2,6},{3,2}};
+		crashercrab_infectInfo.BodyHGruntMaskless={{1,4},{3,5},{2,2}};
+		crashercrab_infectInfo.BodyHGrunt={{1,4},{3,6},{2,2}};
 		Headcrab_Class crashercrab(Headcrab_Classes,		//Array that is used to register this class
 									"Crasher-crab",					//Name
 									0,						//Cost (Useless)
@@ -196,9 +196,9 @@ final class InfectionInfo {
 		SkinId_Guard = 1;
 		BodyGuard = {{2,2},{3,1}};
 		SkinId_HGruntMaskless = 2;
-		BodyHGruntMaskless = {{1,4},{2,1},{3,2}};
+		BodyHGruntMaskless = {{1,4},{3,1},{2,2}};
 		SkinId_HGrunt = 2;
-		BodyHGrunt = {{1,4},{2,2},{3,2}};
+		BodyHGrunt = {{1,4},{3,2},{2,2}};
 	}
 }
 

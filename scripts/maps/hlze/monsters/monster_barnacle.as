@@ -77,15 +77,15 @@ void Barnacle_Die_Process() {
 	for(uint d=0;d<BarnacleEntities.length();d++) {
 		CBaseEntity@ checkEnt = BarnacleEntities[d];
 		if(checkEnt !is null && !checkEnt.IsAlive()) {
-			g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, "A Barnacle just Died!\n");
+			//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, "A Barnacle just Died!\n");
 
-			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_headcrab");
-			CBaseMonster@ hc = entBase.MyMonsterPointer();
-			if(hc !is null) {
-				g_EntityFuncs.DispatchSpawn(hc.edict());
-				hc.SetPlayerAllyDirect(true);
-				hc.pev.origin = checkEnt.pev.origin - g_Engine.v_up * 25;
-				hc.pev.angles.y = checkEnt.pev.v_angle.y;
+			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("barnacle_baby");
+			CBaseMonster@ dropEnt = entBase.MyMonsterPointer();
+			if(dropEnt !is null) {
+				g_EntityFuncs.DispatchSpawn(dropEnt.edict());
+				dropEnt.SetPlayerAllyDirect(true);
+				dropEnt.pev.origin = checkEnt.pev.origin - g_Engine.v_up * 25;
+				dropEnt.pev.angles.y = checkEnt.pev.v_angle.y;
 			}
 
 			//g_Log.PrintF("A Barnacle just Died!\n");
