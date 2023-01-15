@@ -2,7 +2,9 @@
 * Baby Crabs
 */
 #include "weapon_zombie"
+#include "../projectiles/proj_barnacle_baby"
 
+const string MODEL_BARNACLE = "models/barnacle.mdl";
 const string V_MODEL_ZOMBIE_BARNACLE = "models/hlze/v_barnaclegun.mdl";
 const string P_MODEL_ZOMBIE_BARNACLE = P_MODEL;
 const string P_MODEL_ZOMBIE_BARNACLE_LEFT = "models/hlze/p_barnaclegun.mdl";
@@ -106,6 +108,18 @@ class weapon_zombie_barnacle : ScriptBasePlayerWeaponEntity
 				barnacle_throwing_state_Timer=g_Engine.time+1.13;
 				barnacle_throwing_state=ZMBW_THROW_NONE;
 				//Throw Barnacle Here
+				Math.MakeVectors(m_pPlayer.pev.v_angle);
+				Vector vecSrc	= m_pPlayer.GetGunPosition();
+				float throw_amount = 500.0;
+				CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("proj_baby_barnacle");
+				Proj_BabyBarnacle@ Projectile = cast<Proj_BabyBarnacle@>(CastToScriptClass(entBase));
+				g_EntityFuncs.DispatchSpawn(Projectile.self.edict());
+				@Projectile.pev.owner = m_pPlayer.edict();
+				entBase.SetClassification(m_pPlayer.GetClassification(CLASS_ALIEN_MONSTER));
+				Projectile.pev.origin = vecSrc + g_Engine.v_forward * 16 + g_Engine.v_right * 6;
+				Projectile.pev.velocity = g_Engine.v_forward * throw_amount * 2.0;
+				Projectile.pev.angles = m_pPlayer.pev.v_angle;
+				//Take Away Ammo/Weapon
 				if(m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 1)
 				{
 					m_pPlayer.pev.weaponmodel=P_MODEL_ZOMBIE_BARNACLE;
@@ -233,9 +247,11 @@ class weapon_zombie_barnacle : ScriptBasePlayerWeaponEntity
 		if(self.m_flTimeWeaponIdle > g_Engine.time)
 			return;
 		
-		//self.SendWeaponAnim(ZMBW_IDLE,0,ZClass.VIEW_MODEL_BODY_ID);
+		self.SendWeaponAnim(ZMBW_IDLE,0,ZClass.VIEW_MODEL_BODY_ID);
+		/*
 		self.DefaultDeploy(self.GetV_Model(V_MODEL_ZOMBIE_BARNACLE),
 							self.GetP_Model(P_MODEL_ZOMBIE_BARNACLE_LEFT), ZMBW_IDLE, "gren", 0, ZClass.VIEW_MODEL_BODY_ID);
+		*/
 		self.m_flTimeWeaponIdle =  2.5;
 	}
 	
@@ -496,7 +512,7 @@ class script_barnacle_baby : ScriptBaseMonsterEntity {
 		self.pev.gravity = 1.0f;
 
 		g_EntityFuncs.SetModel(self,W_MODEL_ZOMBIE_BARNACLE);
-		g_EntityFuncs.SetSize(self.pev, Vector(-10,-10,0), Vector(10,10,5));
+		g_EntityFuncs.SetSize(self.pev, Vector(-2,-2,-2), Vector(2,2,2));
 
 		SetTouch(TouchFunction(EntTouch));
 	}
@@ -529,7 +545,7 @@ class script_barnacle_baby : ScriptBaseMonsterEntity {
 			}
 		}
 	}
-}	
+}
 
 void Register_ZombieBarnacleWeapon()
 {
@@ -537,4 +553,5 @@ void Register_ZombieBarnacleWeapon()
 	g_CustomEntityFuncs.RegisterCustomEntity( "ammo_barnacle", "ammo_barnacle" ); // Register the ammo entity
 	g_ItemRegistry.RegisterWeapon( "weapon_zombie_barnacle", "", "ammo_barnacle");
 	g_CustomEntityFuncs.RegisterCustomEntity( "script_barnacle_baby", "barnacle_baby" );
+	proj_baby_barnacle_Init();
 }

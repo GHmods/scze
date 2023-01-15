@@ -95,6 +95,35 @@ namespace Unstuck {
 			}
 		}
 	}
+
+	Vector GetUnstuckPosition(Vector Position,CBaseEntity@ ignoreEnt) {
+		Vector returnVec;
+
+		Vector origin = Position;
+		Vector vec;
+		
+		HULL_NUMBER hull = head_hull;
+		
+		bool unstucked = false;
+
+		for(uint i = 0; i < stuck.length(); i++ ){
+			Vector new_origin;
+			new_origin = origin + ignoreEnt.pev.size/2 * Vector(pSize[i][0],pSize[i][1],pSize[i][2]);
+			
+			if(!is_hull_vacant_DontIgnoreMonsters(new_origin,hull,ignoreEnt)) {
+				returnVec = new_origin;
+				unstucked = true;
+				break;
+			}
+		}
+				
+		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, "Unstucked? "+(unstucked?"Yes":"No")+"\n");
+
+		if(!unstucked)
+			returnVec=Position;
+
+		return returnVec;
+	}
 	
 	bool is_hull_vacant_DontIgnoreMonsters(Vector origin,HULL_NUMBER hull,CBaseEntity@ pPlayer) {
 		TraceResult tr;

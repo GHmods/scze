@@ -1556,7 +1556,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 					g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
 					
 					//Get 1 Monster near the looking point
-					array<CBaseEntity@>MonstersAround(150);
+					array<CBaseEntity@>MonstersAround(800);
 					g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.vuser1,50.0);
 
 					for(uint i=0;i<MonstersAround.length();i++)
