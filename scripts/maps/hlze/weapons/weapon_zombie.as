@@ -601,19 +601,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		b_FakeAttack = false;
 	}
-	
-	void ZombieProcess() {
-		self.pev.nextthink = g_Engine.time + 0.1;
-		
-		//Something like Nightvision
-		DarkVision();
 
-		//Zombie Class process
-		ZClass_Process();
-		
-		//Fake Attack
-		FakeAttack();
-		
+	void SetupPlayerModel() {
 		//Force Player Model
 		CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 		if(ZClass.PLAYER_MODEL == "null") {
@@ -627,18 +616,37 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_HGRUNT]);
 			} else m_pPlayer.SetOverriddenPlayerModel(InfectedPlayerModels[INFECTED_SCIENTIST]);
 		} else m_pPlayer.SetOverriddenPlayerModel(ZClass.PLAYER_MODEL);
+	}
 
+	void Setup_ViewOffset() {
 		int flags = m_pPlayer.pev.flags;
 		int player_old_buttons = m_pPlayer.pev.oldbuttons;
 		int player_buttons = m_pPlayer.pev.button;
 		int pId = m_pPlayer.entindex();
-		
+
 		if((flags & FL_DUCKING) != 0) {
 			m_pPlayer.pev.flDuckTime = 0.0;
 			m_pPlayer.pev.view_ofs = ZClass.ZView_Offset / Vector(2,2,2);
 		} else m_pPlayer.pev.view_ofs = ZClass.ZView_Offset;
+	}
 
-		//Eating Process
+	void LeaveBody_Process() {
+		int flags = m_pPlayer.pev.flags;
+		int player_old_buttons = m_pPlayer.pev.oldbuttons;
+		int player_buttons = m_pPlayer.pev.button;
+		int pId = m_pPlayer.entindex();
+
+		if((player_buttons & IN_RELOAD) != 0 || m_pPlayer.pev.armorvalue <= 0.0) {
+			LeaveBody();
+		}
+	}
+
+	void EatingProcess() {
+		int flags = m_pPlayer.pev.flags;
+		int player_old_buttons = m_pPlayer.pev.oldbuttons;
+		int player_buttons = m_pPlayer.pev.button;
+		int pId = m_pPlayer.entindex();
+
 		if((player_buttons & IN_USE) != 0) {
 			TraceResult tr;
 			
@@ -731,26 +739,55 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			//If not pressing 'USE' Key, Reset Eating Timer
 			EatingTime = g_Engine.time;
 		}
-		
-		if((player_buttons & IN_RELOAD) != 0 || m_pPlayer.pev.armorvalue <= 0.0) {
-			LeaveBody();
-		}
-		
-		//Headcrab Regen
+	}
+
+	void Headcrab_Regen() {
 		if(hc_RegenTime < g_Engine.time) {
 			if(m_pPlayer.pev.health < m_pPlayer.pev.max_health) {
 				m_pPlayer.pev.health = m_pPlayer.pev.health + 1;
 				hc_RegenTime = g_Engine.time + hc_RegenFreq;
 			}
 		}
-		
-		//Degen our Zombie over time
+	}
+
+	void Degen_Zombie() {
 		if(zm_DegenTime < g_Engine.time) {
 			if(m_pPlayer.pev.armorvalue > 0.0) {
 				m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue - 1;
 				zm_DegenTime = g_Engine.time + zm_DegenFreq;
 			}
 		}
+	}
+
+	void ZombieProcess() {
+		self.pev.nextthink = g_Engine.time + 0.1;
+		
+		//Something like Nightvision
+		DarkVision();
+
+		//Zombie Class process
+		ZClass_Process();
+		
+		//Fake Attack
+		FakeAttack();
+		
+		//Force Player Model
+		SetupPlayerModel();
+		
+		//Set View Offset
+		Setup_ViewOffset();
+
+		//Eating Process
+		EatingProcess();
+		
+		//Leave Body Process
+		LeaveBody_Process();
+		
+		//Headcrab Regen
+		Headcrab_Regen();
+		
+		//Degen our Zombie over time
+		Degen_Zombie();
 	}
 	
 	void LeaveBody() {

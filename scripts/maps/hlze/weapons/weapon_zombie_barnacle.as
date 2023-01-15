@@ -135,7 +135,7 @@ class weapon_zombie_barnacle : weapon_zclaws
 		}
 
 		//Zombie Process
-		ZombieProcess();
+		ZombieWeaponProcess();
 	}
 
 	void Spawn()
@@ -268,6 +268,37 @@ class weapon_zombie_barnacle : weapon_zclaws
 
 		//Throw Schedule
 		BarnacleThrow();
+	}
+
+	void ZombieWeaponProcess() {
+		self.pev.nextthink = g_Engine.time + 0.1;
+
+		//Something like Nightvision
+		DarkVision();
+
+		//Zombie Class process
+		ZClass_Process();
+		
+		//Fake Attack
+		//FakeAttack();
+		
+		//Force Player Model
+		SetupPlayerModel();
+		
+		//Set View Offset
+		Setup_ViewOffset();
+
+		//Eating Process
+		//EatingProcess();
+		
+		//Leave Body Process
+		LeaveBody_Process();
+		
+		//Headcrab Regen
+		Headcrab_Regen();
+		
+		//Degen our Zombie over time
+		Degen_Zombie();
 	}
 }
 

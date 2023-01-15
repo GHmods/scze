@@ -81,6 +81,7 @@ class weapon_zhcrab : weapon_zclaws
 		@m_pPlayer = pPlayer;
 		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 95 + Math.RandomLong( 0, 0xa ));
 
+		//Zombie must mutate only when claws are selected
 		CheckMutation();
 		
 		return true;
@@ -90,7 +91,7 @@ class weapon_zhcrab : weapon_zclaws
 	{
 		m_pPlayer.m_bloodColor = BLOOD_COLOR_YELLOW;
 		
-		SetThink(ThinkFunction(this.ZombieProcess));
+		SetThink(ThinkFunction(this.ZombieWeaponProcess));
 		self.pev.nextthink = g_Engine.time + 0.1;
 		
 		//Darkvision Color
@@ -201,6 +202,37 @@ class weapon_zhcrab : weapon_zclaws
 		} else {
 			m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType,m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType)-1);
 		}
+	}
+
+	void ZombieWeaponProcess() {
+		self.pev.nextthink = g_Engine.time + 0.1;
+
+		//Something like Nightvision
+		DarkVision();
+
+		//Zombie Class process
+		ZClass_Process();
+		
+		//Fake Attack
+		//FakeAttack();
+		
+		//Force Player Model
+		SetupPlayerModel();
+		
+		//Set View Offset
+		Setup_ViewOffset();
+
+		//Eating Process
+		//EatingProcess();
+		
+		//Leave Body Process
+		LeaveBody_Process();
+		
+		//Headcrab Regen
+		Headcrab_Regen();
+		
+		//Degen our Zombie over time
+		Degen_Zombie();
 	}
 }
 
