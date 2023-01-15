@@ -864,8 +864,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//Leave Body
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_infected_leaved");
 		Infected_Leaved@ ent = cast<Infected_Leaved@>(CastToScriptClass(entBase));
+		//ent.pev.origin = m_pPlayer.pev.origin;
 		
-		//Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,36.0);
 		Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,36.0);
 		
 		int flags = m_pPlayer.pev.flags;
@@ -875,12 +875,12 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		Vector createAngles = m_pPlayer.pev.angles;
 		
-		g_EntityFuncs.DispatchSpawn( ent.self.edict() );
+		g_EntityFuncs.DispatchSpawn(ent.self.edict());
 		ent.pev.angles.x = 0.0;
 		ent.pev.angles.z = 0.0;
 		ent.pev.angles.y = createAngles.y;
 		
-		ent.pev.origin = createOrigin;
+		ent.pev.origin = Unstuck::GetUnstuckPosition(createOrigin,m_pPlayer);
 		
 		CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 		ent.infected_type = atoui(KeyValues.GetKeyvalue("$i_infected_type").GetString());

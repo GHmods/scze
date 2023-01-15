@@ -200,7 +200,7 @@ class weapon_zbcrab : weapon_zclaws
 			m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType,m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType)-1);
 		}
 	}
-
+	
 	void ZombieWeaponProcess() {
 		self.pev.nextthink = g_Engine.time + 0.1;
 

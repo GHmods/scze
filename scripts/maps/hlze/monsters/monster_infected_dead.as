@@ -47,11 +47,11 @@ class Infected_Leaved : ScriptBaseMonsterEntity {
 		}
 		
 		//Body ID Depends on Infected Type
-		if(infected_type==INFECTED_SCIENTIST) {
+		if(infected_type==INFECTED_SCIENTIST||infected_type==INFECTED_NONE) {
 			self.pev.body=0;
 		} else if(infected_type==INFECTED_GUARD) {
 			self.pev.body=1;
-		} else if(infected_type==INFECTED_HGRUNT) {
+		} else if(infected_type==INFECTED_HGRUNT || infected_type==INFECTED_HGRUNT_MASKLESS) {
 			if(infected_maskless==1) self.pev.body=2;
 			else self.pev.body=3;
 		} else {
@@ -66,6 +66,7 @@ class Infected_Leaved : ScriptBaseMonsterEntity {
 	void Think() {
 		if(Infection_State==0) {
 			self.pev.sequence = self.LookupSequence("dieheadshot");
+			self.ResetSequenceInfo();
 			Infection_State++;
 			self.pev.nextthink = g_Engine.time + 1.0;
 		} else if(Infection_State==1) {

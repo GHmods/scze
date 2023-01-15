@@ -267,11 +267,13 @@ class Infected : ScriptBaseMonsterEntity
 				
 				self.pev.animtime = g_Engine.time;
 				self.pev.sequence = self.LookupSequence("zombify_begin");
+				self.ResetSequenceInfo();
 				Infection_State++;
 				Infection_Timer = g_Engine.time + 3.1;
 			} else if(Infection_State==1) {
 				self.pev.animtime = g_Engine.time;
 				self.pev.sequence = self.LookupSequence("zombify_continues");
+				self.ResetSequenceInfo();
 				Infection_State++;
 				Infection_Timer = g_Engine.time + 15.0;
 				return;
@@ -290,7 +292,8 @@ class Infected : ScriptBaseMonsterEntity
 				
 				g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_BODY, Infect_Sounds[Math.RandomLong(0,Infect_Sounds.length()-1)], 1, ATTN_NORM, 0, 94 + Math.RandomLong( 0,0xF ) );
 				self.pev.animtime = g_Engine.time;
-				self.pev.sequence = self.LookupSequence("getup");;
+				self.pev.sequence = self.LookupSequence("getup");
+				self.ResetSequenceInfo();
 				
 				Infection_State++;
 				Infection_Timer = g_Engine.time + 1.4;
