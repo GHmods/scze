@@ -30,32 +30,8 @@ void ZombieBC_Precache() {
 	g_Game.PrecacheGeneric( "sprites/weapon_zbcrab.txt" );
 }
 
-class weapon_zbcrab : ScriptBasePlayerWeaponEntity
+class weapon_zbcrab : weapon_zclaws
 {
-	private CBasePlayer@ m_pPlayer = null;
-	//Player Zombie Class Holder
-	Zombie_Class@ ZClass;
-
-	//Headcrab Regen (Not the one we are holding)
-	float hc_RegenTime = g_Engine.time;
-	float hc_RegenFreq = 2.5;
-	
-	//Degen our Zombie
-	float zm_DegenTime = g_Engine.time;
-	float zm_DegenFreq = 8.0;
-	float zm_DegenDelay = 25.0;
-	
-	//Darkvision Color
-	Vector NVColor(0,0,0);
-	
-	//Mutation Time
-	float zm_MutationTime = g_Engine.time;
-	float zm_MutationDelay = 5.0;
-
-	//Ability
-	int zm_ability_state = 0;
-	float zm_ability_timer = g_Engine.time;
-
 	void Spawn()
 	{
 		self.Precache();
