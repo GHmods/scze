@@ -40,7 +40,7 @@ void Convert_Eatable(CBaseMonster@ monster) {
 		return;
 	}
 	//If Eatable Monster is in 'MONSTERSTATE_DEAD' mode
-	if(monster.m_MonsterState == MONSTERSTATE_DEAD) {
+	if(monster.m_MonsterState == MONSTERSTATE_DEAD && (monster.pev.flags & FL_ONGROUND) != 0) {
 		//Create Eatable Monster
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_eatable");
 		script_monster_eatable@ eatableMonster = cast<script_monster_eatable@>(CastToScriptClass(entBase));
@@ -153,15 +153,14 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		self.pev.frame = frame;
 		self.pev.framerate = framerate;
 		//self.pev.animtime = animtime;
-		self.pev.animtime = g_Engine.time + 0.1;
+		self.pev.animtime = g_Engine.time;
 		self.pev.sequence = sequence;
 	}
 	
 	//Thinking
 	void Eatable_Think() {
 		self.pev.nextthink = g_Engine.time + 0.1;
-
-		
-		Unstuck::UnstuckEntity(self);
+		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self);
+		//Unstuck::UnstuckEntity(self);
 	}
 }
