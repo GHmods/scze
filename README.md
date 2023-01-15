@@ -113,6 +113,7 @@ points for Humans.
   - ~~Add Barnacle Weapon for Breeder Zombie Class.~~
   - ~~Add Third Person Animation for 'Shield' Zombie Ability.~~
   - ~~Add Custom Zombie NPC.~~
+  - Fix monster_eatable & monster_infected_dead
   - ~~More Tasks Soon....~~
 
 ## Tools I've used:

@@ -154,7 +154,8 @@ void Zombie_Precache() {
 
 class weapon_zclaws : ScriptBasePlayerWeaponEntity
 {
-	private CBasePlayer@ m_pPlayer = null;
+	//private CBasePlayer@ m_pPlayer = null;
+	CBasePlayer@ m_pPlayer = null;
 	//Player Zombie Class Holder
 	Zombie_Class@ ZClass;
 	
@@ -241,6 +242,12 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			m.WriteString("-duck;");
 		m.End();
 		
+		CheckMutation();
+		
+		return true;
+	}
+
+	void CheckMutation() {
 		if(ZClass_Holder[m_pPlayer.entindex()] == HClass_Holder[m_pPlayer.entindex()]) {
 			ZClass_Mutate(HClass_Holder[m_pPlayer.entindex()]);
 			ZClass_MutationState[m_pPlayer.entindex()] = ZM_MUTATION_NONE;
@@ -250,8 +257,6 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			zm_MutationTime = g_Engine.time + 5.0;
 			ZClass_MutationState[m_pPlayer.entindex()] = ZM_MUTATION_BEGIN;
 		}
-		
-		return true;
 	}
 	
 	bool Deploy()
@@ -265,10 +270,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		b_FastAttack = ZClass.FastAttack;
 		//Damage
 		zm_Damage = ZClass.Damage;
-		//Darkvision Color
-		NVColor.x = ZClass.DV_Color.x / 8;
-		NVColor.y = ZClass.DV_Color.y / 8;
-		NVColor.z = ZClass.DV_Color.z / 8;
+		
 		
 		m_pPlayer.KeyValue("$i_isZombie",true);
 		m_pPlayer.KeyValue("$i_ZombieWeapon",1);
@@ -276,6 +278,13 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//Get View Model from Zombie Class
 		return self.DefaultDeploy( self.GetV_Model(ZClass.VIEW_MODEL),
 							self.GetP_Model(P_MODEL), ZM_DRAW, "python", 0, ZClass.VIEW_MODEL_BODY_ID);
+	}
+
+	void DarkVision_Init() {
+		//Darkvision Color
+		NVColor.x = ZClass.DV_Color.x / 8;
+		NVColor.y = ZClass.DV_Color.y / 8;
+		NVColor.z = ZClass.DV_Color.z / 8;
 	}
 	
 	void Holster( int skiplocal /* = 0 */ )
@@ -759,6 +768,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			Vector(-60.0,80.0,0.0)
 		};
 
+		//Drop Headcrabs
 		CBasePlayerWeapon@ hcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zhcrab");
 		if(hcWep !is null)
 		{
@@ -782,6 +792,32 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			}
 			m_pPlayer.m_rgAmmo(hcWep.m_iPrimaryAmmoType,0);
 			hcWep.DestroyItem();
+		}
+
+		//Drop Babycrabs
+		CBasePlayerWeapon@ bcWep = Get_Weapon_FromPlayer(m_pPlayer,"weapon_zbcrab");
+		if(bcWep !is null)
+		{
+			int ammo = m_pPlayer.m_rgAmmo(bcWep.m_iPrimaryAmmoType);
+			for(uint c=0;c<uint(ammo);c++)
+			{
+				Math.MakeVectors(m_pPlayer.pev.v_angle);
+				//Vector vecSrc	= m_pPlayer.GetGunPosition();
+				Vector vecSrc = m_pPlayer.pev.origin + Vector(0,0,fUp);
+				fUp+=9.0;
+				float throw_amount = 500.0;
+				CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_babycrab");
+				CBaseMonster@ hc = entBase.MyMonsterPointer();
+				if(hc !is null) {
+					g_EntityFuncs.DispatchSpawn(hc.edict());
+					hc.SetPlayerAllyDirect(true);
+					hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
+					hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
+					hc.pev.velocity = g_Engine.v_forward * throw_amount;
+				}
+			}
+			m_pPlayer.m_rgAmmo(bcWep.m_iPrimaryAmmoType,0);
+			bcWep.DestroyItem();
 		}
 
 		self.DestroyItem();

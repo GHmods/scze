@@ -108,7 +108,7 @@ namespace Unstuck {
 
 		for(uint i = 0; i < stuck.length(); i++ ){
 			Vector new_origin;
-			new_origin = origin + ignoreEnt.pev.size/2 * Vector(pSize[i][0],pSize[i][1],pSize[i][2]);
+			new_origin = origin + ignoreEnt.pev.size/3 * Vector(pSize[i][0],pSize[i][1],pSize[i][2]);
 			
 			if(!is_hull_vacant_DontIgnoreMonsters(new_origin,hull,ignoreEnt)) {
 				returnVec = new_origin;
@@ -117,7 +117,7 @@ namespace Unstuck {
 			}
 		}
 				
-		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, "Unstucked? "+(unstucked?"Yes":"No")+"\n");
+		//g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, "Unstucked? "+(unstucked?"Yes":"No")+"\n");
 
 		if(!unstucked)
 			returnVec=Position;
