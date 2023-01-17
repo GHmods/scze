@@ -128,6 +128,7 @@ namespace ZClasses
 		//Register abilities to this class
 		rusher.Register_Ability("Frenzy Mode",30);//Toggleable Ability(Must be first!), Leave ("Nothing",0) to ignore this
 		rusher.Register_Ability("Long Jump",15);
+		rusher.Register_Ability("Armor Upgrade (+50)",100); //+50 Armor
 		//----------------------------------------
 		//Crasher
 		Zombie_Class crasher(Zombie_Classes,				//Array that is used to register this class

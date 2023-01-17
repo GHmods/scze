@@ -870,7 +870,8 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				if(hc !is null) {
 					g_EntityFuncs.DispatchSpawn(hc.edict());
 					hc.SetPlayerAllyDirect(true);
-					hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
+					//hc.pev.origin = vecSrc + g_Engine.v_forward * hcTriangle[c].y  + g_Engine.v_right * hcTriangle[c].x;
+					hc.pev.origin = Unstuck::GetUnstuckPosition(vecSrc,entBase,head_hull,1.0);
 					hc.pev.angles.y = m_pPlayer.pev.v_angle.y;
 					hc.pev.velocity = g_Engine.v_forward * throw_amount;
 				}
