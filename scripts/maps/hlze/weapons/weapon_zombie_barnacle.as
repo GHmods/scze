@@ -177,7 +177,7 @@ class weapon_zombie_barnacle : weapon_zclaws
 		@m_pPlayer = pPlayer;
 		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,ZOMBIE_BARNACLE_PICK_UP, 1, ATTN_NORM, 0, 130);
 
-		CheckMutation();
+		//CheckMutation();
 		
 		return true;
 	}

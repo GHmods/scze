@@ -96,19 +96,17 @@ namespace Unstuck {
 		}
 	}
 
-	Vector GetUnstuckPosition(Vector Position,CBaseEntity@ ignoreEnt) {
+	Vector GetUnstuckPosition(Vector Position,CBaseEntity@ ignoreEnt,HULL_NUMBER hull = head_hull,float size_divide = 3.0) {
 		Vector returnVec;
 
 		Vector origin = Position;
 		Vector vec;
 		
-		HULL_NUMBER hull = head_hull;
-		
 		bool unstucked = false;
 
 		for(uint i = 0; i < stuck.length(); i++ ){
 			Vector new_origin;
-			new_origin = origin + ignoreEnt.pev.size/3 * Vector(pSize[i][0],pSize[i][1],pSize[i][2]);
+			new_origin = origin + ignoreEnt.pev.size/size_divide * Vector(pSize[i][0],pSize[i][1],pSize[i][2]);
 			
 			if(!is_hull_vacant_DontIgnoreMonsters(new_origin,hull,ignoreEnt)) {
 				returnVec = new_origin;

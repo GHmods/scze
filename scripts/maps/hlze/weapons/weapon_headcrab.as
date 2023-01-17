@@ -125,6 +125,7 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 		}
 		
 		m_pPlayer.KeyValue("$i_isHeadcrab",true);
+		m_pPlayer.KeyValue("$i_isZombie",false);
 		
 		return self.DefaultDeploy(self.GetV_Model(HClass.VIEW_MODEL),
 				self.GetP_Model(P_MODEL),HC_IDLE,0,HClass.VIEW_MODEL_BODY_ID);

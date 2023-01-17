@@ -478,13 +478,13 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		}
 
 		if(byBody) {
-			if(self.GetBodygroup(0)==0) zombie_type = INFECTED_SCIENTIST;
-			else if(self.GetBodygroup(0)==1) zombie_type = INFECTED_GUARD;
+			//if(self.GetBodygroup(0)==0||) zombie_type = INFECTED_SCIENTIST;
+			if(self.GetBodygroup(0)==1) zombie_type = INFECTED_GUARD;
 			else if(self.GetBodygroup(0)==2) zombie_type = INFECTED_HGRUNT_MASKLESS;
 			else if(self.GetBodygroup(0)==3) zombie_type = INFECTED_HGRUNT;
 			else if(self.GetBodygroup(0)==4) zombie_type = INFECTED_MASSN;
 			else {
-				zombie_type = INFECTED_NONE;
+				zombie_type = INFECTED_SCIENTIST;
 			}
 		}
 		//Now Set Up Values

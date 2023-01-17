@@ -86,3 +86,15 @@ HookReturnCode Event_PlayerThink(CBasePlayer@ pPlayer, uint& out dummy )
 	
 	return HOOK_CONTINUE;
 }
+
+int GetPlayerCount() {
+	int count = 0;
+
+	for(uint i=0;i<uint(g_Engine.maxClients);i++) {
+		CBasePlayer@ findPlayer = g_PlayerFuncs.FindPlayerByIndex(i);
+		if(findPlayer !is null)
+			count++;
+	}
+
+	return count;
+}

@@ -21,9 +21,12 @@ void MapInit()
 	//Register Monsters
 	RegisterMonsters();
 	
-	//Teleporter Fix for this Map
-	g_Scheduler.SetTimeout( "TeleportPlayers_Now", 5.0);
-	
 	//Register Entities
 	RegisterEntities();
+}
+
+void MapActivate()
+{
+	//Fixes for this Map
+	g_Scheduler.SetTimeout( "zhzm0_fix", 1.0);
 }

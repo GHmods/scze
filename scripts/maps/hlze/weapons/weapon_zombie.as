@@ -273,6 +273,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		
 		
 		m_pPlayer.KeyValue("$i_isZombie",true);
+		m_pPlayer.KeyValue("$i_isHeadcrab",false);
 		m_pPlayer.KeyValue("$i_ZombieWeapon",1);
 		
 		//Get View Model from Zombie Class
@@ -880,7 +881,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		ent.pev.angles.z = 0.0;
 		ent.pev.angles.y = createAngles.y;
 		
-		ent.pev.origin = Unstuck::GetUnstuckPosition(createOrigin,m_pPlayer);
+		ent.pev.origin = Unstuck::GetUnstuckPosition(createOrigin,entBase,human_hull,1.0);
 		
 		CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 		ent.infected_type = atoui(KeyValues.GetKeyvalue("$i_infected_type").GetString());
