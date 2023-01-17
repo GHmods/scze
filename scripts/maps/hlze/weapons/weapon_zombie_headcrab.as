@@ -82,7 +82,7 @@ class weapon_zhcrab : weapon_zclaws
 		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 95 + Math.RandomLong( 0, 0xa ));
 
 		//Zombie must mutate only when claws are selected
-		//CheckMutation();
+		CopyValuesFromClaws();
 		
 		return true;
 	}

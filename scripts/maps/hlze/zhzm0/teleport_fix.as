@@ -1,4 +1,5 @@
 //Teleport Fix Sven Co-op Zombie Edition
+#include "../events"
 bool isTeleporterActive = false;
 Vector Teleporter_Destination(-79.0,-167.0,-260.0);
 

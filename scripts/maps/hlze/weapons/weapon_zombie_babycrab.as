@@ -80,7 +80,7 @@ class weapon_zbcrab : weapon_zclaws
 		@m_pPlayer = pPlayer;
 		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,"headcrab/hc_attack3.wav", 1, ATTN_NORM, 0, 130);
 
-		//CheckMutation();
+		CopyValuesFromClaws();
 		
 		return true;
 	}

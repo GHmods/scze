@@ -2,7 +2,7 @@
 	Infected Monster
 */
 #include "../classes/headcrab_classes"
-#include "npcs/npc_register"
+#include "register"
 
 array<string>Infect_Sounds = {
 	"vox/zombie_pain1.wav",
@@ -175,6 +175,13 @@ class Infected : ScriptBaseMonsterEntity
 					infection_info.BodyGuard[b][1]
 				);
 			}
+
+			//Create Helmet
+			CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("proj_barney_helmet");
+			Proj_BarneyHelmet@ Projectile = cast<Proj_BarneyHelmet@>(CastToScriptClass(entBase));
+			g_EntityFuncs.DispatchSpawn(Projectile.self.edict());
+			Projectile.pev.origin = self.pev.origin + Vector(0,0,50);
+			Projectile.pev.angles.y = self.pev.angles.y;
 		} else if(infected_type==INFECTED_HGRUNT) {
 			int dataID = INFECTED_HGRUNT;
 			if(zombie_isMaskLess)

@@ -28,5 +28,5 @@ void MapInit()
 void MapActivate()
 {
 	//Fixes for this Map
-	g_Scheduler.SetTimeout( "zhzm0_fix", 1.0);
+	g_Scheduler.SetTimeout("zhzm0_fix", 1.0);
 }

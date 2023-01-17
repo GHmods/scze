@@ -106,16 +106,16 @@ void Infected_Process(CBaseMonster@ monster, CBaseEntity@ hc) {
 	ent.pev.angles = createAngles;
 	
 	ent.infected_class = monster.pev.classname;
-	//Fix for Human Grunts
+
 	if(monster.pev.classname == Infectable[2]) {
-		if(monster.pev.body == 1 ||
-			monster.pev.body == 2 ||
-			monster.pev.body == 3 ||
-			monster.pev.body == 7 ||
-			monster.pev.body == 8 ||
-			monster.pev.body == 9) {
+		monster.SetBodygroup(2,3);
+		monster.SetBodygroup(1,0);//Remove Weapon
+	} else if(monster.pev.classname == Infectable[3]) {
+		if(monster.GetBodygroup(1) != 0) {
 			ent.zombie_isMaskLess = true;
 		}
+
+		monster.SetBodygroup(2,2);//Remove Weapon
 	}
 	ent.infected_first_body = monster.pev.body;
 	ent.BigProcess();
@@ -140,16 +140,16 @@ void Infected_Process_NoOwner(CBaseMonster@ monster) {
 	ent.pev.angles = createAngles;
 	
 	ent.infected_class = monster.pev.classname;
-	//Fix for Human Grunts
+
 	if(monster.pev.classname == Infectable[2]) {
-		if(monster.pev.body == 1 ||
-			monster.pev.body == 2 ||
-			monster.pev.body == 3 ||
-			monster.pev.body == 7 ||
-			monster.pev.body == 8 ||
-			monster.pev.body == 9) {
+		monster.SetBodygroup(2,3);
+		monster.SetBodygroup(1,0);//Remove Weapon
+	} else if(monster.pev.classname == Infectable[3]) {
+		if(monster.GetBodygroup(1) != 0) {
 			ent.zombie_isMaskLess = true;
 		}
+
+		monster.SetBodygroup(2,2);//Remove Weapon
 	}
 	ent.infected_first_body = monster.pev.body;
 	ent.BigProcess();
@@ -180,16 +180,16 @@ void Infected_Process_Player(CBaseMonster@ monster, CBasePlayer@ m_pPlayer) {
 	@ent.Infector = playerEnt;
 	
 	ent.infected_class = monster.pev.classname;
-	//Fix for Human Grunts
+	
 	if(monster.pev.classname == Infectable[2]) {
-		if(monster.pev.body == 1 ||
-			monster.pev.body == 2 ||
-			monster.pev.body == 3 ||
-			monster.pev.body == 7 ||
-			monster.pev.body == 8 ||
-			monster.pev.body == 9) {
+		monster.SetBodygroup(2,3);
+		monster.SetBodygroup(1,0);//Remove Weapon
+	} else if(monster.pev.classname == Infectable[3]) {
+		if(monster.GetBodygroup(1) != 0) {
 			ent.zombie_isMaskLess = true;
 		}
+
+		monster.SetBodygroup(2,2);//Remove Weapon
 	}
 	ent.infected_first_body = monster.pev.body;
 	
@@ -200,6 +200,16 @@ void Infected_Process_Player(CBaseMonster@ monster, CBasePlayer@ m_pPlayer) {
 
 	ent.BigProcess();
 	
+	//Relocate Player
+	TraceResult tr;
+	g_Utility.TraceLine(m_pPlayer.GetOrigin(),m_pPlayer.GetOrigin()-Vector(0,0,36),ignore_monsters,m_pPlayer.edict(),tr);
+	Vector relocateOrigin = tr.vecEndPos;
+	relocateOrigin = relocateOrigin + Vector(0,0,18);
+	if((m_pPlayer.pev.flags & FL_DUCKING) == 0) {
+		relocateOrigin = relocateOrigin + Vector(0,0,18);
+	}
+
+	m_pPlayer.pev.origin = relocateOrigin;
 	//Lock the Player
 	m_pPlayer.pev.flags |= FL_FROZEN;
 	//Make Player Invisible

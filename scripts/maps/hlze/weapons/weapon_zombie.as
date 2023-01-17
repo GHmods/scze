@@ -258,6 +258,27 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 			ZClass_MutationState[m_pPlayer.entindex()] = ZM_MUTATION_BEGIN;
 		}
 	}
+
+	void CopyValuesFromClaws(string WeaponName="weapon_zclaws") {
+		CBasePlayerWeapon@ fWep = Get_Weapon_FromPlayer(m_pPlayer,WeaponName);
+		if(fWep is null)
+			return;
+		
+		weapon_zclaws@ zclaws = cast<weapon_zclaws@>(CastToScriptClass(fWep));
+
+		if(zclaws is null)
+			return;
+		
+		@ZClass = zclaws.ZClass;
+		zm_DegenTime = zclaws.zm_DegenTime;
+		zm_DegenFreq = zclaws.zm_DegenFreq;
+		zm_ability_state = zclaws.zm_ability_state;
+		zm_ability_timer = zclaws.zm_ability_timer;
+		b_FastAttack = ZClass.FastAttack;
+		zm_Damage = ZClass.Damage;
+		zm_LastHealth = zclaws.zm_LastHealth;
+
+	}
 	
 	bool Deploy()
 	{
@@ -867,11 +888,11 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		Infected_Leaved@ ent = cast<Infected_Leaved@>(CastToScriptClass(entBase));
 		//ent.pev.origin = m_pPlayer.pev.origin;
 		
-		Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,36.0);
+		Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,18.0);
 		
 		int flags = m_pPlayer.pev.flags;
 		if((flags & FL_DUCKING) != 0) {
-			createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,18.0);
+			createOrigin = createOrigin - Vector(0.0,0.0,18.0);
 		}
 		
 		Vector createAngles = m_pPlayer.pev.angles;
@@ -1614,7 +1635,7 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 						
 						g_Utility.TraceLine(vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr);
 						
-						m_pPlayer.pev.vuser1 = tr.vecEndPos;
+						m_pPlayer.pev.vuser2 = tr.vecEndPos;
 					}
 				}
 
@@ -1630,8 +1651,8 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 					g_PlayerFuncs.ScreenShake(m_pPlayer.pev.origin, 3.5, 0.5, 1.5, 2.0);
 					
 					//Get 1 Monster near the looking point
-					array<CBaseEntity@>MonstersAround(800);
-					g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.vuser1,50.0);
+					array<CBaseEntity@>MonstersAround(25);
+					g_EntityFuncs.MonstersInSphere(@MonstersAround,m_pPlayer.pev.vuser2,50.0);
 
 					for(uint i=0;i<MonstersAround.length();i++)
 					{

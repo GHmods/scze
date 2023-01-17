@@ -3,7 +3,6 @@
 #include "../monsters/monster_barnacle"
 #include "../unstuck"
 
-//Acid Bolts
 array<string>BarnacleThrow_Sounds = {
 	"barnacle/bcl_alert2.wav", //START
 	"bullchicken/bc_spithit1.wav", //FAIL

@@ -11,6 +11,9 @@
 //Barnacles
 #include "monster_barnacle"
 
+//Barney's Helmet
+#include "../projectiles/proj_barney_helmet"
+
 void RegisterMonsters() {
 	//Register our NPCS
 	HLZE_MonsterInit();
@@ -25,4 +28,7 @@ void RegisterMonsters() {
 	g_Scheduler.SetTimeout("Eatable_Process", 3.0);
 	//Barnacle Process
 	g_Scheduler.SetTimeout("Barnacle_Process", 3.0);
+
+	//Barney's Helmet
+	proj_barney_helmet_Init();
 }

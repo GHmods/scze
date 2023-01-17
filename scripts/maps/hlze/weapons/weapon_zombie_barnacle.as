@@ -52,32 +52,6 @@ void ZombieBarnacleWeapon_Precache() {
 
 class weapon_zombie_barnacle : weapon_zclaws
 {
-	/*
-	private CBasePlayer@ m_pPlayer = null;
-	//Player Zombie Class Holder
-	Zombie_Class@ ZClass;
-
-	//Headcrab Regen (Not the one we are holding)
-	float hc_RegenTime = g_Engine.time;
-	float hc_RegenFreq = 2.5;
-	
-	//Degen our Zombie
-	float zm_DegenTime = g_Engine.time;
-	float zm_DegenFreq = 8.0;
-	float zm_DegenDelay = 25.0;
-	
-	//Darkvision Color
-	Vector NVColor(0,0,0);
-	
-	//Mutation Time
-	float zm_MutationTime = g_Engine.time;
-	float zm_MutationDelay = 5.0;
-
-	//Ability
-	int zm_ability_state = 0;
-	float zm_ability_timer = g_Engine.time;
-	*/
-
 	//Barnacle Throwing State
 	int barnacle_throwing_state = ZMBW_THROW_NONE;
 	float barnacle_throwing_state_Timer = g_Engine.time;
@@ -177,7 +151,7 @@ class weapon_zombie_barnacle : weapon_zclaws
 		@m_pPlayer = pPlayer;
 		g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_ITEM,ZOMBIE_BARNACLE_PICK_UP, 1, ATTN_NORM, 0, 130);
 
-		//CheckMutation();
+		CopyValuesFromClaws();
 		
 		return true;
 	}
