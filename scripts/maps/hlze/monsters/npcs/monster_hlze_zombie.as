@@ -820,7 +820,8 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 				if(self.m_LastHitGroup != 1
 				&& self.m_LastHitGroup != 6
 				&& self.m_LastHitGroup != 7
-				&& !self.IsAlive()) {
+				&& !self.IsAlive()
+				&& !zombie_IsLimped) {
 					//Disable monster collision
 					self.pev.solid = SOLID_NOT;
 

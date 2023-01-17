@@ -153,9 +153,9 @@ namespace ZClasses
 									"Strong,Solid and Slow!"
 		); //End of this Zombie Class
 		//Register abilities to this class
-		crasher.Register_Ability("Acid Throw",80);	//+ATTACK3
+		crasher.Register_Ability("Acid Throw",50);	//+ATTACK3
 		acid_throw_Init(); //Register our Entity
-		crasher.Register_Ability("Shield [Secondary Attack to Toggle]",80);
+		crasher.Register_Ability("Shield [Secondary Attack to Toggle]",70);
 		crasher.Register_Ability("Armor Upgrade (+50)",30); //+50 Armor
 		//----------------------------------------
 		//Breeder
@@ -182,12 +182,12 @@ namespace ZClasses
 									"Incubator for parasites!"
 		); //End of this Zombie Class
 		//Register abilities to this class
-		breeder.Register_Ability("Move Command",80);	//+ATTACK3
-		breeder.Register_Ability("Mass Ressurect - [Secondary Attack to Use]",80);	//+ATTACK2
-		breeder.Register_Ability("Baby Crabs",80);
-		breeder.Register_Ability("Zombie Orders",30);
-		breeder.Register_Ability("Barnacles",80); //Barnacles
-		breeder.Register_Ability("Ammo Upgrade",30);
+		breeder.Register_Ability("Move Command",40);	//+ATTACK3
+		breeder.Register_Ability("Mass Ressurect - [Secondary Attack to Use]",100);	//+ATTACK2
+		breeder.Register_Ability("Baby Crabs",40);
+		breeder.Register_Ability("Zombie Orders",20);
+		breeder.Register_Ability("Barnacles",40); //Barnacles
+		breeder.Register_Ability("Ammo Upgrade",20);
 		breeder.Register_Ability("Armor Upgrade (+25)",40); //+25 Armor
 		//----------------------------------------
 		
