@@ -30,11 +30,17 @@ class Infected_Leaved : ScriptBaseMonsterEntity {
 		
 		//Bare Minimum for 1 Entity
 		g_EntityFuncs.SetModel(self,"models/hlze/zombie_body.mdl");
-		g_EntityFuncs.SetSize( self.pev,Vector(0,0,0),Vector(36,36,70));
-		self.pev.movetype = MOVETYPE_TOSS;
-		//self.pev.solid = SOLID_BBOX;
-		self.pev.solid = SOLID_NOT;
-		self.pev.gravity = 1.0f;
+		g_EntityFuncs.SetSize(self.pev,VEC_HUMAN_HULL_MIN,VEC_HUMAN_HULL_MAX);
+		
+		self.pev.solid = SOLID_SLIDEBOX;
+		self.pev.movetype = MOVETYPE_STEP;
+		self.m_bloodColor = BLOOD_COLOR_GREEN;
+		self.pev.health = 100.0;
+		self.m_MonsterState = MONSTERSTATE_NONE;
+
+		self.MonsterInit();
+		self.m_FormattedName = "Infected Corpse";
+		self.SetClassification(CLASS_ALIEN_MONSTER);
 	}
 	
 	void BigProcess() {
@@ -45,7 +51,7 @@ class Infected_Leaved : ScriptBaseMonsterEntity {
 		}
 		
 		//Body ID Depends on Infected Type
-		if(infected_type==INFECTED_SCIENTIST||infected_type==INFECTED_NONE) {
+		if(infected_type==INFECTED_SCIENTIST) {
 			self.pev.body=0;
 		} else if(infected_type==INFECTED_GUARD) {
 			self.pev.body=1;
@@ -53,37 +59,15 @@ class Infected_Leaved : ScriptBaseMonsterEntity {
 			if(infected_maskless==1) self.pev.body=2;
 			else self.pev.body=3;
 		} else {
-			g_EntityFuncs.Remove(self);
-			return;
+			//g_EntityFuncs.Remove(self);
+			self.pev.body=0;
 		}
 		
-		//Fake Monster
-		self.MonsterInit();
-		self.m_MonsterState = MONSTERSTATE_PLAYDEAD;
-		//Used for Animation
-		self.pev.sequence = self.LookupSequence("dieheadshot");
-		self.pev.frame = 0;
-		self.pev.framerate = 1.0;
-		self.pev.effects = self.pev.effects | EF_NOINTERP;
-		self.pev.animtime = g_Engine.time;
-		self.ResetSequenceInfo();
-		//Think
-		self.pev.nextthink = g_Engine.time + 0.1;
-	}
-	
-	void Think() {
-		self.pev.nextthink = g_Engine.time + 0.1;
+		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self,human_hull,1.0);
 
-		//States
-		if(InfectionTimer<g_Engine.time) {
-			if(Infection_State==0) {
-				Infection_State++;
-				InfectionTimer = g_Engine.time + 1.0;
-			} else if(Infection_State==1) {
-				Infection_State++;
-				self.pev.solid = SOLID_NOT;
-			}
-		}
+		//Try to kill this "Monster"
+		self.SetActivity(ACT_DIE_HEADSHOT);
+		self.TakeDamage(self.pev.owner.vars,self.pev.owner.vars,100.0,DMG_SLASH|DMG_NEVERGIB);
 	}
 	
 	void Precache()

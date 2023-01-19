@@ -106,14 +106,14 @@ points for Humans.
   - ~~Add Save by Steam ID or Name Option.~~
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
-#### Tasks Part 3: ![85%](https://progress-bar.dev/85)
+#### Tasks Part 3: ![87%](https://progress-bar.dev/87)
   - ~~Fixes for 'Breeder' Zombie Class.~~
   - Fix 'fake_pickup'
   - ~~Add Models from Headcrab Classes to Victim's Head.~~
   - ~~Add Barnacle Weapon for Breeder Zombie Class.~~
   - ~~Add Third Person Animation for 'Shield' Zombie Ability.~~
   - ~~Add Custom Zombie NPC.~~
-  - Fix monster_eatable & monster_infected_dead
+  - ~~Fix monster_eatable & monster_infected_dead~~
   - ~~More Tasks Soon....~~
 
 ## Tools I've used:

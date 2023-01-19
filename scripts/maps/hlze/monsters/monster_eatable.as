@@ -40,7 +40,8 @@ void Convert_Eatable(CBaseMonster@ monster) {
 		return;
 	}
 	//If Eatable Monster is in 'MONSTERSTATE_DEAD' mode
-	if(monster.m_MonsterState == MONSTERSTATE_DEAD && (monster.pev.flags & FL_ONGROUND) != 0) {
+	//if(monster.m_MonsterState == MONSTERSTATE_DEAD && (monster.pev.flags & FL_ONGROUND) != 0) {
+	if(monster.m_MonsterState == MONSTERSTATE_DEAD) {
 		//Create Eatable Monster
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_eatable");
 		script_monster_eatable@ eatableMonster = cast<script_monster_eatable@>(CastToScriptClass(entBase));
@@ -65,10 +66,14 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	void Spawn()
 	{
 		//Monster Stuff
-		self.MonsterInitDead();
+		self.pev.solid = SOLID_SLIDEBOX;
+		self.pev.movetype = MOVETYPE_STEP;
+		self.m_bloodColor = BLOOD_COLOR_GREEN;
+		self.m_MonsterState = MONSTERSTATE_NONE;
 
-		self.pev.solid = SOLID_NOT;
-		
+		self.MonsterInit();
+		self.m_FormattedName = "Eatable Monster";
+		self.SetClassification(CLASS_ALIEN_MONSTER);
 		self.SetPlayerAlly(false);
 	}
 
@@ -77,46 +82,15 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	}
 	
 	void CopyMonster(CBaseMonster@ monster) {
-		//Copy PEV
-		self.pev.origin = monster.pev.origin;
-		self.pev.oldorigin = monster.pev.oldorigin;
-		self.pev.velocity = monster.pev.velocity;
-		self.pev.basevelocity = monster.pev.velocity;
-		self.pev.movedir = monster.pev.movedir;
-		self.pev.angles = monster.pev.angles;
-		self.pev.avelocity = monster.pev.avelocity;
-		self.pev.impacttime = monster.pev.impacttime;
-		self.pev.starttime = monster.pev.starttime;
-		self.pev.fixangle = monster.pev.fixangle;
-		self.pev.model = monster.pev.model;
-		self.pev.absmin = monster.pev.absmin;
-		self.pev.absmax = monster.pev.absmax;
-		self.pev.mins = monster.pev.mins;
-		self.pev.maxs = monster.pev.maxs;
-		//self.pev.solid = monster.pev.solid;
-		self.pev.skin = monster.pev.skin;
-		self.pev.body = monster.pev.body;
-		self.pev.effects = monster.pev.effects;
-		self.pev.gravity = monster.pev.gravity;
-		//self.pev.friction = monster.pev.friction;
-		self.pev.sequence = monster.pev.sequence;
-		self.pev.gaitsequence = monster.pev.gaitsequence;
-		self.pev.frame = monster.pev.frame;
-		self.pev.animtime = monster.pev.animtime;
-		self.pev.framerate = monster.pev.framerate;
-		self.pev.scale = monster.pev.scale;
-		self.pev.rendermode = monster.pev.rendermode;
-		self.pev.renderamt = monster.pev.renderamt;
-		self.pev.rendercolor = monster.pev.rendercolor;
-		self.pev.renderfx = monster.pev.renderfx;
-		self.pev.flags = monster.pev.flags;
-		
 		//Setup
 		Setup_Eatable(monster.pev.model,monster.pev.skin,monster.pev.body,
 				monster.pev.origin,monster.pev.velocity,monster.pev.angles,monster.BloodColor());
 		//Animate
-		Animate_Eatable(monster.pev.frame,monster.pev.framerate,monster.pev.animtime,monster.pev.sequence);
-		
+		self.TakeDamage(self.pev,self.pev,100.0,DMG_SLASH|DMG_NEVERGIB);
+		self.pev.health = 7.0;
+		self.SetActivity(monster.m_Activity);
+		//Animate_Eatable(monster.pev.frame,monster.pev.framerate,monster.pev.animtime);
+
 		//Remove the monster
 		g_EntityFuncs.Remove(monster);
 	}
@@ -135,32 +109,32 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 		
 		self.m_bloodColor = bc;
 		
-		self.pev.health = 1.5;
 		self.pev.takedamage = DAMAGE_YES;
-		
-		if(string(self.m_FormattedName).IsEmpty())
-		{
-			self.m_FormattedName = "Eatable";
-		}
+
+		// Do Not Remove This Monster on Death
+		//SF_MONSTER_FADECORPSE = 512;
+		self.pev.spawnflags |= 512;
 		
 		self.pev.set_controller(0,125);
-		
+
 		//Set Thinking
 		SetThink(ThinkFunction(this.Eatable_Think));
 	}
 	
-	void Animate_Eatable(float frame, float framerate, float animtime, int sequence) {
+	void Animate_Eatable(float frame, float framerate, float animtime) {
 		self.pev.frame = frame;
 		self.pev.framerate = framerate;
-		//self.pev.animtime = animtime;
-		self.pev.animtime = g_Engine.time;
-		self.pev.sequence = sequence;
+		self.pev.animtime = animtime;
 	}
 	
 	//Thinking
 	void Eatable_Think() {
 		self.pev.nextthink = g_Engine.time + 0.1;
-		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self);
+		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self,human_hull,2.0);
 		//Unstuck::UnstuckEntity(self);
+
+		//Remove
+		if((self.pev.effects & EF_NODRAW) != 0)
+			g_EntityFuncs.Remove(self); //Remove the monster
 	}
 }

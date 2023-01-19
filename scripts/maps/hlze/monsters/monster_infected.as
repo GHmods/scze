@@ -101,7 +101,7 @@ class Infected : ScriptBaseMonsterEntity
 		
 		//Bare Minimum for 1 Entity
 		g_EntityFuncs.SetSize( self.pev, Vector( 0, 0, 0 ), Vector( 36, 36, 70 ) );
-		self.pev.movetype = MOVETYPE_STEP;
+		self.pev.movetype = MOVETYPE_NONE;
 		self.pev.solid = SOLID_NOT;
 		self.pev.gravity = 1.0f;
 		

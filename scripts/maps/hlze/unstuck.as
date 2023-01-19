@@ -35,6 +35,22 @@ namespace Unstuck {
 							break;
 						}
 					}
+					//If not Unstucked......[-_-] Try This
+					if(!unstucked) {
+						for(uint i = 0; i < 25; i++ ){
+							Vector new_origin;
+							float randN1 = -1.0 + i;
+							float randN2 = randN1*-1;
+							Vector vecRand(Math.RandomFloat(randN1,randN2),Math.RandomFloat(randN1,randN2),Math.RandomFloat(randN1,randN2));
+							new_origin = origin + mins * vecRand;
+							
+							if(!is_hull_vacant(new_origin,hull,pPlayer)) {
+								pPlayer.pev.origin = new_origin;
+								unstucked = true;
+								break;
+							}
+						}
+					}
 				}
 				
 				//g_PlayerFuncs.ClientPrint(pPlayer, HUD_PRINTTALK, "Stucked? "+(stucked?"Yes":"No")+"\n");

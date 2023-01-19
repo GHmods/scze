@@ -714,7 +714,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 					//g_Log.PrintF("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n");
 					
 					eatable_monster.TraceBleed(0.1, eatable_monster.pev.origin + Vector(0,0,2), tr, DMG_CLUB);
-					eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_CLUB);
+					eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_ALWAYSGIB);
 						
 					//m_pPlayer.pev.armortype = m_pPlayer.pev.armortype + 1;
 					m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue + 1;
@@ -887,13 +887,13 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//Leave Body
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_infected_leaved");
 		Infected_Leaved@ ent = cast<Infected_Leaved@>(CastToScriptClass(entBase));
-		//ent.pev.origin = m_pPlayer.pev.origin;
+		@ent.pev.owner = m_pPlayer.edict();
 		
-		Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,18.0);
+		Vector createOrigin = m_pPlayer.pev.origin - Vector(0.0,0.0,70.0);
 		
 		int flags = m_pPlayer.pev.flags;
 		if((flags & FL_DUCKING) != 0) {
-			createOrigin = createOrigin - Vector(0.0,0.0,18.0);
+			createOrigin = createOrigin - Vector(0.0,0.0,54.0);
 		}
 		
 		Vector createAngles = m_pPlayer.pev.angles;
@@ -903,7 +903,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		ent.pev.angles.z = 0.0;
 		ent.pev.angles.y = createAngles.y;
 		
-		ent.pev.origin = Unstuck::GetUnstuckPosition(createOrigin,entBase,human_hull,1.0);
+		ent.pev.origin = Unstuck::GetUnstuckPosition(createOrigin,entBase,head_hull,1.0);
 		
 		CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 		ent.infected_type = atoui(KeyValues.GetKeyvalue("$i_infected_type").GetString());
@@ -917,6 +917,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		//Relocate Player
 		m_pPlayer.KeyValue("$i_hc_jump",true);
 		m_pPlayer.pev.origin = ent.pev.origin + Vector(0.0,0.0,36.0);
+
 		m_pPlayer.GiveNamedItem("weapon_hclaws");
 	}
 	
