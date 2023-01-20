@@ -2,7 +2,7 @@
 #include "base" //Base
 
 namespace SaveLoad_KeyValues {	
-	const string SAVE_FILE = "keyvalues.ini";
+	string SAVE_FILE = "keyvalues_ByName.ini";
 	
 	//Load?
 	array<bool>loaddata(33);

@@ -11,8 +11,8 @@
 
 const string SYSTEM_TAG			=	"[Save/Load System]";
 const string SYSTEM_NAME		=	"Save/Load System";
-const string SYSTEM_BUILD_DATE		=	"12/01/2022";
-const string SYSTEM_VERSION		=	"0.3b";
+const string SYSTEM_BUILD_DATE		=	"01/01/2023";
+const string SYSTEM_VERSION		=	"0.4";
 
 string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 
@@ -32,7 +32,7 @@ namespace SaveLoad {
 	//Players VS. Players VS. Monsters
 	int cvar_pvpvm=0;
 	int cvar_pvpvm_team=0;
-	int cvar_pvpvm_spawn_system=1;
+	int cvar_pvpvm_spawn_system=0;
 	string cvar_pvpvm_models="gordon";
 	
 	//Data

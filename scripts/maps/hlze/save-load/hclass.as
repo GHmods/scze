@@ -5,7 +5,7 @@
 #include "../weapons/weapon_headcrab" //Mutate on Load
 
 namespace SaveLoad_HClasses {	
-	const string SAVE_FILE = "headcrab_classes.ini";
+	string SAVE_FILE = "headcrab_classes_ByName.ini";
 	
 	//Load?
 	array<bool>loaddata(33);

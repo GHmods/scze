@@ -45,6 +45,16 @@ namespace SaveLoad_Cfg {
 					
 					if(configData[0] == "SaveLoad_by") {
 						SaveLoad::cvar_SaveLoad_by = atoi(configData[1]);
+						//;Save/Load Player's Data by Steam ID or Name [Default '1', '0'-by Name, '1'-by Steam ID]
+						//Modify Paths
+						if(SaveLoad::cvar_SaveLoad_by==1)
+						{
+							SaveLoad_GenePoints::SAVE_FILE = "gene_points_BySteamID.ini";
+							SaveLoad_HClasses::SAVE_FILE = "headcrab_classes_BySteamID.ini";
+							SaveLoad_KeyValues::SAVE_FILE = "keyvalues_BySteamID.ini";
+							SaveLoad_ZClasses::SAVE_FILE = "zombie_classes_BySteamID.ini";
+						}
+						//------------
 						iArraySize++;
 					} else if(configData[0] == "load_keyvalues") {
 						SaveLoad::cvar_load_keyvalues = atoi(configData[1]);

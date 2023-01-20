@@ -3,7 +3,7 @@
 #include "../classes/gene_points" //Gene Points
 
 namespace SaveLoad_GenePoints {	
-	const string SAVE_FILE = "gene_points.ini";
+	string SAVE_FILE = "gene_points_ByName.ini";
 	
 	//Load?
 	array<bool>loaddata(33);

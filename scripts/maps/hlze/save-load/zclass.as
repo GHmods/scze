@@ -4,7 +4,7 @@
 #include "../weapons/weapon_zombie" //Mutate on Load
 
 namespace SaveLoad_ZClasses {	
-	const string SAVE_FILE = "zombie_classes.ini";
+	string SAVE_FILE = "zombie_classes_ByName.ini";
 	
 	//Load?
 	array<bool>loaddata(33);
