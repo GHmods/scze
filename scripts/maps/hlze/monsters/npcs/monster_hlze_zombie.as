@@ -1108,10 +1108,3 @@ void PrecacheInit() {
 }
 
 } // end of namespace
-
-/*
-TODO:
-1. Koga Revive() - Zombito da stanue u Kavadarci i da go izede Mitko Janchev.
-2. Joke - Drivable Buss that chases and pickups Mitko Janchev and puts him in 'Idrizovo'.
-https://baso88.github.io/SC_AngelScript/docs/bits_CAPABILITY.htm
-*/

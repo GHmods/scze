@@ -45,7 +45,7 @@ namespace SaveLoad_Cfg {
 					
 					if(configData[0] == "SaveLoad_by") {
 						SaveLoad::cvar_SaveLoad_by = atoi(configData[1]);
-						//;Save/Load Player's Data by Steam ID or Name [Default '1', '0'-by Name, '1'-by Steam ID]
+						//;Save/Load Player's Data by Steam ID or Name ['0'-by Name, '1'-by Steam ID]
 						//Modify Paths
 						if(SaveLoad::cvar_SaveLoad_by==1)
 						{

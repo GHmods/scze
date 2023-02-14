@@ -12,7 +12,7 @@
 const string SYSTEM_TAG			=	"[Save/Load System]";
 const string SYSTEM_NAME		=	"Save/Load System";
 const string SYSTEM_BUILD_DATE		=	"01/01/2023";
-const string SYSTEM_VERSION		=	"0.4";
+const string SYSTEM_VERSION		=	"0.5";
 
 string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 
