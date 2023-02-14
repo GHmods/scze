@@ -20,7 +20,7 @@ void MapInit()
 	//Register Weapons
 	RegisterWeapons();
 	//Register Monsters
-	RegisterMonsters();
+	//RegisterMonsters(); //This is Last Map, don't need to modify Monsters
 	
 	//Register Entities
 	RegisterEntities();

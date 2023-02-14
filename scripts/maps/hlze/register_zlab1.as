@@ -17,7 +17,7 @@ void MapInit()
 	//Register Weapons
 	RegisterWeapons();
 	//Register Monsters
-	//RegisterMonsters(); //This is Last Map, don't need to modify Monsters
+	RegisterMonsters(); //This is Last Map, don't need to modify Monsters
 	
 	//Spawn Fix for this Map
 	g_Scheduler.SetTimeout("Sched_RelocateSpawnPoint", 5.0);
