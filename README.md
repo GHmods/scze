@@ -106,7 +106,7 @@ points for Humans.
   - ~~Add Save by Steam ID or Name Option.~~
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
-#### Tasks Part 3: ![67%](https://progress-bar.dev/67)
+#### Tasks Part 3: ![75%](https://progress-bar.dev/75)
   - ~~Fixes for 'Breeder' Zombie Class.~~
   - Fix 'fake_pickup'
   - ~~Add Models from Headcrab Classes to Victim's Head.~~
@@ -115,7 +115,7 @@ points for Humans.
   - ~~Add Custom Zombie NPC.~~
   - ~~Fix monster_eatable & monster_infected_dead~~
   - ~~Change File Names for Save/Load System based on configuration.~~
-  - Add Custom Barney NPC with Pistol,Shotgun & AR.
+  - ~~Add Custom Barney NPC with Pistol,Shotgun & AR.~~
   - Add Custom Scientist NPC with Pistol,Shotgun & AR.
   - Add Fast Zombie NPC.
   - ~~More Tasks Soon....~~
