@@ -2,7 +2,7 @@
 ![](https://i.imgur.com/ee9K4AJ.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
 
-- This mod is in early stages, don't expect proficiency in code since im not a professional coder.
+- This mod is somewhat stable, don't expect proficiency in code since im not a professional coder.
 - I will try to update this mod more frequently.
 
 # Visit the <a href="https://ghmods.github.io/scze-website">website</a> for this mod.
@@ -34,9 +34,8 @@ by fErMangan tuU!!
 - Global Configuration File is: 'hlze_global.ini'
 - Per Map Configuration File is loaded as: '[map_name].hlze.ini'
 #### The mod is not starting ?!?!?!
-Its probably because of Save/Load System.
-##### Make sure to create some aditional folders to match this path 'svencoop/scripts/maps/store/hlze'
-##### !!! Not inside 'svencoop_addon' folder,..., IT MUST BE IN 'svencoop' Folder!
+##### Its probably because of Save/Load System.
+> Make sure to create some aditional folders to match this path 'svencoop/scripts/maps/store/hlze'
 #### The mod still won't start ?!?!!
 I don't know, email me.
 #### How to add new class?
@@ -46,14 +45,6 @@ I don't know, email me.
 - 'headcrab_classes.as' is for headcrabs.
 - 'zombie_classes.as' is for zombies.
   - If you add a class for headcrab, headcrab will try to mutate to zombie class with same id as headcrab class.This means you must add your zombie class in the same order as your headcrab class.
-#### I have problems after adding new Zombie/Headcrab class.
-- Save/Load System will store data from players for these classes inside 'svencoop/scripts/maps/store/hlze/' folder.
-##### Fix:
-- Delete these files inside 'svencoop/scripts/maps/store folder and retry:
-  - 'headcrab_classes.ini'
-  - 'zombie_classes.ini'
-- I know that by deleting these files, players will loose progress.You can try changing numbers from 0# to 1# and see what will happend.
-#### I will try to fix this as well.
 ##### Note for Mappers:
 - Headcrab Players can unlock 'func_wall_toggle' with targetnames:
   - 'togg1','toggle1' <-- Not Recommended.
