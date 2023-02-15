@@ -17,7 +17,8 @@ array<string>Infect_Sounds = {
 array<string>Infectable = {
 	"",
 	"monster_scientist",
-	"monster_barney",
+	//"monster_barney",
+	"monster_hlze_barney",
 	"monster_human_grunt"
 };
 

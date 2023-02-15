@@ -29,6 +29,7 @@ array<string>Eatable = {
 array<string>Eatable_Alive = {
 	"monster_scientist",
 	"monster_barney",
+	"monster_hlze_barney",
 	"monster_hgrunt",
 	"monster_human_grunt"
 };
@@ -714,7 +715,10 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 					//g_Log.PrintF("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n");
 					
 					eatable_monster.TraceBleed(0.1, eatable_monster.pev.origin + Vector(0,0,2), tr, DMG_CLUB);
-					eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_ALWAYSGIB);
+					if(eatable_monster.pev.classname != Eatable[Eatable.length()-1]) {
+						eatable_monster.TakeHealth(0.1, DMG_CLUB);
+						eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.5, DMG_CLUB);
+					} else eatable_monster.TakeDamage(m_pPlayer.pev, m_pPlayer.edict().vars, 0.75, DMG_ALWAYSGIB);
 						
 					//m_pPlayer.pev.armortype = m_pPlayer.pev.armortype + 1;
 					m_pPlayer.pev.armorvalue = m_pPlayer.pev.armorvalue + 1;

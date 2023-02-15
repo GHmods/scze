@@ -78,7 +78,8 @@ array<string>Team1 = {
 	"monster_otis",
 	"monster_otis_dead",
 	"monster_cleansuit_scientist",
-	"monster_sitting_scientist"
+	"monster_sitting_scientist",
+	"monster_hlze_barney", //Our Custom NPC
 };
 
 array<string>Team2 = {
@@ -133,6 +134,21 @@ void RelationshipProcess()
 						HLZE_Zombie::CHLZE_Zombie@ replacedMonster = cast<HLZE_Zombie::CHLZE_Zombie@>(CastToScriptClass(replacedEnt));
 						g_EntityFuncs.Remove(ent_monster);
 						replacedMonster.Setup_Zombie(-1,true);
+						//g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
+					} else if(ent_monster.pev.classname == "monster_barney")
+					{
+						dictionary keys;
+						keys["origin"] = ""+ent_monster.pev.origin.ToString();
+						keys["angles"] = ""+ent_monster.pev.angles.ToString();
+						keys["spawnflags"] = ""+ent_monster.pev.flags;
+						keys["body"] = ""+ent_monster.pev.body;
+						keys["skin"] = ""+ent_monster.pev.skin;
+						keys["health"] = ""+ent_monster.pev.health;
+						keys["targetname"] = ""+ent_monster.pev.targetname;
+						keys["weapons"] = ""+ent_monster.pev.weapons;
+						CBaseEntity@ replacedEnt = g_EntityFuncs.CreateEntity("monster_hlze_barney", keys);
+						HLZE_Barney::CHLZE_Barney@ replacedMonster = cast<HLZE_Barney::CHLZE_Barney@>(CastToScriptClass(replacedEnt));
+						g_EntityFuncs.Remove(ent_monster);
 						//g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
 					}
 				}

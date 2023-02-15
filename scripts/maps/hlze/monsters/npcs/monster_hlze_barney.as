@@ -3,6 +3,8 @@
 * Call CHLZE_Barney::Register() to register this entity.
 * Entity classname: monster_hlze_barney
 */
+//Barney's Helmet
+#include "checktracehullattack"
 
 namespace HLZE_Barney
 {
@@ -10,17 +12,30 @@ namespace HLZE_Barney
 const int BARNEY_AE_DRAW			= 2;
 const int BARNEY_AE_SHOOT			= 3;
 const int BARNEY_AE_HOLSTER			= 4;
-const int BARNEY_BODY_GUNHOLSTERED	= 0;
-const int BARNEY_BODY_GUNDRAWN		= 1;
-const int BARNEY_BODY_GUNGONE		= 2;
+const int BARNEY_AE_ATTACK			= 6;
+const int BARNEY_BODY_GUNHOLSTERED		= 0;
+const int BARNEY_BODY_GUNDRAWN			= 1;
+const int BARNEY_BODY_GUNGONE			= 2;
+
+int m_iBrassShell;
+int m_iBrassShell_762;
+int m_iBrassShell_shotgun;
+
+enum Barney_Weapons {
+	BARNEY_WEAPON_UNARMED = 0,
+	BARNEY_WEAPON_GLOCK = 1,
+	BARNEY_WEAPON_M16 = 2,
+	BARNEY_WEAPON_SPAS12 = 3,
+	BARNEY_WEAPON_RANDOM = 4
+};
 
 class CHLZE_Barney : ScriptBaseMonsterEntity
 {
 	private bool	m_fGunDrawn;
 	private float	m_painTime;
-	private int		m_head;
-	private int		m_iBrassShell;
-	private int		m_cClipSize;
+	private int	m_head;
+	private int	m_cClipSize;
+	private int	m_cBackpackAmmmo;
 	private float	m_flNextFearScream;
 	
 	CHLZE_Barney()
@@ -61,13 +76,27 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 				self.MakeIdealYaw ( self.m_vecEnemyLKP );
 				self.ChangeYaw ( int(self.pev.yaw_speed) );
 
-				if( self.m_fSequenceFinished )
-				{
-					self.m_cAmmoLoaded = m_cClipSize;
-					self.ClearConditions(bits_COND_NO_AMMO_LOADED);
-					//m_Activity = ACT_RESET;
+				if(m_cBackpackAmmmo > 0) {
+					if( self.m_fSequenceFinished)
+					{
+						if(m_cBackpackAmmmo>=m_cClipSize) self.m_cAmmoLoaded = m_cClipSize;
+						else self.m_cAmmoLoaded = m_cBackpackAmmmo;
 
-					self.TaskComplete();
+						m_cBackpackAmmmo -= self.m_cAmmoLoaded;
+						self.ClearConditions(bits_COND_NO_AMMO_LOADED);
+						//m_Activity = ACT_RESET;
+
+						self.TaskComplete();
+					}
+				} else {
+					//Drop Weapon
+					if(self.pev.weapons > BARNEY_WEAPON_UNARMED) {
+						DropWeapon();
+					}
+					//m_Activity = ACT_IDLE_ANGRY;
+					self.ClearConditions(bits_COND_NO_AMMO_LOADED);
+					self.m_Activity = ACT_IDLE;
+					self.TaskFail();
 				}
 				break;
 			}
@@ -89,7 +118,7 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 				bits_SOUND_PLAYER;
 	}
 	
-	int	Classify()
+	int Classify()
 	{
 		return self.GetClassification( CLASS_HUMAN_MILITARY );
 	}
@@ -142,35 +171,61 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 		return false;
 	}
 	
-	void BarneyFirePistol()
+	void BarneyFire()
 	{
+		int weapon = self.pev.weapons;
+
 		Math.MakeVectors( self.pev.angles );
 		Vector vecShootOrigin = self.pev.origin + Vector( 0, 0, 55 );
-		Vector vecShootDir	= self.ShootAtEnemy( vecShootOrigin );
-		Vector angDir		  	= Math.VecToAngles( vecShootDir );
+		Vector vecShootDir = self.ShootAtEnemy( vecShootOrigin );
+		Vector angDir = Math.VecToAngles( vecShootDir );
 
-		self.FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_2DEGREES, 1024, BULLET_MONSTER_9MM );
-		Vector vecShellVelocity = g_Engine.v_right * Math.RandomFloat(40,90) + g_Engine.v_up * Math.RandomFloat(75,200) + g_Engine.v_forward * Math.RandomFloat(-40, 40);
-		g_EntityFuncs.EjectBrass( vecShootOrigin - vecShootDir * -17, vecShellVelocity, self.pev.angles.y, m_iBrassShell, TE_BOUNCE_SHELL); 
+		if(weapon != BARNEY_WEAPON_GLOCK) {
+			vecShootOrigin = self.pev.origin + Vector( 0, 0, 55 ) + g_Engine.v_right * 10.0;
+		}
+		vecShootDir = self.ShootAtEnemy( vecShootOrigin );
 
 		int pitchShift = Math.RandomLong( 0, 20 );
-		if( pitchShift > 10 )// Only shift about half the time
-			pitchShift = 0;
-		else
-			pitchShift -= 5;
+		// Only shift about half the time
+		if( pitchShift > 10 ) pitchShift = 0;
+		else pitchShift -= 5;
 		
 		self.SetBlending( 0, angDir.x );
 		self.pev.effects = EF_MUZZLEFLASH;
-		GetSoundEntInstance().InsertSound ( bits_SOUND_COMBAT, self.pev.origin, NORMAL_GUN_VOLUME, 0.3, self );
-		g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
 
+		if(weapon == BARNEY_WEAPON_GLOCK) {
+			self.SetBlending( 0, angDir.x );
+
+			self.FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_2DEGREES, 1024, BULLET_MONSTER_9MM );
+			Vector vecShellVelocity = g_Engine.v_right * Math.RandomFloat(40,90) + g_Engine.v_up * Math.RandomFloat(75,200) + g_Engine.v_forward * Math.RandomFloat(-40, 40);
+			g_EntityFuncs.EjectBrass( vecShootOrigin - vecShootDir * -17, vecShellVelocity, self.pev.angles.y, m_iBrassShell, TE_BOUNCE_SHELL); 
+
+			GetSoundEntInstance().InsertSound ( bits_SOUND_COMBAT, self.pev.origin, NORMAL_GUN_VOLUME, 0.3, self );
+			g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "weapons/pl_gun3.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
+		} else if(weapon == BARNEY_WEAPON_M16) {
+			self.FireBullets(1, vecShootOrigin, vecShootDir, VECTOR_CONE_5DEGREES, 4096, BULLET_PLAYER_MP5 );
+			Vector vecShellVelocity = g_Engine.v_right * Math.RandomFloat(40,90) + g_Engine.v_up * Math.RandomFloat(75,200) + g_Engine.v_forward * Math.RandomFloat(-40, 40);
+			g_EntityFuncs.EjectBrass( vecShootOrigin - vecShootDir * -17, vecShellVelocity, self.pev.angles.y, m_iBrassShell_762, TE_BOUNCE_SHELL); 
+
+			GetSoundEntInstance().InsertSound ( bits_SOUND_COMBAT, self.pev.origin, NORMAL_GUN_VOLUME, 0.3, self );
+			int rand = Math.RandomLong(0,2);
+			if(rand==0) g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "hlze/weapons/hks1.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
+			else if(rand==1) g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "hlze/weapons/hks2.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
+			else g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "hlze/weapons/hks3.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
+		} else if(weapon == BARNEY_WEAPON_SPAS12) {
+			self.FireBullets(3, vecShootOrigin, vecShootDir, VECTOR_CONE_5DEGREES, 2048, BULLET_PLAYER_BUCKSHOT );
+			Vector vecShellVelocity = g_Engine.v_right * Math.RandomFloat(40,90) + g_Engine.v_up * Math.RandomFloat(75,200) + g_Engine.v_forward * Math.RandomFloat(-40, 40);
+			g_EntityFuncs.EjectBrass( vecShootOrigin - vecShootDir * -17, vecShellVelocity, self.pev.angles.y, m_iBrassShell_shotgun, TE_BOUNCE_SHELL); 
+
+			GetSoundEntInstance().InsertSound ( bits_SOUND_COMBAT, self.pev.origin, NORMAL_GUN_VOLUME, 0.3, self );
+			g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_WEAPON, "hlze/weapons/shotgun_npc.wav", 1, ATTN_NORM, 0, PITCH_NORM + pitchShift );
+		}
 
 		if( self.pev.movetype != MOVETYPE_FLY && self.m_MonsterState != MONSTERSTATE_PRONE )
 		{
-			self.m_flAutomaticAttackTime = g_Engine.time + Math.RandomFloat(0.2, 0.5);
+			if(weapon == BARNEY_WEAPON_SPAS12) self.m_flAutomaticAttackTime = g_Engine.time + 1.0;
+			else self.m_flAutomaticAttackTime = g_Engine.time + Math.RandomFloat(0.2, 0.5);
 		}
-
-		// UNDONE: Reload?
 		--self.m_cAmmoLoaded;// take away a bullet!
 	}
 	
@@ -185,7 +240,7 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 		switch( pEvent.event )
 		{
 		case BARNEY_AE_SHOOT:
-			BarneyFirePistol();
+			BarneyFire();
 			break;
 		case BARNEY_AE_DRAW:
 			// barney's bodygroup switches here so he can pull gun from holster
@@ -198,6 +253,26 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 			self.pev.body = BARNEY_BODY_GUNHOLSTERED;
 			m_fGunDrawn = false;
 			break;
+		case BARNEY_AE_ATTACK:
+		{
+			int dmg = 25;
+			int weapon = self.pev.weapons;
+			if(weapon > BARNEY_WEAPON_GLOCK) dmg *= 2;
+
+			CBaseEntity@ pHurt = CheckTraceHullAttack(self,70.0,dmg,DMG_CLUB);
+			if(pHurt !is null)
+			{
+				if(pHurt.IsPlayer()) {
+					pHurt.pev.punchangle.x = 5;
+					if(pHurt.pev.size.z < 60) pHurt.pev.velocity = pHurt.pev.velocity + g_Engine.v_forward * 300 + g_Engine.v_up * 80.0;
+					else pHurt.pev.velocity = pHurt.pev.velocity + g_Engine.v_forward * -100;
+				}
+				g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_WEAPON,"weapons/cbar_hitbod2.wav",1,ATTN_NORM,0,100+Math.RandomLong(-5,5));
+			} else {
+				g_SoundSystem.EmitSoundDyn(self.edict(),CHAN_WEAPON,"zombie/claw_miss1.wav",1,ATTN_NORM,0,100+Math.RandomLong(-5,5));
+			}
+			break;
+		}
 
 		default:
 			BaseClass.HandleAnimEvent( pEvent );
@@ -209,15 +284,13 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 		BaseClass.Precache();
 		
 		PrecacheInit();
-
-		m_iBrassShell = g_Game.PrecacheModel("models/shell.mdl");
 	}
 	
 	void Spawn()
 	{
 		Precache();
 
-		self.SetPlayerAlly( !self.IsPlayerAlly() ); //Set Barney as ally/foe upon spawning
+		self.SetPlayerAlly(self.IsPlayerAlly()); //Set Barney as ally/foe upon spawning
 
 		//Weapon Init
 		SetupWeapon();
@@ -239,16 +312,12 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 		m_flNextFearScream			= g_Engine.time;
 		//self.m_afMoveShootCap()	= bits_MOVESHOOT_RANGE_ATTACK1;
 
-		m_cClipSize					= 17; //17 Shots
-		self.m_cAmmoLoaded			= m_cClipSize;
-
 		if( string( self.m_FormattedName ).IsEmpty() )
 		{
-			//self.m_FormattedName = "Barney";
-			self.m_FormattedName = "(HLZE) Barney";
+			self.m_FormattedName = "Barney";
 		}
 
-		if( self.IsPlayerAlly() )
+		if(self.IsPlayerAlly() && self.IsAlive())
 			SetUse( UseFunction( this.FollowerUse ) );
 
 		self.MonsterInit();
@@ -256,7 +325,67 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 	
 	void SetupWeapon()
 	{
-		g_EntityFuncs.SetModel(self,"models/hlze/barney.mdl");
+		int weapon = self.pev.weapons;
+		self.m_fCanFearCreatures = true;
+		self.pev.body = 0;
+
+		if(weapon == BARNEY_WEAPON_UNARMED) {
+			g_EntityFuncs.SetModel(self,"models/hlze/barney_unarmed.mdl");
+			m_cClipSize = 0;
+			m_cBackpackAmmmo = 0;
+			self.m_fCanFearCreatures = false;
+		} else if(weapon == BARNEY_WEAPON_M16) {
+			m_cClipSize = 50;
+			m_cBackpackAmmmo = m_cClipSize * Math.RandomLong(0,2);
+			g_EntityFuncs.SetModel(self,"models/hlze/barney_m16.mdl");
+		} else if(weapon == BARNEY_WEAPON_SPAS12) {
+			m_cClipSize = 8;
+			m_cBackpackAmmmo = m_cClipSize * Math.RandomLong(0,1);
+			g_EntityFuncs.SetModel(self,"models/hlze/barney_shotgun.mdl");
+		} else if(weapon == BARNEY_WEAPON_GLOCK) {
+			m_cClipSize = 17;
+			m_cBackpackAmmmo = m_cClipSize * Math.RandomLong(1,3);
+		} else if(weapon == BARNEY_WEAPON_RANDOM) {
+			self.pev.weapons = Math.RandomLong(0,BARNEY_WEAPON_RANDOM-1);
+			SetupWeapon();
+		} else {
+			g_EntityFuncs.SetModel(self,"models/hlze/barney.mdl");
+			self.pev.weapons = BARNEY_WEAPON_GLOCK;
+			SetupWeapon();
+		}
+
+		self.m_cAmmoLoaded = m_cClipSize;
+		
+		g_EntityFuncs.SetSize(self.pev,VEC_HUMAN_HULL_MIN,VEC_HUMAN_HULL_MAX);
+		pev.solid = SOLID_SLIDEBOX;
+		pev.movetype = MOVETYPE_STEP;
+		
+		self.GetScheduleOfType(SCHED_IDLE_STAND);
+		
+		self.m_flAutomaticAttackTime = g_Engine.time;
+	}
+
+	void DropWeapon()
+	{
+		int weapon = self.pev.weapons;
+		//Create Weapon
+		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("proj_barney_helmet");
+		Proj_BarneyHelmet@ Projectile = cast<Proj_BarneyHelmet@>(CastToScriptClass(entBase));
+		Projectile.Do_Blood = false;
+		g_EntityFuncs.DispatchSpawn(Projectile.self.edict());
+		if(weapon == BARNEY_WEAPON_M16) {
+			g_EntityFuncs.SetModel(entBase,"models/hlze/w_9mmar.mdl");
+		} else if(weapon == BARNEY_WEAPON_SPAS12) {
+			g_EntityFuncs.SetModel(entBase,"models/hlze/w_shotgun.mdl");
+		}else if(weapon == BARNEY_WEAPON_GLOCK) {
+			g_EntityFuncs.SetModel(entBase,"models/hlze/w_9mmhandgun.mdl");
+		}
+		Math.MakeVectors(self.pev.angles);
+		Projectile.pev.origin = self.pev.origin + g_Engine.v_forward * 20.0 + Vector(0,0,50);
+		Projectile.pev.angles.y = self.pev.angles.y;
+		//Remove Weapon
+		self.pev.weapons = BARNEY_WEAPON_UNARMED;
+		SetupWeapon();
 	}
 	
 	int TakeDamage( entvars_t@ pevInflictor, entvars_t@ pevAttacker, float flDamage, int bitsDamageType)
@@ -454,7 +583,7 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 					return self.GetScheduleOfType( SCHED_SMALL_FLINCH );
 					
 				// wait for one schedule to draw gun
-				if( !m_fGunDrawn )
+				if( !m_fGunDrawn && self.pev.weapons == BARNEY_WEAPON_GLOCK )
 					return self.GetScheduleOfType( SCHED_ARM_WEAPON );
 
 				if( self.HasConditions( bits_COND_HEAVY_DAMAGE ) )
@@ -463,6 +592,17 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 				//Barney reloads now.
 				if( self.HasConditions ( bits_COND_NO_AMMO_LOADED ) )
 					return self.GetScheduleOfType ( SCHED_BARNEY_RELOAD );
+				
+				//Check Enemy
+				CBaseEntity@ ent = self.m_hEnemy;
+				if(ent !is null)
+				{
+					float Distance = (self.pev.origin - ent.pev.origin).Length();
+					if(Distance < 70.0) {
+						if(ent.pev.size.z < 60) return self.GetScheduleOfType ( SCHED_MELEE_ATTACK2 );
+						else return self.GetScheduleOfType ( SCHED_MELEE_ATTACK1 );
+					}
+				}
 			}
 			break;
 
@@ -487,7 +627,6 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 					}
 					else
 					{
-							
 						return self.GetScheduleOfType( SCHED_TARGET_FACE );
 					}
 				}
@@ -604,7 +743,6 @@ enum monsterScheds
 }
 
 void PrecacheInit() {
-	g_Game.PrecacheModel("models/hlze/barney.mdl");
 	g_SoundSystem.PrecacheSound("barney/ba_attack1.wav");
 	g_SoundSystem.PrecacheSound("barney/ba_attack2.wav");
 	g_SoundSystem.PrecacheSound("barney/ba_pain1.wav");
@@ -616,6 +754,25 @@ void PrecacheInit() {
 	g_SoundSystem.PrecacheSound("barney/down.wav");
 	g_SoundSystem.PrecacheSound("barney/hey.wav");
 	g_SoundSystem.PrecacheSound("barney/aghh.wav");
+
+	//Weapons
+	g_Game.PrecacheModel("models/hlze/barney_unarmed.mdl");
+	g_Game.PrecacheModel("models/hlze/barney.mdl");
+	g_Game.PrecacheModel("models/hlze/barney_m16.mdl");
+	g_Game.PrecacheModel("models/hlze/barney_shotgun.mdl");
+	m_iBrassShell = g_Game.PrecacheModel("models/shell.mdl");
+	m_iBrassShell_762 = g_Game.PrecacheModel("models/shell_762.mdl");
+	m_iBrassShell_shotgun = g_Game.PrecacheModel("models/shotgunshell.mdl");
+	g_Game.PrecacheModel("models/hlze/w_9mmar.mdl");
+	g_Game.PrecacheModel("models/hlze/w_shotgun.mdl");
+	g_Game.PrecacheModel("models/hlze/w_9mmhandgun.mdl");
+	g_SoundSystem.PrecacheSound("weapons/pl_gun3.wav");
+	g_SoundSystem.PrecacheSound("hlze/weapons/hks1.wav");
+	g_SoundSystem.PrecacheSound("hlze/weapons/hks2.wav");
+	g_SoundSystem.PrecacheSound("hlze/weapons/hks3.wav");
+	g_SoundSystem.PrecacheSound("hlze/weapons/shotgun_npc.wav");
+	g_SoundSystem.PrecacheSound("weapons/cbar_hitbod2.wav");
+	g_SoundSystem.PrecacheSound("zombie/claw_miss1.wav");
 }
 
 void Register()

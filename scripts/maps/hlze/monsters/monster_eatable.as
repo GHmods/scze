@@ -82,14 +82,15 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	}
 	
 	void CopyMonster(CBaseMonster@ monster) {
+		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self,head_hull,2.0);
 		//Setup
 		Setup_Eatable(monster.pev.model,monster.pev.skin,monster.pev.body,
 				monster.pev.origin,monster.pev.velocity,monster.pev.angles,monster.BloodColor());
 		//Animate
 		self.TakeDamage(self.pev,self.pev,100.0,DMG_SLASH|DMG_NEVERGIB);
 		self.pev.health = 7.0;
+		Animate_Eatable(monster.pev.frame,monster.pev.framerate,monster.pev.animtime);
 		self.SetActivity(monster.m_Activity);
-		//Animate_Eatable(monster.pev.frame,monster.pev.framerate,monster.pev.animtime);
 
 		//Remove the monster
 		g_EntityFuncs.Remove(monster);
@@ -130,7 +131,6 @@ class script_monster_eatable : ScriptBaseMonsterEntity
 	//Thinking
 	void Eatable_Think() {
 		self.pev.nextthink = g_Engine.time + 0.1;
-		self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self,human_hull,2.0);
 		//Unstuck::UnstuckEntity(self);
 
 		//Remove

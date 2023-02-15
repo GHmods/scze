@@ -26,6 +26,7 @@ void proj_barney_helmet_Precache() {
 }
 
 class Proj_BarneyHelmet : Proj_BabyBarnacle {
+	bool Do_Blood = true;
         void Spawn()
 	{
 		Precache();
@@ -45,7 +46,7 @@ class Proj_BarneyHelmet : Proj_BabyBarnacle {
 	{
 		Throwing_State = BB_PROJ_START; //Start
 		//Sound
-		g_SoundSystem.PlaySound( self.edict(), CHAN_WEAPON, BHelmet_Sounds[0], 1.0f, ATTN_NORM, 0, 120, 0, false, self.pev.origin);
+		if(Do_Blood) g_SoundSystem.PlaySound( self.edict(), CHAN_WEAPON, BHelmet_Sounds[0], 1.0f, ATTN_NORM, 0, 120, 0, false, self.pev.origin);
 		Launch();
 	}
 
@@ -71,7 +72,8 @@ class Proj_BarneyHelmet : Proj_BabyBarnacle {
 				//Unstuck
 				self.pev.origin = Unstuck::GetUnstuckPosition(self.pev.origin,self);
 				
-				Create_Decal(Math.RandomLong(DECAL_BLOOD1,DECAL_BLOOD6));
+				g_SoundSystem.PlaySound( self.edict(), CHAN_WEAPON, BHelmet_Sounds[0], 1.0f, ATTN_NORM, 0, 120, 0, false, self.pev.origin);
+				if(Do_Blood) Create_Decal(Math.RandomLong(DECAL_BLOOD1,DECAL_BLOOD6));
 
 				self.pev.movetype = MOVETYPE_TOSS;
 				Throwing_State = BB_PROJ_FAIL;
@@ -92,7 +94,7 @@ class Proj_BarneyHelmet : Proj_BabyBarnacle {
                 } else {
 			if(checkTimer<g_Engine.time) {
 				checkTimer = g_Engine.time + checkFrequence;
-				Create_Decal(Math.RandomLong(DECAL_BLOOD1,DECAL_BLOOD6));
+				if(Do_Blood) Create_Decal(Math.RandomLong(DECAL_BLOOD1,DECAL_BLOOD6));
 			}
 		}
         }
