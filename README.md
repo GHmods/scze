@@ -21,7 +21,7 @@ by fErMangan tuU!!
 #### Installation Instructions:
 1. Download Latest Release from <a href="https://github.com/GHmods/scze/releases/latest">here</a>.
 2. Open 'scze-x.x.zip' and select:
-> maps,models,scripts,sound,sprites and zombie.wad
+> maps,models,scripts,sound,sprites,zombie.wad and old_lab.wad
 3. Extract it inside 'svencoop_addon' folder.
 4. Now start Sven Co-op on: <br>
 - Training map is: hlze_betamap <br>
