@@ -1,5 +1,7 @@
 //Unstuck System file for Sven Co-op Zombie Edition
 //Thanks to AMX Mod Dev
+#include "save-load/base"
+
 namespace Unstuck {
 	array<float>stuck(33);
 	array<array<float>>pSize =
@@ -156,7 +158,7 @@ namespace Unstuck {
 		if(pHit !is null) {
 			string cName = pHit.pev.classname;
 			string mName = cName.Split("_")[0];
-			//g_Log.PrintF("Coliding with:"+mName+"\n");
+			AS_Log("Coliding with:"+mName+"\n",LOG_LEVEL_EXTREME);
 			if("monster" == mName) {
 				g_Utility.TraceHull(origin,origin,ignore_monsters,hull,pPlayer.edict(),tr);
 			}

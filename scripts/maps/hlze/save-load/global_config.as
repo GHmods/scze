@@ -41,9 +41,11 @@ namespace SaveLoad_Cfg {
 					string config = configData[0];
 					int value = atoi(configData[1]);
 					
-					//Log(config+" = "+value+"\n");
-					
-					if(configData[0] == "SaveLoad_by") {
+					//;Log System - Level of Logging on Server
+					if(configData[0] == "Log_System") {
+						cvar_Log_System = atoi(configData[1]);
+						iArraySize++;
+					} else if(configData[0] == "SaveLoad_by") {
 						SaveLoad::cvar_SaveLoad_by = atoi(configData[1]);
 						//;Save/Load Player's Data by Steam ID or Name ['0'-by Name, '1'-by Steam ID]
 						//Modify Paths

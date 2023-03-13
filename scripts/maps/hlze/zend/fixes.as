@@ -4,6 +4,8 @@ Vector Destination2(205.0,1347.0,934.0);
 Vector Destination3(-889.0,1412.0,-165.0);
 array<EHandle>zEnd_SearchedEntities;
 
+#include "../save-load/base"
+
 void zEnd_FindEnts() {
 	//Search for all entities
 	array<CBaseEntity@>searchedEntities(500);
@@ -52,10 +54,9 @@ void ApplyFix() {
 	}
 
 	//Debug
-	/*
-	if(wait4trigger) g_Log.PrintF("Is Triggered = "+"YES"+".\n");
-	else g_Log.PrintF("Is Triggered = "+"NO"+".\n");
-	*/
+	
+	if(wait4trigger) AS_Log("Is Triggered = "+"YES"+".\n",LOG_LEVEL_EXTREME);
+	else AS_Log("Is Triggered = "+"NO"+".\n",LOG_LEVEL_EXTREME);
 }
 
 void ApplyFix1() {RelocatePlayers(Destination1);}

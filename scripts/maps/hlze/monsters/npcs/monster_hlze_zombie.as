@@ -1083,7 +1083,7 @@ void Register() {
 	PrecacheInit();
 	InitSchedules();
 	g_CustomEntityFuncs.RegisterCustomEntity("HLZE_Zombie::CHLZE_Zombie", "monster_hlze_zombie");
-	//g_Log.PrintF("Registered:"+"monster_hlze_zombie"+"\n");
+	AS_Log("Registered:"+"monster_hlze_zombie"+"\n",LOG_LEVEL_EXTREME);
 }
 
 void PrecacheInit() {

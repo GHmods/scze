@@ -116,7 +116,7 @@ class Infected : ScriptBaseMonsterEntity
 	void BigProcess()
 	{
 		//Validate stuff before doing anything
-		g_Log.PrintF("Trying to Infect: "+infected_class+"\n");
+		AS_Log("Trying to Infect: "+infected_class+"\n",LOG_LEVEL_HIGH);
 		
 		if(infected_class != "nothing") {
 			for(uint i=0;i<Infectable.length();i++) {
@@ -158,7 +158,7 @@ class Infected : ScriptBaseMonsterEntity
 
 		InfectionInfo@ infection_info = @pHClass.infection_info;
 
-		g_Log.PrintF("Infected by: '"+pHClass.Name+"'.\n");
+		AS_Log("Infected by: '"+pHClass.Name+"'.\n",LOG_LEVEL_HIGH);
 		
 		if(infected_type==INFECTED_SCIENTIST) {
 			self.pev.skin = infection_info.SkinId_Scientist;

@@ -18,6 +18,8 @@ void Events_PluginInit()
 
 void Events_MapInit()
 {
+	AS_Log("This Server is Running Half-Life:Zombie Edition Ported to Sven Co-Op by Game Hunter.\n");
+
 	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, @PlayerJoin);
 	g_Hooks.RegisterHook(Hooks::Player::ClientDisconnect, @PlayerQuit);
 	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink,@Event_PlayerThink);

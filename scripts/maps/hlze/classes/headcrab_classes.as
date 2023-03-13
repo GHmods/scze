@@ -95,10 +95,10 @@ namespace HClasses
 		breedercrab.Register_Ability("Nothing",0); //Toggleable Ability(Must be first!), Leave ("Nothing",0) to ignore this
 		breedercrab.Register_Ability("Headcrab Orders",30);
 		
-		g_Log.PrintF(HCLASS_SYSTEM_TAG+" "+Headcrab_Classes.length());
+		AS_Log(HCLASS_SYSTEM_TAG+" "+Headcrab_Classes.length(),LOG_LEVEL_HIGH);
 		
-		if(Headcrab_Classes.length()==1) g_Log.PrintF(" Headcrab Class Registered!\n");
-		else g_Log.PrintF(" Headcrab Classes Registered!\n");
+		if(Headcrab_Classes.length()==1) AS_Log(" Headcrab Class Registered!\n",LOG_LEVEL_HIGH);
+		else AS_Log(" Headcrab Classes Registered!\n",LOG_LEVEL_HIGH);
 		
 		if(precache_now)
 			Precache();
@@ -279,7 +279,7 @@ final class Headcrab_Class {
 			}
 		}
 		
-		g_Log.PrintF(HCLASS_SYSTEM_TAG+" '"+Name+"' is Registered!\n");
+		AS_Log(HCLASS_SYSTEM_TAG+" '"+Name+"' is Registered!\n",LOG_LEVEL_HIGH);
 		hc_array.insertLast(this);
 	}
 	
@@ -290,7 +290,7 @@ final class Headcrab_Class {
 			g_Game.PrecacheGeneric( "models/player/"+PLAYER_MODEL+"/"+PLAYER_MODEL+".mdl" );
 			g_Game.PrecacheModel( "models/player/"+PLAYER_MODEL+"/"+PLAYER_MODEL+".mdl" );
 		}
-		g_Log.PrintF(HCLASS_SYSTEM_TAG+" Headcrab Class with Name: "+Name+" Precached!\n");
+		AS_Log(HCLASS_SYSTEM_TAG+" Headcrab Class with Name: "+Name+" Precached!\n",LOG_LEVEL_HIGH);
 	}
 	
 	//Return Values
@@ -309,7 +309,7 @@ final class Headcrab_Class {
 		Headcrab_Ability ability(abName,abcost);
 		
 		Abilities.insertLast(ability);
-		g_Log.PrintF(HCLASS_SYSTEM_TAG+"["+Name+"]["+Abilities.length()+"] Ability[Name:'"+abName+"'|Cost:"+abcost+"] Registered!\n");
+		AS_Log(HCLASS_SYSTEM_TAG+"["+Name+"]["+Abilities.length()+"] Ability[Name:'"+abName+"'|Cost:"+abcost+"] Registered!\n",LOG_LEVEL_HIGH);
 	}
 	
 	int Get_Ability_Count() {

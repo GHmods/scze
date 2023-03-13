@@ -1,19 +1,19 @@
 /*  
 * Zombie
 */
-#include "..\monsters\monster_infectable"
-#include "..\monsters\monster_infected"
-#include "..\monsters\monster_infected_dead"
-#include "..\entities\multisource"
+#include "../monsters/monster_infectable"
+#include "../monsters/monster_infected"
+#include "../monsters/monster_infected_dead"
+#include "../entities/multisource"
 //Player Animator
-#include "..\entities\player_animator"
+#include "../entities/player_animator"
 
 //Zombie Classes
-#include "..\classes\zombie_classes"
+#include "../classes/zombie_classes"
 //Headcrab Classes
-#include "..\classes\headcrab_classes"
+#include "../classes/headcrab_classes"
 //Gene Points
-#include "..\classes\gene_points"
+#include "../classes/gene_points"
 //Zombie Ability HUD
 #include "zAbilityHud"
 
@@ -712,7 +712,7 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 				if(pEntity.IsMonster() && !pEntity.IsPlayer() && !pEntity.IsAlive() && self.m_flNextPrimaryAttack < g_Engine.time)
 				{
 					CBaseMonster@ eatable_monster = pEntity.MyMonsterPointer();
-					//g_Log.PrintF("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n");
+					AS_Log("Trying to Eat: "+pEntity.pev.classname+" with Health:"+eatable_monster.pev.health+".\n",LOG_LEVEL_EXTREME);
 					
 					eatable_monster.TraceBleed(0.1, eatable_monster.pev.origin + Vector(0,0,2), tr, DMG_CLUB);
 					if(eatable_monster.pev.classname != Eatable[Eatable.length()-1]) {
@@ -1464,8 +1464,6 @@ HookReturnCode ZClass_Think(CBasePlayer@ pPlayer, uint& out dummy )
 }
 
 void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer@ m_pPlayer,Zombie_Class@ ZClass) {
-	//g_Log.PrintF("Player: "+m_pPlayer.pev.netname+" is with AnimExt:'"+m_pPlayer.get_m_szAnimExtension()+"'\n");
-	
 	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
 	int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());
@@ -1794,8 +1792,6 @@ void ZClass_Process_PlayerProcess(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,
 }
 
 void ZClass_Process_PlayerProcess_Off(weapon_zclaws@ zclaw,CBasePlayerWeapon@ z_wpn,CBasePlayer@ m_pPlayer,Zombie_Class@ ZClass) {
-	//g_Log.PrintF("Player: "+m_pPlayer.pev.netname+" is with AnimExt:'"+m_pPlayer.get_m_szAnimExtension()+"'\n");
-	
 	CustomKeyvalues@ KeyValues = m_pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
 	int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());

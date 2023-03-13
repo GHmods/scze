@@ -4,6 +4,6 @@ void SpawnPoint_SetPosition(Vector Teleporter_Destination) {
 	@spawnPoint = g_EntityFuncs.FindEntityByClassname(spawnPoint, "info_player_start");
 	if(spawnPoint !is null) {
 		spawnPoint.pev.origin = Teleporter_Destination;
-		g_Log.PrintF("------ Relocating Spawnpoint to ("+Teleporter_Destination.ToString()+")\n");
+		AS_Log("------ Relocating Spawnpoint to ("+Teleporter_Destination.ToString()+")\n",LOG_LEVEL_HIGH);
 	}
 }

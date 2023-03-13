@@ -36,7 +36,7 @@
 #include "gene_points"
 #include "../save-load/zclass" //Save/Load
 //Acid Throw
-#include "..\projectiles\acid_throw"
+#include "../projectiles/acid_throw"
 
 const string ZCLASS_SYSTEM_TAG="[Zombie Class System]";
 
@@ -192,10 +192,10 @@ namespace ZClasses
 		breeder.Register_Ability("Armor Upgrade (+25)",40); //+25 Armor
 		//----------------------------------------
 		
-		g_Log.PrintF(ZCLASS_SYSTEM_TAG+" "+Zombie_Classes.length());
+		AS_Log(ZCLASS_SYSTEM_TAG+" "+Zombie_Classes.length(),LOG_LEVEL_HIGH);
 		
-		if(Zombie_Classes.length()==1) g_Log.PrintF(" Zombie Class Registered!\n");
-		else g_Log.PrintF(" Zombie Classes Registered!\n");
+		if(Zombie_Classes.length()==1) AS_Log(" Zombie Class Registered!\n",LOG_LEVEL_HIGH);
+		else AS_Log(" Zombie Classes Registered!\n",LOG_LEVEL_HIGH);
 		
 		if(precache_now)
 			Precache();
@@ -359,7 +359,7 @@ final class Zombie_Class {
 			}
 		}
 		
-		g_Log.PrintF(ZCLASS_SYSTEM_TAG+" '"+Name+"' is Registered!\n");
+		AS_Log(ZCLASS_SYSTEM_TAG+" '"+Name+"' is Registered!\n",LOG_LEVEL_HIGH);
 		zc_array.insertLast(this);
 	}
 	
@@ -370,7 +370,7 @@ final class Zombie_Class {
 			g_Game.PrecacheGeneric( "models/player/"+PLAYER_MODEL+"/"+PLAYER_MODEL+".mdl" );
 			g_Game.PrecacheModel( "models/player/"+PLAYER_MODEL+"/"+PLAYER_MODEL+".mdl" );
 		}
-		g_Log.PrintF(ZCLASS_SYSTEM_TAG+" Zombie Class with Name: "+Name+" Precached!\n");
+		AS_Log(ZCLASS_SYSTEM_TAG+" Zombie Class with Name: "+Name+" Precached!\n",LOG_LEVEL_HIGH);
 	}
 	
 	//Return Values
@@ -397,7 +397,7 @@ final class Zombie_Class {
 		Zombie_Ability ability(abName,abcost);
 		
 		Abilities.insertLast(ability);
-		g_Log.PrintF(ZCLASS_SYSTEM_TAG+"["+Name+"]["+Abilities.length()+"] Ability[Name:'"+abName+"'|Cost:"+abcost+"] Registered!\n");
+		AS_Log(ZCLASS_SYSTEM_TAG+"["+Name+"]["+Abilities.length()+"] Ability[Name:'"+abName+"'|Cost:"+abcost+"] Registered!\n",LOG_LEVEL_HIGH);
 	}
 	
 	int Get_Ability_Count() {

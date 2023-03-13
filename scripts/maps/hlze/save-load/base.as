@@ -16,6 +16,15 @@ const string SYSTEM_VERSION		=	"0.5";
 
 string SYSTEM_PATH			=	"scripts/maps/store/hlze/";
 
+enum LogSystem_Enum {
+	LOG_LEVEL_OFF,
+	LOG_LEVEL_LOW,
+	LOG_LEVEL_MEDIUM,
+	LOG_LEVEL_HIGH,
+	LOG_LEVEL_EXTREME
+};
+int cvar_Log_System=LOG_LEVEL_OFF; //This should be Global var
+
 //Save Time
 const float SAVE_TIME			=	2.0; // Save players stuff every X.X time
 
@@ -287,7 +296,10 @@ namespace SaveLoad {
 };
 
 //Custom Log System
-void Log(const string& in szMessage, const bool append_time = true) {
+void Log(const string& in szMessage, const bool append_time = true,int log_level=LOG_LEVEL_MEDIUM) {
+	if(cvar_Log_System<log_level)
+		return;
+	
 	DateTime thetime( UnixTimestamp() );
 	int year = thetime.GetYear();
 	int month = thetime.GetMonth();
@@ -327,4 +339,11 @@ void Log(const string& in szMessage, const bool append_time = true) {
 		logfile.Write(szMessage);
 		logfile.Close();
 	}
+}
+
+void AS_Log(const string& in szMessage,int log_level=LOG_LEVEL_LOW) {
+	if(cvar_Log_System<log_level)
+		return;
+	
+	g_Log.PrintF(szMessage);
 }

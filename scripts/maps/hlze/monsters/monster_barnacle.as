@@ -60,7 +60,7 @@ void UpdateBarnacleArray(CBaseEntity@ ent) {
 	//If not dead
 	if(!isDead && !isAvailable) {
 		BarnacleEntities.insertLast(EHandle(ent)); //Add it to the array
-		//g_Log.PrintF("Barnacle Detected!\n");
+		AS_Log("Barnacle Detected!\n",LOG_LEVEL_EXTREME);
 	}
 }
 
@@ -88,7 +88,7 @@ void Barnacle_Die_Process() {
 				dropEnt.pev.angles.y = checkEnt.pev.v_angle.y;
 			}
 
-			//g_Log.PrintF("A Barnacle just Died!\n");
+			AS_Log("A Barnacle just Died!\n",LOG_LEVEL_EXTREME);
 			BarnacleEntities_Dead.insertLast(EHandle(checkEnt));
 			BarnacleEntities.removeAt(d);
 			break;

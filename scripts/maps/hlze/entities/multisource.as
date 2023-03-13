@@ -78,7 +78,7 @@ array<array<int>>WallEntities_Settings = {
 void multisource_Init() {
 	g_Scheduler.SetTimeout( "multisource_FindEnts", 1.0);
 	
-	g_Log.PrintF("-------- multisource entity - Initialized! --------\n");
+	AS_Log("-------- multisource entity - Initialized! --------\n");
 }
 
 void multisource_FindEnts() {
@@ -98,7 +98,7 @@ void multisource_FindEnts() {
 		}
 	}
 	
-	g_Log.PrintF("------ Found:"+found_ents+" Entities!\n");
+	AS_Log("------ Found:"+found_ents+" Entities!\n",LOG_LEVEL_EXTREME);
 	
 	//Now look for walls and doors
 	g_Scheduler.SetTimeout( "multisource_StoreWallsAndDoors", 0.5);
@@ -111,7 +111,7 @@ void multisource_remove(uint ms_index) {
 	CBaseEntity@ multisourceEnt = multisource_DoorEntities_Master[ms_index].GetEntity();
 	
 	if(multisourceEnt !is null) {
-		//g_Log.PrintF("------ Removed:"+multisourceEnt.pev.targetname+"!\n");
+		AS_Log("------ Removed:"+multisourceEnt.pev.targetname+"!\n",LOG_LEVEL_EXTREME);
 		g_EntityFuncs.Remove(multisourceEnt);
 	}
 }
@@ -128,7 +128,7 @@ void multisource_recreate(uint ms_index) {
 	CBaseEntity@ multisourceEnt = g_EntityFuncs.CreateEntity("multisource", keys);
 	
 	multisource_DoorEntities_Master[ms_index] = EHandle(multisourceEnt);
-	//g_Log.PrintF("------ Created:"+multisource_DoorEntities_Master[ms_index].GetEntity().pev.targetname+"!\n");
+	AS_Log("------ Created:"+multisource_DoorEntities_Master[ms_index].GetEntity().pev.targetname+"!\n",LOG_LEVEL_EXTREME);
 }
 
 void multisource_StoreWallsAndDoors() {
@@ -155,7 +155,7 @@ void multisource_StoreWallsAndDoors() {
 					
 					if(stupidDoor !is null) {
 						stupidDoor.m_sMaster = multisource_name+found_doors;
-						g_Log.PrintF("------ Locking Door[ID:"+found_doors+"] with [multisource with targetname:"+stupidDoor.m_sMaster+"]\n");
+						AS_Log("------ Locking Door[ID:"+found_doors+"] with [multisource with targetname:"+stupidDoor.m_sMaster+"]\n",LOG_LEVEL_EXTREME);
 						multisource_DoorEntities.insertLast(EHandle(ent));
 						found_doors++;
 					}
@@ -164,8 +164,8 @@ void multisource_StoreWallsAndDoors() {
 		}
 	}
 	
-	g_Log.PrintF("------ Found:"+found_walls+" Headcrab Walls!\n");
-	g_Log.PrintF("------ Found:"+found_doors+" Zombie Doors!\n");
+	AS_Log("------ Found:"+found_walls+" Headcrab Walls!\n",LOG_LEVEL_EXTREME);
+	AS_Log("------ Found:"+found_doors+" Zombie Doors!\n",LOG_LEVEL_EXTREME);
 	multisource_DoorEntities_Master.resize(found_doors);
 	
 	g_Scheduler.SetInterval("multisource_Wall_Process", multisource_interval_walls, g_Scheduler.REPEAT_INFINITE_TIMES );
@@ -196,8 +196,8 @@ void multisource_Wall_Process() {
 							
 							float dist = (player_origin - final_origin).Length();
 							
-							//g_Log.PrintF("------ Classname:"+ent.pev.classname+" | Targetname:"+ent.pev.targetname+" | Size:("+ent.pev.size.ToString()+")");
-							//g_Log.PrintF(" | Origin:("+final_origin.ToString()+") | Distance To:"+dist+"  ------\n");
+							AS_Log("------ Classname:"+ent.pev.classname+" | Targetname:"+ent.pev.targetname+" | Size:("+ent.pev.size.ToString()+")",LOG_LEVEL_EXTREME);
+							AS_Log(" | Origin:("+final_origin.ToString()+") | Distance To:"+dist+"  ------\n",LOG_LEVEL_EXTREME);
 							
 							CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
 							int key_value1 = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
@@ -260,10 +260,10 @@ void multisource_Door_Process() {
 								CustomKeyvalues@ KeyValues = monster.GetCustomKeyvalues();
 								int key_value1 = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
 								if(key_value1 == 0) {
-									//g_Log.PrintF("------ Found Zombie  ------\n");
+									AS_Log("------ Found Zombie  ------\n",LOG_LEVEL_EXTREME);
 									multisource_remove(i);
 								} else {
-									//g_Log.PrintF("------ Found Headcrab  ------\n");
+									AS_Log("------ Found Headcrab  ------\n",LOG_LEVEL_EXTREME);
 									multisource_recreate(i);
 								}
 								

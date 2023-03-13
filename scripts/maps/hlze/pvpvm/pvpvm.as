@@ -32,7 +32,7 @@ namespace pvpvm {
 			TeamChosen[i] = default_team;
 		}
 		
-		Log(PVPVM_SYSTEM_TAG+" Default Team is:"+PVPVM_Teams[default_team]+".\n");
+		Log(PVPVM_SYSTEM_TAG+" Default Team is:"+PVPVM_Teams[default_team]+".\n",true,LOG_LEVEL_MEDIUM);
 		
 		//Initialize_SpawnPoints();
 		int SpawnPointType = SaveLoad::cvar_pvpvm_spawn_system;
@@ -44,9 +44,10 @@ namespace pvpvm {
 		g_Hooks.RegisterHook(Hooks::Player::ClientSay,pvpvm_menu::ClientSay);
 		g_Hooks.RegisterHook(Hooks::Player::ClientSay,pvpvm_menu::ClientSayColor);
 		g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink,PlayerThink);
-		Log(PVPVM_SYSTEM_TAG+" Hooks...OK.\n");
+		Log(PVPVM_SYSTEM_TAG+" Hooks...OK.\n",true,LOG_LEVEL_MEDIUM);
 		
-		Log(PVPVM_SYSTEM_TAG+" Initialized!\n");
+		Log(PVPVM_SYSTEM_TAG+" Initialized!\n",true,LOG_LEVEL_MEDIUM);
+		AS_Log(PVPVM_SYSTEM_TAG+" Initialized!\n");
 	}
 	
 	HookReturnCode PlayerThink(CBasePlayer@ pPlayer, uint& out dummy )
@@ -96,7 +97,7 @@ namespace pvpvm {
 			}
 		}
 		
-		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n");
+		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n",true,LOG_LEVEL_HIGH);
 	}
 	
 	void Initialize_SpawnPoints_Type1() {
@@ -121,7 +122,7 @@ namespace pvpvm {
 			}
 		}
 		
-		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n");
+		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n",true,LOG_LEVEL_HIGH);
 	}
 	
 	void Initialize_SpawnPoints_Type2() {
@@ -146,7 +147,7 @@ namespace pvpvm {
 			}
 		}
 		
-		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n");
+		Log(PVPVM_SYSTEM_TAG+" Found "+found_ents+" Spawn Points!\n",true,LOG_LEVEL_HIGH);
 	}
 	
 	Vector Get_HumanSpawnPoint() {
@@ -273,17 +274,17 @@ namespace pvpvm {
 		
 		//Set Player Models
 		array<string>@ playerModels = SaveLoad::cvar_pvpvm_models.Split(';');
-		/*
-		Log(PVPVM_SYSTEM_TAG+" Player Models Config:"+SaveLoad::cvar_pvpvm_models+".\n");
-		Log(PVPVM_SYSTEM_TAG+" Found "+playerModels.length()+" Player Models!\n");
-		Log(PVPVM_SYSTEM_TAG+" Player Models:");
+		
+		Log(PVPVM_SYSTEM_TAG+" Player Models Config:"+SaveLoad::cvar_pvpvm_models+".\n",true,LOG_LEVEL_EXTREME);
+		Log(PVPVM_SYSTEM_TAG+" Found "+playerModels.length()+" Player Models!\n",true,LOG_LEVEL_EXTREME);
+		Log(PVPVM_SYSTEM_TAG+" Player Models:",true,LOG_LEVEL_EXTREME);
 		for(uint i=0;i<playerModels.length();i++) {
-			Log(playerModels[i],false);
+			Log(playerModels[i],false,LOG_LEVEL_EXTREME);
 			if(i<playerModels.length()-1)
-				Log(",",false);
+				Log(",",false,LOG_LEVEL_EXTREME);
 		}
-		Log("\n",false);
-		*/
+		Log("\n",false,LOG_LEVEL_EXTREME);
+
 		pPlayer.SetOverriddenPlayerModel(playerModels[Math.RandomLong(0,playerModels.length()-1)]);
 	}
 	
@@ -295,7 +296,7 @@ namespace pvpvm {
 		pPlayer.pev.team = PVPVM_HEADCRAB;
 		
 		//Relocate Player
-		//Log(PVPVM_SYSTEM_TAG+" Headcrab Spawn Points:"+Headcrab_SpawnPoints.length()+".\n");
+		Log(PVPVM_SYSTEM_TAG+" Headcrab Spawn Points:"+Headcrab_SpawnPoints.length()+".\n",true,LOG_LEVEL_EXTREME);
 		if(Headcrab_SpawnPoints.length() != 0) {
 			Vector Location = Get_HeadcrabSpawnPoint();
 			pPlayer.pev.origin = Location;

@@ -38,7 +38,7 @@ void fake_pickup_Init() {
 	//Do the Big Part
 	g_Scheduler.SetTimeout("fake_pickup_Process", 2.0);
 	
-	g_Log.PrintF("[Fake Pickup System] Initialized!\n");
+	AS_Log("[Fake Pickup System] Initialized!\n");
 }
 
 class script_fake_pickup : ScriptBaseMonsterEntity {	
@@ -73,7 +73,7 @@ class script_fake_pickup : ScriptBaseMonsterEntity {
 	//When Player touches this, give him item with name: 'pickup_name';
 	void EntTouch(CBaseEntity@ pOther) //Work in Progress
 	{
-		bool debug = false;
+		bool debug = (cvar_Log_System>=LOG_LEVEL_EXTREME);
 		
 		if(debug) Log("Touch....");
 		if(debug) Log("0%....",false);
@@ -207,7 +207,7 @@ void fake_pickup_Process() {
 		}
 	}
 
-	//g_Log.PrintF("[Fake Pickup System] Found:"+found_ents+" Weapons/Ammo/Items.\n");
+	AS_Log("[Fake Pickup System] Found:"+found_ents+" Weapons/Ammo/Items.\n",LOG_LEVEL_EXTREME);
 
 	g_Scheduler.SetTimeout("fake_pickup_Process", fakepickup_frequency);
 }

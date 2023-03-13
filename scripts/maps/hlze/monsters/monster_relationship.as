@@ -101,7 +101,7 @@ void RelationshipProcess()
 			//Check if is Monster and not Player
 			if(ent.IsMonster() && !ent.IsPlayer())
 			{
-				//g_Log.PrintF("["+i+"] Found: "+ent.pev.classname);
+				AS_Log("["+i+"] Found: "+ent.pev.classname,LOG_LEVEL_EXTREME);
 				//Get Monster Base from this Entity
 				CBaseMonster@ ent_monster = ent.MyMonsterPointer();
 				if(ent_monster !is null)
@@ -134,7 +134,7 @@ void RelationshipProcess()
 						HLZE_Zombie::CHLZE_Zombie@ replacedMonster = cast<HLZE_Zombie::CHLZE_Zombie@>(CastToScriptClass(replacedEnt));
 						g_EntityFuncs.Remove(ent_monster);
 						replacedMonster.Setup_Zombie(-1,true);
-						//g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
+						AS_Log("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n",LOG_LEVEL_EXTREME);
 					} else if(ent_monster.pev.classname == "monster_barney")
 					{
 						dictionary keys;
@@ -149,7 +149,7 @@ void RelationshipProcess()
 						CBaseEntity@ replacedEnt = g_EntityFuncs.CreateEntity("monster_hlze_barney", keys);
 						HLZE_Barney::CHLZE_Barney@ replacedMonster = cast<HLZE_Barney::CHLZE_Barney@>(CastToScriptClass(replacedEnt));
 						g_EntityFuncs.Remove(ent_monster);
-						//g_Log.PrintF("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n");
+						AS_Log("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n",LOG_LEVEL_EXTREME);
 					}
 				}
 				

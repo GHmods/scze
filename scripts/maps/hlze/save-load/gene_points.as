@@ -48,37 +48,37 @@ namespace SaveLoad_GenePoints {
 	
 	void SaveData( const int& in index , bool log_now = true ) {
 		if(log_now)
-			Log("Saving Gene Points for Player with ID:"+index+".[0%..");
+			Log("Saving Gene Points for Player with ID:"+index+".[0%..",true, LOG_LEVEL_HIGH);
 		
 		// Do not write into this vault unless it is absolutely safe to do so!
 		if (!loaddata[index]) {
 			if(log_now)
-				Log("Failed!]\n", false);
+				Log("Failed!]\n", false, LOG_LEVEL_HIGH);
 				
 			return;
 		}
 		
 		if(log_now)
-			Log("18%..", false);
+			Log("18%..", false, LOG_LEVEL_HIGH);
 		
 		if ( !Ready ) {
 			if(log_now)
-				Log("Failed!]\n", false);
+				Log("Failed!]\n", false, LOG_LEVEL_HIGH);
 			
 			return;
 		}
 		
 		if(log_now)
-			Log("25%..", false);
+			Log("25%..", false, LOG_LEVEL_HIGH);
 		
 		if(log_now)
-			Log("47%..", false);
+			Log("47%..", false, LOG_LEVEL_HIGH);
 		
 		CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
 		if ( pPlayer !is null && pPlayer.IsConnected() )
 		{
 			if(log_now)
-				Log("63%..", false);
+				Log("63%..", false, LOG_LEVEL_HIGH);
 			
 			//string szSteamID = g_EngineFuncs.GetPlayerAuthId( pPlayer.edict() );
 			//string szName = pPlayer.pev.netname;
@@ -88,7 +88,7 @@ namespace SaveLoad_GenePoints {
 			}
 			
 			if(log_now)
-				Log("86%..", false);
+				Log("86%..", false, LOG_LEVEL_HIGH);
 			
 			// The fewer the I/O file operations it has to do the better, right?
 			
@@ -102,7 +102,7 @@ namespace SaveLoad_GenePoints {
 				
 				Data.insertLast(stuff);
 				DataExists[index] = true;
-				if(log_now) Log("91%..", false);
+				if(log_now) Log("91%..", false, LOG_LEVEL_HIGH);
 			} else {
 				// Go through the vault
 				for(uint uiVaultIndex = 0;uiVaultIndex < Data.length();uiVaultIndex++ ) {
@@ -115,20 +115,20 @@ namespace SaveLoad_GenePoints {
 						
 						Data[uiVaultIndex] = stuff;
 						
-						if(log_now) Log("93%..", false);
+						if(log_now) Log("93%..", false, LOG_LEVEL_HIGH);
 						break;
 					}
-					if(log_now) Log("95%..", false);
+					if(log_now) Log("95%..", false, LOG_LEVEL_HIGH);
 				}
 				
-				if(log_now) Log("97%..", false);
+				if(log_now) Log("97%..", false, LOG_LEVEL_HIGH);
 			}
 			
 			if(log_now)
-				Log("100%].\n", false);
+				Log("100%].\n", false, LOG_LEVEL_HIGH);
 		} else {
 			if(log_now)
-				Log("Failed!]\n", false);
+				Log("Failed!]\n", false, LOG_LEVEL_HIGH);
 		}
 	}
 	
@@ -172,14 +172,14 @@ namespace SaveLoad_GenePoints {
 					
 					DataExists[index] = true;
 					loaddata[index] = true;
-					Log("Gene Points Found for Player "+szSaveBy+".\n");
+					Log("Gene Points Found for Player "+szSaveBy+".\n",true,LOG_LEVEL_HIGH);
 					break;
 				}
 			}
 			
 			if(!DataExists[index])
 			{
-				Log("Gene Points not Found for Player "+szSaveBy+".\n");
+				Log("Gene Points not Found for Player "+szSaveBy+".\n",true,LOG_LEVEL_HIGH);
 				// No data found, assume new player
 				LoadEmpty( index );
 				loaddata[index] = true;

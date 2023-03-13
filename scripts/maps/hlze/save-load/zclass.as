@@ -48,6 +48,8 @@ namespace SaveLoad_ZClasses {
 	}
 	
 	void SaveData( const int& in index , bool log_now = true ) {
+		log_now = (log_now && cvar_Log_System>=LOG_LEVEL_HIGH);
+		
 		if(log_now)
 			Log("Saving Zombie Classes for Player with ID:"+index+".[0%..");
 		
