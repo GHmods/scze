@@ -176,6 +176,7 @@ void Set_Team(CBaseEntity@ ent)
 			for(uint i1=0;i1<Team1.length();i1++) {
 				if(ent_monster.pev.classname == Team1[i1]) {
 					ent_monster.SetClassification(CLASS_TEAM1);
+					ent_monster.SetupFriendly();
 				}
 			}
 			for(uint i1=0;i1<Team2.length();i1++) {

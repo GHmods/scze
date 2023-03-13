@@ -120,7 +120,7 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 	
 	int Classify()
 	{
-		return self.GetClassification( CLASS_HUMAN_MILITARY );
+		return self.GetClassification(CLASS_HUMAN_MILITARY);
 	}
 	
 	void SetYawSpeed()
@@ -290,12 +290,12 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 	{
 		Precache();
 
-		self.SetPlayerAlly(self.IsPlayerAlly()); //Set Barney as ally/foe upon spawning
+		self.SetPlayerAlly(!self.IsPlayerAlly()); //Set Barney as ally/foe upon spawning
 
 		//Weapon Init
 		SetupWeapon();
 
-		g_EntityFuncs.SetSize( self.pev, VEC_HUMAN_HULL_MIN, VEC_HUMAN_HULL_MAX );
+		g_EntityFuncs.SetSize(self.pev,VEC_HUMAN_HULL_MIN,VEC_HUMAN_HULL_MAX);
 
 		pev.solid					= SOLID_SLIDEBOX;
 		pev.movetype				= MOVETYPE_STEP;
@@ -317,8 +317,7 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 			self.m_FormattedName = "Barney";
 		}
 
-		if(self.IsPlayerAlly() && self.IsAlive())
-			SetUse( UseFunction( this.FollowerUse ) );
+		SetUse(UseFunction(this.FollowerUse));
 
 		self.MonsterInit();
 	}
@@ -639,10 +638,13 @@ class CHLZE_Barney : ScriptBaseMonsterEntity
 	
 	void FollowerUse( CBaseEntity@ pActivator, CBaseEntity@ pCaller, USE_TYPE useType, float flValue )
 	{
+		if(self.IRelationship(pActivator) >= R_NO)
+			return;
+
 		self.FollowerPlayerUse( pActivator, pCaller, useType, flValue );
 		
 		CBaseEntity@ pTarget = self.m_hTargetEnt;
-		
+
 		if( pTarget is pActivator )
 		{
 			g_SoundSystem.PlaySentenceGroup( self.edict(), "BA_OK", 1.0, ATTN_NORM, 0, PITCH_NORM );
