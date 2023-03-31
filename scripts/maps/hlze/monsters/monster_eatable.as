@@ -40,8 +40,8 @@ void Convert_Eatable(CBaseMonster@ monster) {
 		return;
 	}
 	//If Eatable Monster is in 'MONSTERSTATE_DEAD' mode
-	//if(monster.m_MonsterState == MONSTERSTATE_DEAD && (monster.pev.flags & FL_ONGROUND) != 0) {
-	if(monster.m_MonsterState == MONSTERSTATE_DEAD) {
+	if(monster.m_MonsterState == MONSTERSTATE_DEAD && (monster.pev.flags & FL_ONGROUND) != 0 && monster.pev.ltime < g_Engine.time + 1000) {
+	//if(monster.m_MonsterState == MONSTERSTATE_DEAD) {
 		//Create Eatable Monster
 		CBaseEntity@ entBase = g_EntityFuncs.CreateEntity("monster_eatable");
 		script_monster_eatable@ eatableMonster = cast<script_monster_eatable@>(CastToScriptClass(entBase));
