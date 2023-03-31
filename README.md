@@ -29,7 +29,7 @@ by fErMangan tuU!!
 5. Good Luck :smile:.
 #### Aditional Information:
 - Scripts can be found inside 'scripts/maps/hlze/' folder.
-## 🧬 Mutating Guide 🧬:
+## 🧬 Mutation Guide 🧬:
 I made Zombie/Headcrab Class and Ability System. You can use the gene points to unlock them with chat commands:
 ### For Zombie Players:
 ##### say /zc,/zclass or /zombie_class - visit Zombie Class Menu.
