@@ -29,6 +29,15 @@ by fErMangan tuU!!
 5. Good Luck :smile:.
 #### Aditional Information:
 - Scripts can be found inside 'scripts/maps/hlze/' folder.
+## 🧬 Mutating Guide 🧬:
+I made Zombie/Headcrab Class and Ability System. You can use the gene points to unlock them with chat commands:
+### For Zombie Players:
+##### say /zc,/zclass or /zombie_class - visit Zombie Class Menu.
+##### say /za, /upgrades,/ability or /abilities - visit Zombie Ability Menu.
+### For Headcrab Players:
+##### say /hc or /hclass - visit Headcrab Class Menu.
+##### say /ha,/hca,/hc_ability or /hc_upgrades - visit Headcrab Ability Menu.
+---
 ### Configuration:
 - Configuration Files are stored inside 'scripts/maps'.
 - Global Configuration File is: 'hlze_global.ini'
@@ -45,6 +54,7 @@ I don't know, email me.
 - 'headcrab_classes.as' is for headcrabs.
 - 'zombie_classes.as' is for zombies.
   - If you add a class for headcrab, headcrab will try to mutate to zombie class with same id as headcrab class.This means you must add your zombie class in the same order as your headcrab class.
+ 
 ##### Note for Mappers:
 - Headcrab Players can unlock 'func_wall_toggle' with targetnames:
   - 'togg1','toggle1' <-- Not Recommended.
