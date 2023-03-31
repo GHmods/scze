@@ -48,31 +48,37 @@ Spent gene points in Zombie Class Menu to unlock new classes and abilities. <br>
 If you reach 0 Armor(Host's body health) you will leave that body and play as a headcrab. <br>
 To manually leave body, press 'RELOAD' key. <br>
 ---
-### Configuration:
-- Configuration Files are stored inside 'scripts/maps'.
-- Global Configuration File is: 'hlze_global.ini'
-- Per Map Configuration File is loaded as: '[map_name].hlze.ini'
-#### The mod is not starting ?!?!?!
-##### Its probably because of Save/Load System.
-> Make sure to create some aditional folders to match this path 'svencoop/scripts/maps/store/hlze'
-#### The mod still won't start ?!?!!
-I don't know, email me.
-#### How to add new class?
-#### If you want to add new classes:
-1. You must have 1 class for zombie, and 1 for headcrab and they must be in the same order.
-2. You can add them in 'scripts/maps/hlze/classes/' folder
-- 'headcrab_classes.as' is for headcrabs.
-- 'zombie_classes.as' is for zombies.
-  - If you add a class for headcrab, headcrab will try to mutate to zombie class with same id as headcrab class.This means you must add your zombie class in the same order as your headcrab class.
- 
-##### Note for Mappers:
-- Headcrab Players can unlock 'func_wall_toggle' with targetnames:
-  - 'togg1','toggle1' <-- Not Recommended.
-  - Use 'hcwall1','hcwall2',...,'hcwall9','hcwall10',...,'hcwall15';
-- Zombie Players can trigger 'func_breakable' with targetname: 'flr_brk';
-- Zombie Players can use all rotating doors('func_door_rotating') with targetnames: 'ds1', 'd1', 'd2', 'd3',...,'d9';
-- To make Zombie Players open rotating doors('func_door_rotating'), use 'trigger_multiple'; (See Examples Folder)
-- More defines can be defined in 'entities/multisource.as'
+<details>
+<summary>Configuration:</summary>
+- Configuration Files are stored inside 'scripts/maps'. <br>
+- Global Configuration File is: 'hlze_global.ini' <br>
+- Per Map Configuration File is loaded as: '[map_name].hlze.ini' <br>
+<h4>The mod is not starting ?!?!?!</h4>
+Its probably because of Save/Load System.<br>
+
+```
+Make sure to create some aditional folders to match this path 'svencoop/scripts/maps/store/hlze'
+```
+<h4>The mod still won't start ?!?!!</h4>
+I don't know, email me. <br>
+<h4>How to add new class?</h4>
+<h5>If you want to add new classes:</h5>
+1. You must have 1 class for zombie, and 1 for headcrab and they must be in the same order. <br>
+2. You can add them in 'scripts/maps/hlze/classes/' folder <br>
+- 'headcrab_classes.as' is for headcrabs. <br>
+- 'zombie_classes.as' is for zombies. <br>
+  - If you add a class for headcrab, headcrab will try to mutate to zombie class with same id as headcrab class.This means you must add your zombie class in the same order as your headcrab class. <br>
+</details>
+
+<details>
+<summary>Note for Mappers:</summary>
+- Headcrab Players can unlock 'func_wall_toggle' with targetnames: <br>
+  - 'togg1','toggle1' <-- Not Recommended. <br>
+  - Use 'hcwall1','hcwall2',...,'hcwall9','hcwall10',...,'hcwall15'; <br>
+- Zombie Players can trigger 'func_breakable' with targetname: 'flr_brk'; <br>
+- Zombie Players can use all rotating doors('func_door_rotating') with targetnames: 'ds1', 'd1', 'd2', 'd3',...,'d9'; <br>
+- To make Zombie Players open rotating doors('func_door_rotating'), use 'trigger_multiple'; (See Examples Folder) <br>
+- More defines can be defined in 'entities/multisource.as' <br>
 
 For More Doors:
 ```
@@ -101,6 +107,7 @@ For More Walls:
 - If PvPvM Feature is Enabled, use 'info_target' with targetname: 'info_human_spawn' to create multiple spawn
 points for Humans.
 ---
+</details>
 
 #### Tasks Part 1: ![100%](https://progress-bar.dev/100)
   - ~~Upload all resources.~~
@@ -130,7 +137,7 @@ points for Humans.
   - Add Custom Scientist NPC with Pistol,Shotgun & AR.
   - Add Fast Zombie NPC.
   - ~~More Tasks Soon....~~
-
+---
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
 * <a href="https://baso88.github.io/SC_AngelScript/docs/">Sven Co-op AngelScript Documentation</a>
