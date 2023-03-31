@@ -39,6 +39,15 @@ I made Zombie/Headcrab Class and Ability System. You can use the gene points to 
 ##### say /ha,/hca,/hc_ability or /hc_upgrades - visit Headcrab Ability Menu.
 > Example: bind tab "say /zc";
 ---
+#### Gameplay:
+>-As a Headcrab,find a victim and infect it. <br>
+Once infected, it will take some time to turn the victim into a zombie. <br>
+-As a zombie, you need to find food(human bodies) and press your 'USE' key to eat. <br>
+When eating,you gain GENE POINTS and regenerate host's body and your headcrab's health. <br>
+Spent gene points in Zombie Class Menu to unlock new classes and abilities. <br>
+If you reach 0 Armor(Host's body health) you will leave that body and play as a headcrab. <br>
+To manually leave body, press 'RELOAD' key. <br>
+---
 ### Configuration:
 - Configuration Files are stored inside 'scripts/maps'.
 - Global Configuration File is: 'hlze_global.ini'
