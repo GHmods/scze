@@ -37,6 +37,7 @@ I made Zombie/Headcrab Class and Ability System. You can use the gene points to 
 ### For Headcrab Players:
 ##### say /hc or /hclass - visit Headcrab Class Menu.
 ##### say /ha,/hca,/hc_ability or /hc_upgrades - visit Headcrab Ability Menu.
+> Example: bind tab "say /zc";
 ---
 ### Configuration:
 - Configuration Files are stored inside 'scripts/maps'.
