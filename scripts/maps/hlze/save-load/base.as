@@ -150,6 +150,8 @@ namespace SaveLoad {
 			g_Scheduler.SetTimeout("SpawnAs", 0.01, index);
 		}
 		
+		g_Scheduler.SetTimeout( "PlayerReminder", 2.0, index ); //Reminder
+
 		return HOOK_CONTINUE;
 	}
 	

@@ -231,6 +231,7 @@ class Infected : ScriptBaseMonsterEntity
 			
 			if(Infection_State==2) {
 				if(InfectorPlayer !is null && !InfectorPlayer.IsAlive()) {
+					Remove_Headcrab(); //Remove Headcrab
 					InfectorPlayer.pev.flags &= ~FL_FROZEN;
 					//Reset Player
 					InfectorPlayer.ResetOverriddenPlayerModel(false,false);
@@ -393,5 +394,26 @@ class Infected : ScriptBaseMonsterEntity
 		g_Game.PrecacheModel( "models/zombie.mdl" );
 		g_Game.PrecacheModel( "models/zombie_barney.mdl" );
 		g_Game.PrecacheModel( "models/zombie_soldier.mdl" );
+	}
+
+	//Remove Headcrab from Head
+	void Remove_Headcrab() {
+		int temp_body = self.pev.body;
+		if(infected_type==INFECTED_GUARD) {
+			self.SetBodygroup(0,0);
+			self.SetBodygroup(1,0);
+			self.SetBodygroup(2,3);
+			self.SetBodygroup(3,0);
+			//Skin is set by infection......
+			infected_first_body = self.pev.body; //update infected_first_body
+
+		} /*
+		else if(infected_type==INFECTED_SCIENTIST) {
+			
+		}
+		else if(infected_type==INFECTED_HGRUNT) {
+			
+		}*/
+		self.pev.body = temp_body;
 	}
 }
