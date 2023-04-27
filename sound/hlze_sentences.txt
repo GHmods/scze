@@ -671,6 +671,7 @@ BA_ATTACK2 barney/standback
 BA_ATTACK3 barney/whatisthat
 BA_ATTACK4 barney/diebloodsucker
 BA_ATTACK5 barney/aimforhead
+BA_HEY barney/hey
 
 BA_HEAR0 barney/hearsomething
 BA_HEAR1 barney/icanhear

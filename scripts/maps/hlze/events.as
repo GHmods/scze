@@ -7,6 +7,8 @@
 #include "classes/gene_points"
 //Save/Load System
 #include "save-load/base"
+//Survival
+#include "survival/point_checkpoint"
 
 array<bool>Reminder(33,false);
 
@@ -53,6 +55,8 @@ void Events_MapInit()
 	//Event Client Say
 	g_Hooks.RegisterHook(Hooks::Player::ClientSay, Event_ClientSay);
 
+	//Register 'point_checkpoint'
+	RegisterPointCheckPointEntity();
 }
 
 HookReturnCode PlayerQuit(CBasePlayer@ pPlayer)
