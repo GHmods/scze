@@ -4,6 +4,9 @@
 * Dead players are revived
 */
 
+//SC:ZE Part
+#include "../save-load/base"
+
 enum PointCheckpointFlags
 {
 	SF_CHECKPOINT_REUSABLE 		= 1 << 0,	//This checkpoint is reusable
@@ -200,6 +203,10 @@ class point_checkpoint : ScriptBaseAnimating
 		if( !IsEnabled() || IsActivated() || !pOther.IsPlayer() )
 			return;
 		
+		//Print Activator
+		const string pName = pOther.pev.netname;
+		g_PlayerFuncs.ClientPrintAll(HUD_PRINTTALK, pName + " just activated a checkpoint!\n");
+
 		// Set activated
 		self.pev.frags = 1.0f;
 		
@@ -303,6 +310,14 @@ class point_checkpoint : ScriptBaseAnimating
 				pPlayer.SetOrigin( self.pev.origin );
 				pPlayer.Revive();
 				
+				//SC:ZE Part
+				int rev_pId = pPlayer.entindex();
+				if(pPlayer.HasNamedPlayerItem("weapon_zclaws") !is null) {
+					SaveLoad::Give_HLZE_Weapons(rev_pId,0);
+				} else {
+					SaveLoad::Give_HLZE_Weapons(rev_pId);
+				}
+
 				//Call player equip
 				//Only disable default giving if there are game_player_equip entities in give mode
 				CBaseEntity @pEquipEntity = null;
