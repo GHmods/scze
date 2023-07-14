@@ -30,7 +30,12 @@ class point_checkpoint : ScriptBaseAnimating
 	private float m_flRespawnStartTime;					
 	
 	// Show Xenmaker-like effect when the checkpoint is spawned?
-	private bool m_fSpawnEffect					= false; 
+	private bool m_fSpawnEffect					= false;
+	
+	// Song upon activating
+	//private string szSongPath = "../media/valve.mp3";
+	private string szSongPath_custom = "";
+	private string szSongPath = "music/hlze_checkpoint.mp3";
 	
 	bool KeyValue( const string& in szKey, const string& in szValue )
 	{
@@ -64,6 +69,11 @@ class point_checkpoint : ScriptBaseAnimating
 			m_fSpawnEffect = atoi( szValue ) != 0;
 			return true;
 		}
+		else if( szKey == "szSongPath" )
+		{
+			szSongPath_custom = szValue;
+			return true;
+		}
 		else
 			return BaseClass.KeyValue( szKey, szValue );
 	}
@@ -89,7 +99,14 @@ class point_checkpoint : ScriptBaseAnimating
 		
 		g_Game.PrecacheModel( "sprites/exit1.spr" );
 		
-		g_SoundSystem.PrecacheSound( "../media/valve.mp3" );
+		if(string(szSongPath_custom).IsEmpty()) {
+			g_SoundSystem.PrecacheSound( "music/hlze_checkpoint.mp3" );
+			g_Game.PrecacheGeneric( "sound/" + "music/hlze_checkpoint.mp3" );
+		} else {
+			g_SoundSystem.PrecacheSound(szSongPath_custom);
+			g_Game.PrecacheGeneric( "sound/" + szSongPath_custom );
+		}
+		g_SoundSystem.PrecacheSound( szSongPath );
 		g_SoundSystem.PrecacheSound( "debris/beamstart7.wav" );
 		g_SoundSystem.PrecacheSound( "ambience/port_suckout1.wav" );
 		
@@ -119,6 +136,10 @@ class point_checkpoint : ScriptBaseAnimating
 			g_EntityFuncs.SetModel( self, "models/hlze/hlze_cp.mdl" );
 		else
 			g_EntityFuncs.SetModel( self, self.pev.model );
+		
+		//Custom Song
+		if(!string(szSongPath_custom).IsEmpty())
+			szSongPath = szSongPath_custom;
 		
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
 		
@@ -210,7 +231,7 @@ class point_checkpoint : ScriptBaseAnimating
 		// Set activated
 		self.pev.frags = 1.0f;
 		
-		g_SoundSystem.EmitSound( self.edict(), CHAN_STATIC, "../media/valve.mp3", 1.0f, ATTN_NONE );
+		g_SoundSystem.EmitSound( self.edict(), CHAN_STATIC, szSongPath, 1.0f, ATTN_NONE );
 
 		self.pev.rendermode		= kRenderTransTexture;
 		self.pev.renderamt		= 255;
