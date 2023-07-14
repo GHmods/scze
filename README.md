@@ -15,7 +15,7 @@
 	<img src="https://i.imgur.com/DDoAp4R.png" alt="Watch Sven Co-op Zombie Edition Gameplay Video on YouTube" width=768>
 </a>
 <br>
-by fErMangan tuU!!
+by fErMangan
 
 ### How to Install?
 #### Installation Instructions:
