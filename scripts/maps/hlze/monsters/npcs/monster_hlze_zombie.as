@@ -572,6 +572,9 @@ class CHLZE_Zombie : ScriptBaseMonsterEntity
 		
 		Vector vecTarget;
 
+		if(self.m_hEnemy.GetEntity() is null)
+			return 0;
+		
 		if(HasGrenade() && ThrowGrenade && GrenadeCount > 0) {
 			// find feet
 			if(Math.RandomLong(0,1)==1)

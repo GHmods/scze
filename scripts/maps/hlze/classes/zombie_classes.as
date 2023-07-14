@@ -56,6 +56,18 @@ Zombie_Class@ Get_ZombieClass_FromPlayer(CBasePlayer@ pPlayer) {
 	return ZClasses::Zombie_Classes[index];
 }
 
+//Make sure selected class is the same with "in-weapon" class
+Zombie_Class@ Get_ZombieClass_FromPlayer_New(CBasePlayer@ pPlayer) {
+	CBasePlayerWeapon@ pWpn = Get_Weapon_FromPlayer(pPlayer,"weapon_zclaws");
+	weapon_zclaws@ zclaws = cast<weapon_zclaws@>(CastToScriptClass(pWpn));
+	if(pWpn is null || zclaws is null)
+		return null;
+	if(zclaws.ZClass is null)
+		return null;
+	
+	return zclaws.ZClass;
+}
+
 bool ZombieClass_PlayerHasAbility(CBasePlayer@ pPlayer,string szName,bool ShouldBeOn=true) {
 	bool hasAbility = false;
 	//Null Checker
@@ -66,12 +78,15 @@ bool ZombieClass_PlayerHasAbility(CBasePlayer@ pPlayer,string szName,bool Should
 	CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
 	int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
 	//int ZWeaponId = atoui(KeyValues.GetKeyvalue("$i_ZombieWeapon").GetString());
-	Zombie_Class@ pZClass = Get_ZombieClass_FromPlayer(pPlayer);
+	Zombie_Class@ pZClass = Get_ZombieClass_FromPlayer_New(pPlayer);
 
 	//Make sure Player is not Mutating
 	if(ZClass_MutationState[pId]!=ZM_MUTATION_NONE)
 		return false;
 	
+	if(pZClass is null)
+		return false;
+
 	//Go through the array
 	for(uint a=0;a<pZClass.Abilities.length();a++) {
 		//Check if unlocked

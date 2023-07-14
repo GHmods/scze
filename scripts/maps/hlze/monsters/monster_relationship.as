@@ -65,7 +65,8 @@ array<string>Allies = {
 	"monster_zombie",
 	"monster_zombie_barney",
 	"monster_zombie_soldier",
-	"monster_hlze_zombie" //Our Custom NPC
+	"monster_hlze_zombie", //Our Custom NPC
+	"monster_fast_zombie" //Our Custom NPC
 };
 
 array<string>Team1 = {

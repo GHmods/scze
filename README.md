@@ -124,9 +124,9 @@ points for Humans.
   - ~~Add Save by Steam ID or Name Option.~~
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
-#### Tasks Part 3: ![75%](https://progress-bar.dev/75)
+#### Tasks Part 3: ![91%](https://progress-bar.dev/91)
   - ~~Fixes for 'Breeder' Zombie Class.~~
-  - Fix 'fake_pickup'
+  - ~~Fix 'fake_pickup'~~
   - ~~Add Models from Headcrab Classes to Victim's Head.~~
   - ~~Add Barnacle Weapon for Breeder Zombie Class.~~
   - ~~Add Third Person Animation for 'Shield' Zombie Ability.~~
@@ -135,7 +135,7 @@ points for Humans.
   - ~~Change File Names for Save/Load System based on configuration.~~
   - ~~Add Custom Barney NPC with Pistol,Shotgun & AR.~~
   - Add Custom Scientist NPC with Pistol,Shotgun & AR.
-  - Add Fast Zombie NPC.
+  - ~~Add Fast Zombie NPC.~~
   - ~~More Tasks Soon....~~
 ---
 ## Tools I've used:
