@@ -28,7 +28,7 @@ enum PickupTypes {
 
 int replaced_entities = 0; //Replaced Entities Counter
 int ignored_entities = 0; //Ignored Entities Counter
-float fakepickup_frequency = 0.1; //Optimization
+float fakepickup_frequency = 0.25; //Optimization
 
 void fake_pickup_Init() {
 	//Precache this Entity
