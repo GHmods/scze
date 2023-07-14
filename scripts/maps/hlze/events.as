@@ -11,6 +11,7 @@
 #include "survival/point_checkpoint"
 
 array<bool>Reminder(33,false);
+array<bool>Reminder_Help(33,false);
 
 void Events_PluginInit()
 {
@@ -75,9 +76,28 @@ void PlayerReminder(int index) {
 		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"This is Half-Life:Zombie Edition Ported to Sven Co-Op by Game Hunter.\n");
 		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"Read Console[~] for possible bugs and fixes.\n");
 		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTCONSOLE,"[BUG 01] Type:'-duck' in your console[~] and press Enter to Fix Ducking problem.\n");
-		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"More Info About the MOD: say '/hlze_info','/hi' or '/info'.\n");
+		//g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"More Info About the MOD: say '/hlze_info','/hi' or '/info'.\n");
 		Reminder[index] = true;
 	}
+	g_Scheduler.SetTimeout( "PlayerReminder_Help", 11.0, index); //Reminder Help
+}
+
+void PlayerReminder_Help(int index) {
+	CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex( index );
+	
+	if(!Reminder_Help[index] && pPlayer !is null) {
+		g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"Need Help? More Info About the MOD: say '/hlze_info','/hi' or '/info'.\n");
+		Reminder_Help[index] = true;
+		g_Scheduler.SetTimeout( "PlayerReminder_Help_Reset", 45.0, index ); //Reminder Help Reset
+	}
+}
+
+void PlayerReminder_Help_Reset(int index) {
+	CBasePlayer@ pPlayer = g_PlayerFuncs.FindPlayerByIndex(index);
+	if(pPlayer is null)
+		return;
+	
+	Reminder_Help[index] = false;
 }
 
 HookReturnCode Event_PlayerThink(CBasePlayer@ pPlayer, uint& out dummy )
