@@ -134,9 +134,9 @@ points for Humans.
   - ~~Fix monster_eatable & monster_infected_dead~~
   - ~~Change File Names for Save/Load System based on configuration.~~
   - ~~Add Custom Barney NPC with Pistol,Shotgun & AR.~~
-  - Add Custom Scientist NPC with Pistol,Shotgun & AR.
+  - ~~Add Custom Scientist NPC with Pistol,Shotgun & AR.~~
   - ~~Add Fast Zombie NPC.~~
-  - ~~More Tasks Soon....~~
+  - Do a Third Release.
 ---
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>

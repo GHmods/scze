@@ -30,6 +30,7 @@ array<string>Eatable_Alive = {
 	"monster_scientist",
 	"monster_barney",
 	"monster_hlze_barney",
+	"monster_hlze_scientist",
 	"monster_hgrunt",
 	"monster_human_grunt"
 };

@@ -3,12 +3,10 @@
 * Call CHLZE_Barney::Register() to register this entity.
 * Entity classname: monster_hlze_barney
 */
-//Barney's Helmet
 #include "checktracehullattack"
 
 namespace HLZE_Barney
 {
-
 const int BARNEY_AE_DRAW			= 2;
 const int BARNEY_AE_SHOOT			= 3;
 const int BARNEY_AE_HOLSTER			= 4;

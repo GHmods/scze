@@ -16,10 +16,12 @@ array<string>Infect_Sounds = {
 
 array<string>Infectable = {
 	"",
+	//"monster_scientist"
 	"monster_scientist",
 	//"monster_barney",
 	"monster_hlze_barney",
-	"monster_human_grunt"
+	"monster_human_grunt",
+	"monster_hlze_scientist"
 };
 
 enum InfectionType {
@@ -122,6 +124,11 @@ class Infected : ScriptBaseMonsterEntity
 			for(uint i=0;i<Infectable.length();i++) {
 				if(infected_class==Infectable[i]) {
 					infected_type=i;
+					break;
+				}
+				//Other.....
+				if(infected_class=="monster_hlze_scientist") {
+					infected_type=INFECTED_SCIENTIST;
 					break;
 				}
 			}

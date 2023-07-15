@@ -81,6 +81,7 @@ array<string>Team1 = {
 	"monster_cleansuit_scientist",
 	"monster_sitting_scientist",
 	"monster_hlze_barney", //Our Custom NPC
+	"monster_hlze_scientist" //Our Custom NPC
 };
 
 array<string>Team2 = {
@@ -102,7 +103,7 @@ void RelationshipProcess()
 			//Check if is Monster and not Player
 			if(ent.IsMonster() && !ent.IsPlayer())
 			{
-				AS_Log("["+i+"] Found: "+ent.pev.classname,LOG_LEVEL_EXTREME);
+				AS_Log("["+i+"] Found: "+ent.pev.classname+"\n",LOG_LEVEL_EXTREME);
 				//Get Monster Base from this Entity
 				CBaseMonster@ ent_monster = ent.MyMonsterPointer();
 				if(ent_monster !is null)
@@ -149,6 +150,23 @@ void RelationshipProcess()
 						keys["weapons"] = ""+ent_monster.pev.weapons;
 						CBaseEntity@ replacedEnt = g_EntityFuncs.CreateEntity("monster_hlze_barney", keys);
 						HLZE_Barney::CHLZE_Barney@ replacedMonster = cast<HLZE_Barney::CHLZE_Barney@>(CastToScriptClass(replacedEnt));
+						g_EntityFuncs.Remove(ent_monster);
+						AS_Log("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n",LOG_LEVEL_EXTREME);
+					} else if(ent_monster.pev.classname == "monster_scientist" && ent_monster.pev.weapons > 0)
+					{
+						dictionary keys;
+						keys["origin"] = ""+ent_monster.pev.origin.ToString();
+						keys["angles"] = ""+ent_monster.pev.angles.ToString();
+						keys["spawnflags"] = ""+ent_monster.pev.flags;
+						keys["body"] = ""+ent_monster.pev.body;
+						keys["skin"] = ""+ent_monster.pev.skin;
+						keys["health"] = ""+ent_monster.pev.health;
+						keys["targetname"] = ""+ent_monster.pev.targetname;
+						keys["weapons"] = ""+ent_monster.pev.weapons;
+						int head_id = ent_monster.GetBodygroup(1);
+						CBaseEntity@ replacedEnt = g_EntityFuncs.CreateEntity("monster_hlze_scientist", keys);
+						HLZE_Scientist::CHLZE_Scientist@ replacedMonster = cast<HLZE_Scientist::CHLZE_Scientist@>(CastToScriptClass(replacedEnt));
+						replacedEnt.MyMonsterPointer().SetBodygroup(1,head_id);
 						g_EntityFuncs.Remove(ent_monster);
 						AS_Log("Replaced....["+ent_monster.pev.classname+"]with["+replacedMonster.pev.classname+"].\n",LOG_LEVEL_EXTREME);
 					}
