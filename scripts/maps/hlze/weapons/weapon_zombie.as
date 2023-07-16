@@ -924,6 +924,11 @@ class weapon_zclaws : ScriptBasePlayerWeaponEntity
 		m_pPlayer.pev.origin = ent.pev.origin + Vector(0.0,0.0,36.0);
 
 		m_pPlayer.GiveNamedItem("weapon_hclaws");
+
+		//-duck
+		NetworkMessage m(MSG_ONE, NetworkMessages::SVC_STUFFTEXT, m_pPlayer.edict());
+				m.WriteString("-duck;");
+		m.End();
 	}
 	
 	void DarkVision() {

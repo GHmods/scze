@@ -102,9 +102,11 @@ class weapon_hclaws : ScriptBasePlayerWeaponEntity
 			return false;
 		
 		@m_pPlayer = pPlayer;
+		/*
 		NetworkMessage m(MSG_ONE, NetworkMessages::SVC_STUFFTEXT, pPlayer.edict());
 				m.WriteString("-duck;");
 		m.End();
+		*/
 		
 		HClass_Mutate(HClass_Holder[pPlayer.entindex()]);
 		
