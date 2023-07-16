@@ -136,7 +136,7 @@ points for Humans.
   - ~~Add Custom Barney NPC with Pistol,Shotgun & AR.~~
   - ~~Add Custom Scientist NPC with Pistol,Shotgun & AR.~~
   - ~~Add Fast Zombie NPC.~~
-  - Do a Third Release.
+  - Do a 4th Release [v0.9].
 ---
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
