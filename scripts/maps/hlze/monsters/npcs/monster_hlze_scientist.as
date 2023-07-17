@@ -224,7 +224,7 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 			if(weapon == SCIENTIST_WEAPON_SPAS12) self.m_flAutomaticAttackTime = g_Engine.time + 1.0;
 			else self.m_flAutomaticAttackTime = g_Engine.time + Math.RandomFloat(0.2, 0.5);
 		}
-		--self.m_cAmmoLoaded;// take away a bullet!
+		--self.m_cAmmoLoaded;// take away a bullet/shell!
 	}
 	
 	void CheckAmmo()
@@ -284,20 +284,20 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 
 		g_EntityFuncs.SetSize(self.pev,VEC_HUMAN_HULL_MIN,VEC_HUMAN_HULL_MAX);
 
-		pev.solid					= SOLID_SLIDEBOX;
+		pev.solid				= SOLID_SLIDEBOX;
 		pev.movetype				= MOVETYPE_STEP;
 		self.m_bloodColor			= BLOOD_COLOR_RED;
 		if( self.pev.health == 0.0f )
 			self.pev.health  = 100.0f;
-		self.pev.view_ofs			= Vector( 0, 0, 60 );// position of the eyes relative to monster's origin.
+		self.pev.view_ofs			= Vector(0,0,50);// position of the eyes relative to monster's origin.
 		self.m_flFieldOfView			= VIEW_FIELD_WIDE; // NOTE: we need a wide field of view so npc will notice player and say hello
-		self.m_MonsterState			= MONSTERSTATE_IDLE;
+		self.m_MonsterState			= MONSTERSTATE_NONE;
 		//self.pev.body				= 0; // gun in holster
 		m_fGunDrawn				= true;
 		self.m_afCapability			= bits_CAP_HEAR | bits_CAP_TURN_HEAD | bits_CAP_DOORS_GROUP | bits_CAP_USE_TANK;
-		self.m_fCanFearCreatures 	= true; // Can attempt to run away from things like zombies
+		self.m_fCanFearCreatures 		= true; // Can attempt to run away from things like zombies
 		m_flNextFearScream			= g_Engine.time;
-		//self.m_afMoveShootCap()	= bits_MOVESHOOT_RANGE_ATTACK1;
+		//self.m_afMoveShootCap()		= bits_MOVESHOOT_RANGE_ATTACK1;
 
 		if( string( self.m_FormattedName ).IsEmpty() )
 		{
@@ -441,9 +441,9 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 		{
 			switch (Math.RandomLong(0,2))
 			{
-			case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream06.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream02.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream05.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
+			case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream06.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream02.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream05.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
 			}
 
 			m_flNextFearScream = g_Engine.time + Math.RandomLong(2,5);
@@ -458,16 +458,16 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 		m_painTime = g_Engine.time + Math.RandomFloat(0.5, 0.75);
 		switch (Math.RandomLong(0,9))
 		{
-		case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain1.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain2.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain3.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain4.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain5.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 5: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain6.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 6: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain7.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 7: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain8.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 8: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain9.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 9: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain10.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
+		case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain1.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain2.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain3.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain4.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain5.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 5: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain6.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 6: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain7.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 7: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain8.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 8: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain9.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 9: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_pain10.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
 		}
 	}
 	
@@ -475,10 +475,10 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 	{
 		switch (Math.RandomLong(0,3))
 		{
-		case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die1.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die2.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die3.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-		case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die4.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
+		case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die1.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die2.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die3.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+		case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/sci_die4.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
 		}
 	}
 	
@@ -576,11 +576,11 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 		if( self.HasConditions( bits_COND_ENEMY_DEAD ) ) {
 			switch (Math.RandomLong(0,4))
 			{
-			case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/dontwantdie.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/ipredictedthis.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/getoutalive.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream17.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
-			case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/nooo.wav", 1, ATTN_NORM, 0, PITCH_NORM); break;
+			case 0: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/dontwantdie.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 1: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/ipredictedthis.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 2: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/getoutalive.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 3: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/scream17.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
+			case 4: g_SoundSystem.EmitSoundDyn( self.edict(), CHAN_VOICE, "scientist/nooo.wav", 1, ATTN_NORM, 0, VoicePitch()); break;
 			}
 		}
 
@@ -662,11 +662,25 @@ class CHLZE_Scientist : ScriptBaseMonsterEntity
 
 		if( pTarget is pActivator )
 		{
-			g_SoundSystem.PlaySentenceGroup( self.edict(),  "SC_OK", 1.0, ATTN_NORM, 0, PITCH_NORM );
+			g_SoundSystem.PlaySentenceGroup(self.edict(),  "SC_OK", 1.0, ATTN_NORM, 0, VoicePitch());
 		}
 		else {
-			g_SoundSystem.PlaySentenceGroup( self.edict(), "SC_WAIT", 1.0, ATTN_NORM, 0, PITCH_NORM );
+			g_SoundSystem.PlaySentenceGroup(self.edict(), "SC_WAIT", 1.0, ATTN_NORM, 0, VoicePitch());
 		}
+	}
+
+	//Voice Pith based on Head ID
+	int VoicePitch() {
+		// get voice for head
+		int m_voicePitch = 100;
+		switch (self.GetBodygroup(1))
+		{
+			case 0:	m_voicePitch = 105; break;	//glasses
+			case 1: m_voicePitch = 100; break;	//einstein
+			case 2:	m_voicePitch = 95;  break;	//luther
+			case 3:	m_voicePitch = 100;  break;	//slick
+		}
+		return m_voicePitch;
 	}
 }
 

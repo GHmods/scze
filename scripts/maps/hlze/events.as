@@ -32,6 +32,9 @@ void Events_MapInit()
 	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink, ZClass_Think);
 	g_Hooks.RegisterHook(Hooks::Player::PlayerTakeDamage, ZC_TakeDamage);
 	
+	//Death Think
+	g_Hooks.RegisterHook(Hooks::Player::PlayerPreThink, SaveLoad::Death_Think);
+
 	//Gene Points
 	Gene_Points::Precache();
 	g_Hooks.RegisterHook(Hooks::Player::ClientPutInServer, Gene_Points::PlayerJoin);

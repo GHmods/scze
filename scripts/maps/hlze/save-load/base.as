@@ -46,6 +46,7 @@ namespace SaveLoad {
 	
 	//Data
 	array<bool>isSpawned(33,false);
+	array<int>lastDeadflag(33,0);
 	
 	bool EverythingIsReady() {
 		return (
@@ -87,7 +88,7 @@ namespace SaveLoad {
 		//Load KeyValues?
 		if(cvar_load_keyvalues==1) SaveLoad_KeyValues::LoadData(index);
 		else SaveLoad_KeyValues::loaddata[index]=true;
-		
+
 		return HOOK_CONTINUE;
 	}
 	
@@ -96,6 +97,7 @@ namespace SaveLoad {
 		int index = pPlayer.entindex();
 		
 		isSpawned[index]=false;
+		lastDeadflag[index]=0;
 		
 		SaveLoad_GenePoints::LoadEmpty(index);
 		SaveLoad_ZClasses::LoadEmpty(index);
@@ -234,6 +236,57 @@ namespace SaveLoad {
 		}
 	}
 	
+	//Death
+	HookReturnCode Death_Think(CBasePlayer@ pPlayer, uint& out dummy )
+	{
+		int index = pPlayer.entindex();
+		int deadflag = pPlayer.pev.deadflag;
+
+		CustomKeyvalues@ KeyValues = pPlayer.GetCustomKeyvalues();
+		int isZombie = atoui(KeyValues.GetKeyvalue("$i_isZombie").GetString());
+		int isHeadcrab = atoui(KeyValues.GetKeyvalue("$i_isHeadcrab").GetString());
+
+		//Get Zombie/Headcrab Claws
+		CBasePlayerWeapon@ pWpn1 = Get_Weapon_FromPlayer(pPlayer,"weapon_hclaws");
+		weapon_hclaws@ hclaws = cast<weapon_hclaws@>(CastToScriptClass(pWpn1));
+		CBasePlayerWeapon@ pWpn2 = Get_Weapon_FromPlayer(pPlayer,"weapon_zclaws");
+		weapon_zclaws@ zclaws = cast<weapon_zclaws@>(CastToScriptClass(pWpn2));
+		//Get Zombie/Headcrab Classes
+		Headcrab_Class@ HClass;
+		Zombie_Class@ ZClass;
+		if(hclaws !is null) @HClass = hclaws.HClass;
+		if(zclaws !is null) @ZClass = zclaws.ZClass;
+
+		//if(deadflag == 1 && lastDeadflag[index] < 1 && (isZombie == 1 || isHeadcrab == 1))
+		if(deadflag == 1 && lastDeadflag[index] < 1)
+		{
+			//g_PlayerFuncs.ClientPrint(pPlayer,HUD_PRINTTALK,"Death!\n");
+			//Zombie Death
+			if(zclaws !is null && hclaws is null) {
+				if(ZClass is null)
+					return HOOK_CONTINUE;
+				
+				switch(Math.RandomLong(0,2)) {
+					case 0: g_SoundSystem.EmitSoundDyn(pPlayer.edict(),CHAN_VOICE,"zombie/zombie_voice_idle13.wav",1,ATTN_NORM,0,ZClass.VoicePitch);break;
+					case 1: g_SoundSystem.EmitSoundDyn(pPlayer.edict(),CHAN_VOICE,"zombie/zombie_voice_idle12.wav",1,ATTN_NORM,0,ZClass.VoicePitch);break;
+					case 2: g_SoundSystem.EmitSoundDyn(pPlayer.edict(),CHAN_VOICE,"zombie/zombie_voice_idle10.wav",1,ATTN_NORM,0,ZClass.VoicePitch);break;
+				}
+			} else if(zclaws is null && hclaws !is null) { //Headcrab Death
+				if(HClass is null)
+					return HOOK_CONTINUE;
+				
+				switch(Math.RandomLong(0,1)) {
+					case 0: g_SoundSystem.EmitSoundDyn(pPlayer.edict(),CHAN_VOICE,"headcrab/hc_die2.wav",1,ATTN_NORM,0,HClass.VoicePitch);break;
+					case 1: g_SoundSystem.EmitSoundDyn(pPlayer.edict(),CHAN_VOICE,"headcrab/hc_die1.wav",1,ATTN_NORM,0,HClass.VoicePitch);break;
+				}
+			}
+		}
+
+		lastDeadflag[index] = deadflag;
+
+		return HOOK_CONTINUE;
+	}
+
 	void Initialize_Plugin() {
 		SYSTEM_PATH = "scripts/plugins/store/hlze/";
 		SaveLoad_Cfg::CONFIG_PATH = "scripts/plugins/";
