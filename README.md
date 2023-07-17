@@ -2,8 +2,7 @@
 ![](https://i.imgur.com/ee9K4AJ.png)
 > Half-Life: Zombie Edition Port for Sven Co-op
 
-- This mod is somewhat stable, don't expect proficiency in code since im not a professional coder.
-- I will try to update this mod more frequently.
+- This mod is stable, don't expect proficiency in code since im not a professional coder.
 
 # Visit the <a href="https://ghmods.github.io/scze-website">website</a> for this mod.
 
@@ -124,7 +123,7 @@ points for Humans.
   - ~~Add Save by Steam ID or Name Option.~~
   - ~~Add Installation Instructions.~~
   - ~~Do a Second Release.~~
-#### Tasks Part 3: ![91%](https://progress-bar.dev/91)
+#### Tasks Part 3: ![100%](https://progress-bar.dev/100)
   - ~~Fixes for 'Breeder' Zombie Class.~~
   - ~~Fix 'fake_pickup'~~
   - ~~Add Models from Headcrab Classes to Victim's Head.~~
@@ -136,7 +135,7 @@ points for Humans.
   - ~~Add Custom Barney NPC with Pistol,Shotgun & AR.~~
   - ~~Add Custom Scientist NPC with Pistol,Shotgun & AR.~~
   - ~~Add Fast Zombie NPC.~~
-  - Do a 4th Release [v0.9].
+  - ~~Do a 4th Release [v0.9].~~
 ---
 ## Tools I've used:
 * <a href="https://github.com/wootguy/bspguy/releases/tag/v4">bspguy v4</a>
