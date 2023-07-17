@@ -21,6 +21,12 @@ array<string>Infectable = {
 	//"monster_barney",
 	"monster_hlze_barney",
 	"monster_human_grunt",
+	//Empty Slot
+	"",
+	"",
+	"",
+	"",
+	"",
 	"monster_hlze_scientist"
 };
 
